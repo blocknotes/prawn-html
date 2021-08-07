@@ -4,14 +4,54 @@ require 'ostruct'
 
 module PrawnHtml
   class Attributes
-    attr_reader :hash, :styles
+    attr_reader :hash, :options, :post_styles, :pre_styles, :styles
+
+    STYLES_LIST = {
+      # styles
+      'background' => { key: :background, set: :convert_color, dest: :styles },
+      'color' => { key: :color, set: :convert_color, dest: :styles },
+      'font-family' => { key: :font, set: :unquote, dest: :styles },
+      'font-size' => { key: :size, set: :convert_size, dest: :styles },
+      'font-style' => { key: :styles, set: :append_symbol, dest: :styles },
+      'font-weight' => { key: :styles, set: :append_symbol, dest: :styles },
+      'letter-spacing' => { key: :character_spacing, set: :convert_float, dest: :styles },
+      # pre styles
+      'margin-top' => { key: :margin_top, set: :convert_size, dest: :pre_styles },
+      # post styles
+      'margin-bottom' => { key: :margin_bottom, set: :convert_size, dest: :post_styles },
+      'padding-bottom' => { key: :padding_bottom, set: :convert_size, dest: :post_styles },
+      # options
+      'line-height' => { key: :leading, set: :convert_size, dest: :options },
+      'margin-left' => { key: :margin_left, set: :convert_size, dest: :options },
+      'padding-left' => { key: :padding_left, set: :convert_size, dest: :options },
+      'padding-top' => { key: :padding_top, set: :convert_size, dest: :options },
+      'text-align' => { key: :align, set: :convert_symbol, dest: :options },
+      'text-decoration' => { key: :styles, set: :append_symbol, dest: :styles }
+    }.freeze
 
     # Init the Attributes
     #
     # @param attributes [Hash] hash of attributes to parse
     def initialize(attributes)
       @hash = ::OpenStruct.new(attributes)
+      @options = {}
+      @post_styles = {}
+      @pre_styles = {}
       @styles = {} # result styles
+      parsed_styles = Attributes.parse_styles(hash.style)
+      process_styles(parsed_styles)
+    end
+
+    # Processes the styles attributes
+    #
+    # @param attributes [Hash] hash of styles attributes
+    def process_styles(styles)
+      styles.each do |key, value|
+        rule = STYLES_LIST[key]
+        next unless rule
+
+        apply_rule(rule, value)
+      end
     end
 
     class << self
@@ -75,6 +115,15 @@ module PrawnHtml
         # TODO
       end
 
+      # Parses a string of styles
+      #
+      # @param styles [String] styles to parse
+      #
+      # @return [Hash] hash of styles
+      def parse_styles(styles)
+        (styles || '').scan(/\s*([^:;]+)\s*:\s*([^;]+)\s*/).to_h
+      end
+
       # Unquotes a string
       #
       # @param value [String] string
@@ -84,6 +133,16 @@ module PrawnHtml
         (value&.strip || +'').tap do |val|
           val.gsub!(/\A['"]|["']\Z/, '')
         end
+      end
+    end
+
+    private
+
+    def apply_rule(rule, value)
+      if rule[:set] == :append_symbol
+        (send(rule[:dest])[rule[:key]] ||= []) << Attributes.convert_symbol(value)
+      else
+        send(rule[:dest])[rule[:key]] = Attributes.send(rule[:set], value)
       end
     end
   end

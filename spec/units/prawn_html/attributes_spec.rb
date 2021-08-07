@@ -16,6 +16,39 @@ RSpec.describe PrawnHtml::Attributes do
     end
   end
 
+  describe '#process_styles' do
+    subject(:process_styles) { attributes.process_styles(hash_styles) }
+
+    before do
+      allow(described_class).to receive(:send).and_call_original
+    end
+
+    context 'with an empty hash' do
+      let(:hash_styles) { {} }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'with some styles' do
+      let(:hash_styles) do
+        {
+          'font-family' => "'Times-Roman'",
+          'font-size' => "16px",
+          'font-weight' => "bold",
+          'margin-bottom' => "22px"
+        }
+      end
+
+      it 'receives the expected convert messages', :aggregate_failures do
+        process_styles
+
+        expect(described_class).to have_received(:send).with(:unquote, "'Times-Roman'")
+        expect(described_class).to have_received(:send).with(:convert_size, '16px')
+        expect(described_class).to have_received(:send).with(:convert_size, '22px')
+      end
+    end
+  end
+
   describe '.convert_color' do
     subject(:convert_color) { described_class.convert_color(value) }
 
@@ -121,6 +154,36 @@ RSpec.describe PrawnHtml::Attributes do
       let(:value) { 'some_string' }
 
       it { is_expected.to eq :some_string }
+    end
+  end
+
+  describe '.parse_styles' do
+    subject(:parse_styles) { described_class.parse_styles(styles) }
+
+    context 'with nil styles' do
+      let(:styles) { nil }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'with an invalid styles string' do
+      let(:styles) { 'a a a' }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'with a valid styles string' do
+      let(:styles) { 'padding-left: 10px; padding-top: 20px; padding-bottom: 30px' }
+
+      it 'parses the styles string and return an hash' do
+        expected_hash = {
+          'padding-bottom' => '30px',
+          'padding-left' => '10px',
+          'padding-top' => '20px'
+        }
+
+        expect(parse_styles).to match(expected_hash)
+      end
     end
   end
 

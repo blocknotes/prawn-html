@@ -11,8 +11,26 @@ RSpec.describe PrawnHtml::DocumentRenderer do
   end
 
   describe '#assign_document_styles' do
-    it 'assignes the document styles', skip: 'TODO' do
-      # ...
+    let(:styles) do
+      {
+        'body' => 'font-family: Courier',
+        '.a_class' => 'color: #08f; font-size: 10px',
+        '#an_id' => 'font-weight: bold'
+      }
+    end
+
+    before do
+      allow(PrawnHtml::Attributes).to receive(:new).and_call_original
+    end
+
+    it 'assigns the document styles' do
+      expected_styles = {
+        'body' => { font: 'Courier' },
+        '.a_class' => { color: '0088ff', size: (10 * PrawnHtml::PX).round(4) },
+        '#an_id' => { styles: [:bold] }
+      }
+
+      expect(document_renderer.assign_document_styles(styles)).to eq(expected_styles)
     end
   end
 
