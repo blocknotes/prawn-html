@@ -12,6 +12,12 @@ module PrawnHtml
       @last_margin = 0
     end
 
+    def before_content
+      return '' if empty?
+
+      last.options[:before_content].to_s
+    end
+
     # Merges the context options
     #
     # @return [Hash] the hash of merged options

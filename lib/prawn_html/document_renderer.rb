@@ -59,7 +59,7 @@ module PrawnHtml
       return if content.match?(/\A\s*\Z/)
 
       text = content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
-      buffer << context.merge_styles.merge(text: text)
+      buffer << context.merge_styles.merge(text: ::Oga::HTML::Entities.decode(context.before_content) + text)
       context.last_text_node = true
       nil
     end

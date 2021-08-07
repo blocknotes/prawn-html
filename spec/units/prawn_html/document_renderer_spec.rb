@@ -65,8 +65,28 @@ RSpec.describe PrawnHtml::DocumentRenderer do
   end
 
   describe '#on_text_node' do
-    it 'handles text nodes', skip: 'TODO' do
-      # ...
+    subject(:on_text_node) { document_renderer.on_text_node(content) }
+
+    let(:content) { 'some content' }
+
+    before do
+      allow(Oga::HTML::Entities).to receive(:decode).and_call_original
+    end
+
+    it { is_expected.to be_nil }
+
+    it 'calls the decode method for before content' do
+      on_text_node
+      expect(Oga::HTML::Entities).to have_received(:decode)
+    end
+
+    context 'with blank content' do
+      let(:content) { " \n " }
+
+      it "doesn't call the decode method" do
+        on_text_node
+        expect(Oga::HTML::Entities).not_to have_received(:decode)
+      end
     end
   end
 
