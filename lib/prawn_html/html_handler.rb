@@ -16,13 +16,14 @@ module PrawnHtml
     #
     # @param html [String] The HTML content to process
     def process(html)
+      @processing = !html.include?('<body')
       doc = Oga.parse_html(html)
       traverse_nodes(doc.children)
     end
 
     private
 
-    attr_reader :renderer
+    attr_reader :processing, :renderer
 
     def traverse_nodes(nodes)
       nodes.each do |node|
@@ -34,6 +35,7 @@ module PrawnHtml
 
     def node_open(node)
       tag = node.is_a?(Oga::XML::Element) && init_element(node)
+      return unless processing
       return renderer.on_text_node(node.text) unless tag
 
       attributes = prepare_attributes(node)
@@ -41,7 +43,10 @@ module PrawnHtml
     end
 
     def init_element(node)
-      node.name.downcase.to_sym    end
+      node.name.downcase.to_sym.tap do |tag_name|
+        @processing = true if tag_name == :body
+      end
+    end
 
     def prepare_attributes(node)
       node.attributes.each_with_object({}) do |attr, res|
@@ -50,7 +55,8 @@ module PrawnHtml
     end
 
     def node_close(element)
-      renderer.on_tag_close(element)
+      renderer.on_tag_close(element) if @processing
+      @processing = false if element.tag == :body
     end
   end
 end
