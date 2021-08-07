@@ -30,6 +30,7 @@ module PrawnHtml
     # @param element [Tags::Base] closing element wrapper
     def on_tag_close(element)
       render_if_needed(element)
+      apply_post_styles(element&.post_styles)
       context.last_text_node = false
       context.pop
     end
@@ -67,9 +68,10 @@ module PrawnHtml
     def render
       return if buffer.empty?
 
-      options = context.merge_options
+      options = context.merge_options.slice(:align, :leading, :margin_left, :padding_left)
       output_content(buffer.dup, options)
       buffer.clear
+      context.last_margin = 0
     end
 
     alias_method :flush, :render
@@ -77,6 +79,22 @@ module PrawnHtml
     private
 
     attr_reader :buffer, :context, :pdf
+
+    def tag_classes
+      @tag_classes ||= TAG_CLASSES.each_with_object({}) do |klass, res|
+        res.merge!(klass.elements)
+      end
+    end
+
+    def setup_element(element)
+      add_space_if_needed unless render_if_needed(element)
+      apply_pre_styles(element)
+      context.push(element)
+    end
+
+    def add_space_if_needed
+      buffer << SPACE if buffer.any? && !context.last_text_node && ![NEW_LINE, SPACE].include?(buffer.last)
+    end
 
     def render_if_needed(element)
       render_needed = element&.block? && buffer.any? && buffer.last != NEW_LINE
@@ -86,23 +104,24 @@ module PrawnHtml
       true
     end
 
-    def setup_element(element)
-      add_space_if_needed unless render_if_needed(element)
-      context.push(element)
+    def apply_post_styles(styles)
+      context.last_margin = styles[:margin_bottom].to_f
+      return if !styles || styles.empty?
+
+      pdf.move_down(context.last_margin.round(4)) if context.last_margin > 0
+      pdf.move_down(styles[:padding_bottom].round(4)) if styles[:padding_bottom].to_f > 0
     end
 
-    def add_space_if_needed
-      buffer << SPACE if buffer.any? && !context.last_text_node && ![NEW_LINE, SPACE].include?(buffer.last)
+    def apply_pre_styles(element)
+      pdf.move_down(element.options[:padding_top].round(4)) if element.options.include?(:padding_top)
+      return if !element.pre_styles || element.pre_styles.empty?
+
+      margin = (element.pre_styles[:margin_top] - context.last_margin).round(4)
+      pdf.move_down(margin) if margin > 0
     end
 
     def output_content(buffer, options)
       pdf.formatted_text(buffer, options)
-    end
-
-    def tag_classes
-      @tag_classes ||= TAG_CLASSES.each_with_object({}) do |klass, res|
-        res.merge!(klass.elements)
-      end
     end
   end
 end

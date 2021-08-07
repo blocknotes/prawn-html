@@ -19,6 +19,18 @@ module PrawnHtml
         {}
       end
 
+      def options
+        attrs.options
+      end
+
+      def post_styles
+        attrs.post_styles
+      end
+
+      def pre_styles
+        attrs.pre_styles
+      end
+
       class << self
         def elements
           self::ELEMENTS.each_with_object({}) { |el, list| list[el] = self }
