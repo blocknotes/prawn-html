@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::DocumentRenderer do
+  describe '#assign_document_styles' do
+    it 'assignes the document styles', skip: 'TODO' do
+      # ...
+    end
+  end
+
   describe '#on_tag_close' do
     it 'handles tag closing', skip: 'TODO' do
       # ...

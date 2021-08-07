@@ -6,7 +6,15 @@ module PrawnHtml
     #
     # @param pdf [Prawn::Document] target Prawn PDF document
     def initialize(pdf)
+      @doc_styles = {}
       @pdf = pdf
+    end
+
+    # Assigns the document styles
+    #
+    # @param styles [Hash] styles hash with CSS selectors as keys and rules as values
+    def assign_document_styles(styles)
+      @doc_styles = styles
     end
 
     # On tag close callback

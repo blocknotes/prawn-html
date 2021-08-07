@@ -45,7 +45,12 @@ module PrawnHtml
     def init_element(node)
       node.name.downcase.to_sym.tap do |tag_name|
         @processing = true if tag_name == :body
+        renderer.assign_document_styles(extract_styles(node.text)) if tag_name == :style && !@processing
       end
+    end
+
+    def extract_styles(text)
+      text.scan(/\s*([^{\s]+)\s*{\s*([^}]*?)\s*}/m).to_h
     end
 
     def prepare_attributes(node)
