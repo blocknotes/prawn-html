@@ -6,6 +6,7 @@ module PrawnHtml
     #
     # @param pdf [Prawn::Document] target Prawn PDF document
     def initialize(pdf)
+      @context = Context.new
       @doc_styles = {}
       @pdf = pdf
     end
@@ -23,7 +24,7 @@ module PrawnHtml
     #
     # @param element
     def on_tag_close(element)
-      # TODO
+      context.pop
     end
 
     # On tag open callback
@@ -31,7 +32,7 @@ module PrawnHtml
     # @param tag [String] the tag name of the opening element
     # @param attributes [Hash] an hash of the element attributes
     def on_tag_open(tag, attributes)
-      # TODO
+      context.push(tag)
     end
 
     # On text node callback
@@ -40,5 +41,9 @@ module PrawnHtml
     def on_text_node(content)
       # TODO
     end
+
+    private
+
+    attr_reader :context
   end
 end
