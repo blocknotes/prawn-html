@@ -3,7 +3,7 @@
 RSpec.describe PrawnHtml::HtmlHandler do
   subject(:html_handler) { described_class.new(pdf_doc) }
 
-  let(:pdf_doc) { instance_double(Prawn::Document) }
+  let(:pdf_doc) { instance_double(Prawn::Document, formatted_text: nil) }
 
   describe '#initialize' do
     before do

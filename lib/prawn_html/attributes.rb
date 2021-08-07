@@ -13,5 +13,16 @@ module PrawnHtml
       @hash = ::OpenStruct.new(attributes)
       @styles = {} # result styles
     end
+
+    class << self
+      # Merges attributes
+      #
+      # @param hash [Hash] target attributes hash
+      # @param key [Symbol] key
+      # @param value
+      def merge_attr!(hash, key, value)
+        # TODO
+      end
+    end
   end
 end

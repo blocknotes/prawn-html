@@ -55,15 +55,20 @@ module PrawnHtml
       nil
     end
 
+    # Render the buffer content to the PDF document
     def render
-      # TODO
+      return if buffer.empty?
+
+      options = context.merge_options
+      output_content(buffer.dup, options)
+      buffer.clear
     end
 
     alias_method :flush, :render
 
     private
 
-    attr_reader :buffer, :context
+    attr_reader :buffer, :context, :pdf
 
     def render_if_needed(element)
       render_needed = buffer.any? && buffer.last != NEW_LINE
@@ -80,6 +85,10 @@ module PrawnHtml
 
     def add_space_if_needed
       buffer << SPACE if buffer.any? && !context.last_text_node && ![NEW_LINE, SPACE].include?(buffer.last)
+    end
+
+    def output_content(buffer, options)
+      pdf.formatted_text(buffer, options)
     end
   end
 end
