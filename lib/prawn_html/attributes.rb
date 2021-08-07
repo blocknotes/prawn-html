@@ -29,6 +29,8 @@ module PrawnHtml
       'text-decoration' => { key: :styles, set: :append_symbol, dest: :styles }
     }.freeze
 
+    STYLES_MERGE = %i[margin_left padding_left].freeze
+
     # Init the Attributes
     #
     # @param attributes [Hash] hash of attributes to parse
@@ -111,8 +113,14 @@ module PrawnHtml
       # @param hash [Hash] target attributes hash
       # @param key [Symbol] key
       # @param value
+      #
+      # @return [Hash] the updated hash of attributes
       def merge_attr!(hash, key, value)
-        # TODO
+        return unless key
+        return (hash[key] = value) unless Attributes::STYLES_MERGE.include?(key)
+
+        hash[key] ||= 0
+        hash[key] += value
       end
 
       # Parses a string of styles

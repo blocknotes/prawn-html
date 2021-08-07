@@ -59,7 +59,7 @@ module PrawnHtml
       return if content.match?(/\A\s*\Z/)
 
       text = content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
-      buffer << { text: text }
+      buffer << context.merge_styles.merge(text: text)
       context.last_text_node = true
       nil
     end
@@ -78,7 +78,7 @@ module PrawnHtml
 
     private
 
-    attr_reader :buffer, :context, :pdf
+    attr_reader :buffer, :context, :doc_styles, :pdf
 
     def tag_classes
       @tag_classes ||= TAG_CLASSES.each_with_object({}) do |klass, res|
@@ -89,6 +89,7 @@ module PrawnHtml
     def setup_element(element)
       add_space_if_needed unless render_if_needed(element)
       apply_pre_styles(element)
+      element.apply_doc_styles(doc_styles)
       context.push(element)
     end
 
@@ -121,7 +122,12 @@ module PrawnHtml
     end
 
     def output_content(buffer, options)
-      pdf.formatted_text(buffer, options)
+      buffer.each { |item| item[:callback] = item[:callback].new(pdf, item) if item[:callback] }
+      if (left = options.delete(:margin_left).to_f + options.delete(:padding_left).to_f) > 0
+        pdf.indent(left) { pdf.formatted_text(buffer, options) }
+      else
+        pdf.formatted_text(buffer, options)
+      end
     end
   end
 end

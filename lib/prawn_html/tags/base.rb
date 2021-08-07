@@ -9,6 +9,19 @@ module PrawnHtml
         @attrs = Attributes.new(attributes)
         @styles = attrs.styles
         @tag = tag
+        attrs.process_styles(extra_attrs) unless extra_attrs.empty?
+      end
+
+      def apply_doc_styles(document_styles)
+        selectors = [
+          tag.to_s,
+          attrs.hash['class'] ? ".#{attrs.hash['class']}" : nil,
+          attrs.hash['id'] ? "##{attrs.hash['id']}" : nil
+        ].compact!
+        merged_styles = document_styles.each_with_object({}) do |(sel, attributes), res|
+          res.merge!(attributes) if selectors.include?(sel)
+        end
+        styles.merge!(merged_styles)
       end
 
       def block?

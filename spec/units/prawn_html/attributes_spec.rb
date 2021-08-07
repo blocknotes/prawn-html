@@ -157,6 +157,46 @@ RSpec.describe PrawnHtml::Attributes do
     end
   end
 
+  describe '.merge_attr!' do
+    context 'with an empty key' do
+      let(:key) { nil }
+      let(:value) { '123' }
+
+      it "doesn't update the hash" do
+        hash = { some_key: 'some value' }
+        described_class.merge_attr!(hash, key, value)
+
+        expect(hash).to eq(some_key: 'some value')
+      end
+    end
+
+    context 'with a mergeable key (ex. :margin_left)' do
+      let(:key) { :margin_left }
+      let(:value) { 10 }
+
+      it 'updates the hash increasing the target attribute', :aggregate_failures do
+        hash = { some_key: 'some value' }
+        described_class.merge_attr!(hash, key, value)
+        expect(hash).to eq(margin_left: value, some_key: 'some value')
+
+        described_class.merge_attr!(hash, key, 5)
+        expect(hash).to eq(margin_left: 15, some_key: 'some value')
+      end
+    end
+
+    context 'with a non-mergeable key (ex. :another_key)' do
+      let(:key) { :another_key }
+      let(:value) { 10 }
+
+      it 'replaces the target attribute value in the hash' do
+        hash = { another_key: 5, some_key: 'some value' }
+        described_class.merge_attr!(hash, key, value)
+
+        expect(hash).to eq(another_key: 10, some_key: 'some value')
+      end
+    end
+  end
+
   describe '.parse_styles' do
     subject(:parse_styles) { described_class.parse_styles(styles) }
 
