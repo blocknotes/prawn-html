@@ -4,7 +4,7 @@ module PrawnHtml
   class DocumentRenderer
     NEW_LINE = { text: "\n" }.freeze
     SPACE = { text: ' ' }.freeze
-    TAG_CLASSES = [Tags::Div].freeze
+    TAG_CLASSES = [Tags::A, Tags::B, Tags::Body, Tags::Br, Tags::Div, Tags::H, Tags::Hr, Tags::I, Tags::Li, Tags::P, Tags::Small, Tags::Span, Tags::U, Tags::Ul].freeze
 
     # Init the DocumentRenderer
     #
