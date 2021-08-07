@@ -19,6 +19,7 @@ module PrawnHtml
       @processing = !html.include?('<body')
       doc = Oga.parse_html(html)
       traverse_nodes(doc.children)
+      renderer.flush
     end
 
     private

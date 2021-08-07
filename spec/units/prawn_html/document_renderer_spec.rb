@@ -24,4 +24,8 @@ RSpec.describe PrawnHtml::DocumentRenderer do
       # ...
     end
   end
+
+  describe 'alias method: flush' do
+    it { is_expected.to respond_to(:flush) }
+  end
 end
