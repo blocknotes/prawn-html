@@ -4,6 +4,7 @@ module PrawnHtml
   class DocumentRenderer
     NEW_LINE = { text: "\n" }.freeze
     SPACE = { text: ' ' }.freeze
+    TAG_CLASSES = [Tags::Div].freeze
 
     # Init the DocumentRenderer
     #
@@ -26,7 +27,7 @@ module PrawnHtml
 
     # On tag close callback
     #
-    # @param element
+    # @param element [Tags::Base] closing element wrapper
     def on_tag_close(element)
       render_if_needed(element)
       context.last_text_node = false
@@ -37,8 +38,15 @@ module PrawnHtml
     #
     # @param tag [String] the tag name of the opening element
     # @param attributes [Hash] an hash of the element attributes
+    #
+    # @return [Tags::Base] the opening element wrapper
     def on_tag_open(tag, attributes)
-      setup_element(tag)
+      tag_class = tag_classes[tag]
+      return unless tag_class
+
+      tag_class.new(tag, attributes).tap do |element|
+        setup_element(element)
+      end
     end
 
     # On text node callback
@@ -71,7 +79,7 @@ module PrawnHtml
     attr_reader :buffer, :context, :pdf
 
     def render_if_needed(element)
-      render_needed = buffer.any? && buffer.last != NEW_LINE
+      render_needed = element&.block? && buffer.any? && buffer.last != NEW_LINE
       return false unless render_needed
 
       render
@@ -89,6 +97,12 @@ module PrawnHtml
 
     def output_content(buffer, options)
       pdf.formatted_text(buffer, options)
+    end
+
+    def tag_classes
+      @tag_classes ||= TAG_CLASSES.each_with_object({}) do |klass, res|
+        res.merge!(klass.elements)
+      end
     end
   end
 end
