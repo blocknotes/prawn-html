@@ -1,0 +1,20 @@
+---
+inherit_from:
+  - https://relaxed.ruby.style/rubocop.yml
+
+require:
+  - rubocop-packaging
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.5
+  Exclude:
+    - _misc/*
+    - bin/*
+    - vendor/**/*
+  NewCops: enable
+
+Naming/FileName:
+  Exclude:
+    - lib/prawn-html.rb
