@@ -91,6 +91,7 @@ module PrawnHtml
       apply_pre_styles(element)
       element.apply_doc_styles(doc_styles)
       context.push(element)
+      element.custom_render(pdf, context) if element.respond_to?(:custom_render)
     end
 
     def add_space_if_needed
