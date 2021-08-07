@@ -1,0 +1,8 @@
+---
+runner:
+  fasterer:
+    cmd: bin/fasterer
+    level: info
+  rubocop:
+    cmd: bin/rubocop
+    level: info

@@ -5,6 +5,10 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
+  gem 'pdf-inspector', require: 'pdf/inspector'
+  gem 'rspec'
+  gem 'simplecov', require: false
+
   # Linters
   gem 'fasterer'
   gem 'rubocop'
