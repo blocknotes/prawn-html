@@ -5,6 +5,17 @@ RSpec.describe PrawnHtml::HtmlHandler do
 
   let(:pdf_doc) { instance_double(Prawn::Document) }
 
+  describe '#initialize' do
+    before do
+      allow(PrawnHtml::DocumentRenderer).to receive(:new).and_call_original
+    end
+
+    it 'prepares the document renderer' do
+      html_handler
+      expect(PrawnHtml::DocumentRenderer).to have_received(:new).with(pdf_doc)
+    end
+  end
+
   describe '#process' do
     subject(:process) { html_handler.process('some html') }
 
