@@ -3,6 +3,7 @@
 module PrawnHtml
   class DocumentRenderer
     NEW_LINE = { text: "\n" }.freeze
+    SPACE = { text: ' ' }.freeze
 
     # Init the DocumentRenderer
     #
@@ -28,6 +29,7 @@ module PrawnHtml
     # @param element
     def on_tag_close(element)
       render_if_needed(element)
+      context.last_text_node = false
       context.pop
     end
 
@@ -49,6 +51,7 @@ module PrawnHtml
 
       text = content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
       buffer << { text: text }
+      context.last_text_node = true
       nil
     end
 
@@ -70,13 +73,13 @@ module PrawnHtml
       true
     end
 
-    def render
-      # TODO
+    def setup_element(element)
+      add_space_if_needed unless render_if_needed(element)
+      context.push(element)
     end
 
-    def setup_element(element)
-      render_if_needed(element)
-      context.push(element)
+    def add_space_if_needed
+      buffer << SPACE if buffer.any? && !context.last_text_node && ![NEW_LINE, SPACE].include?(buffer.last)
     end
   end
 end
