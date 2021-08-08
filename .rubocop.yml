@@ -18,3 +18,11 @@ AllCops:
 Naming/FileName:
   Exclude:
     - lib/prawn-html.rb
+
+RSpec/ExampleLength:
+  # default: 5
+  Max: 10
+
+RSpec/MultipleMemoizedHelpers:
+  # default: 5
+  Max: 6
