@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Styles</title>
+  <style>
+    body { color: #08f }
+    p { color: #abbccc; font-size: 8px }
+    .green {
+      color: #0f0;
+      font-family: Courier;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    #test-1 { font-weight: bold }
+  </style>
+</head>
+<body style="font-family: 'Times-Roman';">
+  <div class="title">CSS rules</div>
+  <div>a div</div>
+  <div style="color: #888">
+    <div id="test-1">div with id</div>
+    <div class="green">div with class</div>
+  </div>
+  <div>another div</div>
+  <p>a p</p>
+
+  <div class="title">Padding and margin</div>
+  <div style="padding-left: 20px; padding-top: 20px; padding-bottom: 20px">
+    padding top, bottom and left (outer)
+    <div style="padding-left: 20px; padding-top: 20px; padding-bottom: 20px">
+      padding top, bottom and left (inner)
+    </div>
+  </div>
+
+  <div>Some content</div>
+  <div style="margin-left: 20px; margin-top: 20px; margin-bottom: 20px">
+    margin top, bottom and left (outer)
+    <div style="margin-left: 20px; margin-top: 20px; margin-bottom: 20px">
+      margin top, bottom and left (inner)
+    </div>
+  </div>
+  <div>Some content</div>
+</body>
+</html>
