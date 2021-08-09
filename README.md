@@ -1,4 +1,6 @@
 # Prawn HTML
+[![linters](https://github.com/blocknotes/prawn-html/actions/workflows/linters.yml/badge.svg)](https://github.com/blocknotes/prawn-html/actions/workflows/linters.yml)
+[![specs](https://github.com/blocknotes/prawn-html/actions/workflows/specs.yml/badge.svg)](https://github.com/blocknotes/prawn-html/actions/workflows/specs.yml)
 
 HTML to PDF renderer using [Prawn PDF](https://github.com/prawnpdf/prawn).
 
