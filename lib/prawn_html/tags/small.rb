@@ -9,7 +9,7 @@ module PrawnHtml
 
       def update_styles(styles)
         size = (styles[:size] || Context::DEF_FONT_SIZE) * 0.85
-        styles.merge!(size: size)
+        styles[:size] = size
       end
     end
   end
