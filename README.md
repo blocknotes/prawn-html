@@ -1,19 +1,20 @@
 # Prawn HTML
+[![gem version](https://badge.fury.io/rb/prawn-html.svg)](https://badge.fury.io/rb/prawn-html)
 [![linters](https://github.com/blocknotes/prawn-html/actions/workflows/linters.yml/badge.svg)](https://github.com/blocknotes/prawn-html/actions/workflows/linters.yml)
 [![specs](https://github.com/blocknotes/prawn-html/actions/workflows/specs.yml/badge.svg)](https://github.com/blocknotes/prawn-html/actions/workflows/specs.yml)
 
 HTML to PDF renderer using [Prawn PDF](https://github.com/prawnpdf/prawn).
 
-> Still in beta. [prawn-styled-text](https://github.com/blocknotes/prawn-styled-text) rewritten from scratch
-
 **Notice**: render HTML documents properly is not an easy task, this gem support only some HTML tags and a small set of CSS attributes. If you need more rendering accuracy take a look at other projects like WickedPDF.
+
+> [prawn-styled-text](https://github.com/blocknotes/prawn-styled-text) rewritten from scratch.
 
 Please :star: if you like it.
 
 ## Install
 
-- Add to your Gemfile: `gem 'prawn-html', git: 'https://github.com/blocknotes/prawn-html.git'` (and execute `bundle`)
-- Use the class `HtmlHandler` on a `Prawn::Document` instance
+- Add to your Gemfile: `gem 'prawn-html'` (and execute `bundle`)
+- Use the class `HtmlHandler` on a `Prawn::Document` instance (see the examples)
 
 ## Examples
 
@@ -23,6 +24,8 @@ pdf = Prawn::Document.new(page_size: 'A4')
 PrawnHtml::HtmlHandler.new(pdf).process('<h1 style="text-align: center">Just a test</h1>')
 pdf.render_file('test.pdf')
 ```
+
+To check some examples with the PDF output see [examples](examples/) folder.
 
 ## Supported tags & attributes
 
