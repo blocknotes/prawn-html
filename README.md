@@ -21,7 +21,7 @@ Please :star: if you like it.
 ```rb
 require 'prawn-html'
 pdf = Prawn::Document.new(page_size: 'A4')
-PrawnHtml::HtmlHandler.new(pdf).process('<h1 style="text-align: center">Just a test</h1>')
+PrawnHtml.append_html(pdf, '<h1 style="text-align: center">Just a test</h1>')
 pdf.render_file('test.pdf')
 ```
 
