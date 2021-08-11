@@ -13,5 +13,12 @@ require 'prawn_html/document_renderer'
 require 'prawn_html/html_handler'
 
 module PrawnHtml
-  PX = 0.66 # conversion costant for pixel sixes
+  PX = 0.66 # conversion constant for pixel sixes
+
+  def append_html(pdf, html)
+    handler = PrawnHtml::HtmlHandler.new(pdf)
+    handler.process(html)
+  end
+
+  module_function :append_html
 end
