@@ -32,7 +32,7 @@ module TestUtils
   def styled_text_document(html)
     prawn_document.tap do |pdf|
       yield(pdf) if block_given?
-      ::PrawnHtml::HtmlHandler.new(pdf).process(html)
+      PrawnHtml.append_html(pdf, html)
     end
   end
 end
