@@ -21,7 +21,7 @@ module PrawnHtml
         merged_styles = document_styles.each_with_object({}) do |(sel, attributes), res|
           res.merge!(attributes) if selectors.include?(sel)
         end
-        styles.merge!(merged_styles)
+        @styles = merged_styles.merge(styles)
       end
 
       def block?
