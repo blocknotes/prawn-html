@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'oga'
 require 'prawn'
 
 require 'prawn_html/tag'

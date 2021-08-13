@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'oga'
-
 module PrawnHtml
   class HtmlHandler
     # Init the HtmlHandler
