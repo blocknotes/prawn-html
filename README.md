@@ -1,5 +1,5 @@
 # Prawn HTML
-[![gem version](https://badge.fury.io/rb/prawn-html.svg)](https://badge.fury.io/rb/prawn-html)
+[![gem version](https://badge.fury.io/rb/prawn-html.svg)](https://rubygems.org/gems/prawn-html)
 [![linters](https://github.com/blocknotes/prawn-html/actions/workflows/linters.yml/badge.svg)](https://github.com/blocknotes/prawn-html/actions/workflows/linters.yml)
 [![specs](https://github.com/blocknotes/prawn-html/actions/workflows/specs.yml/badge.svg)](https://github.com/blocknotes/prawn-html/actions/workflows/specs.yml)
 
