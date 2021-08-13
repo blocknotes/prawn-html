@@ -8,9 +8,7 @@ module PrawnHtml
       ELEMENTS = [:a].freeze
 
       def styles
-        super.merge(
-          link: attrs.hash.href
-        )
+        attrs.hash.href ? super.merge(link: attrs.hash.href) : super
       end
     end
   end
