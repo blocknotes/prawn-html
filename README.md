@@ -5,16 +5,21 @@
 
 HTML to PDF renderer using [Prawn PDF](https://github.com/prawnpdf/prawn).
 
+Features:
+- support a [good set](#supported-tags--attributes) of HTML tags and CSS properties;
+- handle [document styles](#document-styles);
+- no extra settings: it just parses an input HTML and output to a Prawn PDF document.
+
 **Notice**: render HTML documents properly is not an easy task, this gem support only some HTML tags and a small set of CSS attributes. If you need more rendering accuracy take a look at other projects like WickedPDF.
 
-> [prawn-styled-text](https://github.com/blocknotes/prawn-styled-text) rewritten from scratch.
+> [prawn-styled-text](https://github.com/blocknotes/prawn-styled-text) rewritten from scratch, finally!
 
 Please :star: if you like it.
 
 ## Install
 
 - Add to your Gemfile: `gem 'prawn-html'` (and execute `bundle`)
-- Use the class `HtmlHandler` on a `Prawn::Document` instance (see the examples)
+- Just call `PrawnHtml.append_html` on a `Prawn::Document` instance (see the examples)
 
 ## Examples
 
@@ -71,6 +76,34 @@ CSS attributes (dimensional units are ignored and considered in pixel):
 - **text-align**: `left` | `center` | `right` | `justify`, ex. `style="text-align: center"`
 - **text-decoration**: `underline`, ex. `style="text-decoration: underline"`
 - **width**: for *img* tag, support also percentage, ex. `<img src="image.jpg" style="width: 50%; height: 200px"/>`
+
+## Document styles
+
+[Experimental feature] You can define document CSS rules inside an _head_ tag, but with a limited support for now.
+Only single CSS selectors and basic ones are supported. Example:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>A test</title>
+  <style>
+    body { color: #abbccc }
+    .green {
+      color: #0f0;
+      font-family: Courier;
+    }
+    #test-1 { font-weight: bold }
+  </style>
+</head>
+<body>
+  <div class="green">
+    Div content
+    <span id="test-1">Span content</span>
+  </div>
+</body>
+</html>
+```
 
 ## Do you like it? Star it!
 
