@@ -16,6 +16,16 @@ RSpec.describe PrawnHtml::Attributes do
     end
   end
 
+  describe '#data' do
+    subject(:data) { attributes.data }
+
+    context 'with some data attributes (data-dash: 5 and data-something-else: "some value")' do
+      let(:attributes_hash) { { 'data-dash': '5', 'data-something-else': '"some value"' } }
+
+      it { is_expected.to match('dash' => '5', 'something-else' => '"some value"') }
+    end
+  end
+
   describe '#process_styles' do
     subject(:process_styles) { attributes.process_styles(hash_styles) }
 

@@ -44,6 +44,16 @@ module PrawnHtml
       process_styles(parsed_styles)
     end
 
+    # Processes the data attributes
+    #
+    # @return [Hash] hash of data attributes with 'data-' prefix removed and stripped values
+    def data
+      hash.to_h.each_with_object({}) do |(key, value), res|
+        data_key = key.match /\Adata-(.+)/
+        res[data_key[1]] = value.strip if data_key
+      end
+    end
+
     # Processes the styles attributes
     #
     # @param attributes [Hash] hash of styles attributes
