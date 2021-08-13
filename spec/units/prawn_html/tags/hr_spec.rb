@@ -30,5 +30,31 @@ RSpec.describe PrawnHtml::Tags::Hr do
       custom_render
       expect(pdf).to have_received(:stroke_horizontal_rule)
     end
+
+    context 'with a dash number set' do
+      subject(:hr) { described_class.new(:hr, 'data-dash' => '5') }
+
+      let(:pdf) { instance_double(Prawn::Document, dash: true, stroke_horizontal_rule: true, undash: true) }
+
+      it 'calls the dash methods around stroke', :aggregate_failures do
+        custom_render
+        expect(pdf).to have_received(:dash).with(5).ordered
+        expect(pdf).to have_received(:stroke_horizontal_rule).ordered
+        expect(pdf).to have_received(:undash).ordered
+      end
+    end
+
+    context 'with a dash array set' do
+      subject(:hr) { described_class.new(:hr, 'data-dash' => '1, 2, 3') }
+
+      let(:pdf) { instance_double(Prawn::Document, dash: true, stroke_horizontal_rule: true, undash: true) }
+
+      it 'calls the dash methods around stroke', :aggregate_failures do
+        custom_render
+        expect(pdf).to have_received(:dash).with([1, 2, 3]).ordered
+        expect(pdf).to have_received(:stroke_horizontal_rule).ordered
+        expect(pdf).to have_received(:undash).ordered
+      end
+    end
   end
 end
