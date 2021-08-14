@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module PrawnHtml
-  module Tags
-    class Base
+  class Tag
       attr_reader :attrs, :styles, :tag
 
       def initialize(tag, attributes = {})
@@ -49,6 +48,5 @@ module PrawnHtml
           self::ELEMENTS.each_with_object({}) { |el, list| list[el] = self }
         end
       end
-    end
   end
 end
