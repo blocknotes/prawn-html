@@ -93,11 +93,19 @@ RSpec.describe PrawnHtml::Tag do
     end
   end
 
-  describe '.elements' do
-    subject(:elements) { described_class.elements }
+  describe '.class_for' do
+    subject(:class_for) { described_class.class_for(tag_name) }
 
-    it 'raises a NameError' do
-      expect { elements }.to raise_exception(NameError, 'uninitialized constant PrawnHtml::Tag::ELEMENTS')
+    context 'with an unknown tag name' do
+      let(:tag_name) { :some_tag }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with an h6 tag' do
+      let(:tag_name) { :h6 }
+
+      it { is_expected.to eq(PrawnHtml::Tags::H) }
     end
   end
 end
