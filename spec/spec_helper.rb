@@ -11,6 +11,8 @@ require 'pry'
 
 Dir["#{__dir__}/support/**/*.rb"].sort.each { |f| require f }
 
+Prawn::Fonts::AFM.hide_m17n_warning = true
+
 RSpec.configure do |config|
   config.color = true
   config.tty = true
