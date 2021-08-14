@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-
 module PrawnHtml
   module Tags
-    class Body < Base
+    class Body < Tag
       ELEMENTS = [:body].freeze
     end
   end

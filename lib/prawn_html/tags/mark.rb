@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-
 module PrawnHtml
   module Tags
-    class Mark < Base
+    class Mark < Tag
       ELEMENTS = [:mark].freeze
 
       def styles

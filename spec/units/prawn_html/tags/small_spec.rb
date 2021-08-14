@@ -3,7 +3,7 @@
 RSpec.describe PrawnHtml::Tags::Small do
   subject(:small) { described_class.new(:small, 'style' => 'color: ffbb11') }
 
-  it { expect(described_class).to be < PrawnHtml::Tags::Base }
+  it { expect(described_class).to be < PrawnHtml::Tag }
 
   describe '#update_styles' do
     subject(:update_styles) { small.update_styles(styles) }

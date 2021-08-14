@@ -2,7 +2,7 @@
 
 module PrawnHtml
   module Tags
-    class U < Base
+    class U < Tag
       ELEMENTS = [:ins, :u].freeze
 
       def extra_attrs

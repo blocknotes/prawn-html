@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-
 module PrawnHtml
   module Tags
-    class P < Base
+    class P < Tag
       ELEMENTS = [:p].freeze
 
       MARGIN_BOTTOM = 6

@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-
 module PrawnHtml
   module Tags
-    class Br < Base
+    class Br < Tag
       ELEMENTS = [:br].freeze
 
       BR_SPACING = 12

@@ -3,7 +3,7 @@
 RSpec.describe PrawnHtml::Tags::Li do
   subject(:li) { described_class.new(:li, 'style' => 'color: ffbb11') }
 
-  it { expect(described_class).to be < PrawnHtml::Tags::Base }
+  it { expect(described_class).to be < PrawnHtml::Tag }
 
   describe '#block?' do
     subject(:block?) { li.block? }

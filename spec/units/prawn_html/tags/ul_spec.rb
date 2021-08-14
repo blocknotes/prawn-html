@@ -3,7 +3,7 @@
 RSpec.describe PrawnHtml::Tags::Ul do
   subject(:ul) { described_class.new(:ul) }
 
-  it { expect(described_class).to be < PrawnHtml::Tags::Base }
+  it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
     it 'returns the expected extra_attrs for ul tag' do
