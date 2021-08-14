@@ -54,14 +54,24 @@ RSpec.describe PrawnHtml::Tag do
   describe '#options' do
     subject(:options) { tag.options }
 
-    let(:attributes) { instance_double(PrawnHtml::Attributes, styles: {}, options: :some_options) }
+    let(:attributes) { instance_double(PrawnHtml::Attributes, data: {}, options: { opt1: 123 }, styles: {}) }
 
     before do
       allow(PrawnHtml::Attributes).to receive(:new).and_return(attributes)
     end
 
     it 'delegates to the tag attributes' do
-      expect(options).to eq(:some_options)
+      expect(options).to eq(opt1: 123)
+    end
+
+    context 'with mode data attribute' do
+      let(:attributes) do
+        instance_double(PrawnHtml::Attributes, data: { 'mode' => 'some_mode' }, options: { opt1: 123 }, styles: {})
+      end
+
+      it 'merges the options' do
+        expect(options).to eq(mode: :some_mode, opt1: 123)
+      end
     end
   end
 

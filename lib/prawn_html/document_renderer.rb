@@ -67,7 +67,7 @@ module PrawnHtml
     def render
       return if buffer.empty?
 
-      options = context.merge_options.slice(:align, :leading, :margin_left, :padding_left)
+      options = context.merge_options.slice(:align, :leading, :margin_left, :mode, :padding_left)
       output_content(buffer.dup, options)
       buffer.clear
       context.last_margin = 0
