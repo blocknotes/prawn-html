@@ -3,7 +3,7 @@
 RSpec.describe PrawnHtml::Tags::B do
   subject(:b) { described_class.new(:b, 'style' => 'color: ffbb11') }
 
-  it { expect(described_class).to be < PrawnHtml::Tags::Base }
+  it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
     it 'returns the expected extra_attrs for b tag' do

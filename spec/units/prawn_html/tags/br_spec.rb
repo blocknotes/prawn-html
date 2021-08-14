@@ -3,7 +3,7 @@
 RSpec.describe PrawnHtml::Tags::Br do
   subject(:br) { described_class.new(:br) }
 
-  it { expect(described_class).to be < PrawnHtml::Tags::Base }
+  it { expect(described_class).to be < PrawnHtml::Tag }
 
   describe '#block?' do
     subject(:block?) { br.block? }

@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-
 module PrawnHtml
   module Tags
-    class I < Base
+    class I < Tag
       ELEMENTS = [:i, :em].freeze
 
       def extra_attrs

@@ -4,7 +4,6 @@ module PrawnHtml
   class DocumentRenderer
     NEW_LINE = { text: "\n" }.freeze
     SPACE = { text: ' ' }.freeze
-    TAG_CLASSES = [Tags::A, Tags::B, Tags::Body, Tags::Br, Tags::Del, Tags::Div, Tags::H, Tags::Hr, Tags::I, Tags::Img, Tags::Li, Tags::Mark, Tags::P, Tags::Small, Tags::Span, Tags::U, Tags::Ul].freeze
 
     # Init the DocumentRenderer
     #
@@ -27,7 +26,7 @@ module PrawnHtml
 
     # On tag close callback
     #
-    # @param element [Tags::Base] closing element wrapper
+    # @param element [Tag] closing element wrapper
     def on_tag_close(element)
       render_if_needed(element)
       apply_post_styles(element&.post_styles)
@@ -37,15 +36,15 @@ module PrawnHtml
 
     # On tag open callback
     #
-    # @param tag [String] the tag name of the opening element
+    # @param tag_name [String] the tag name of the opening element
     # @param attributes [Hash] an hash of the element attributes
     #
-    # @return [Tags::Base] the opening element wrapper
-    def on_tag_open(tag, attributes)
-      tag_class = tag_classes[tag]
+    # @return [Tag] the opening element wrapper
+    def on_tag_open(tag_name, attributes)
+      tag_class = Tag.class_for(tag_name)
       return unless tag_class
 
-      tag_class.new(tag, attributes).tap do |element|
+      tag_class.new(tag_name, attributes).tap do |element|
         setup_element(element)
       end
     end
@@ -79,12 +78,6 @@ module PrawnHtml
     private
 
     attr_reader :buffer, :context, :doc_styles, :pdf
-
-    def tag_classes
-      @tag_classes ||= TAG_CLASSES.each_with_object({}) do |klass, res|
-        res.merge!(klass.elements)
-      end
-    end
 
     def setup_element(element)
       add_space_if_needed unless render_if_needed(element)

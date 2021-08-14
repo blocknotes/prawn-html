@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-
 module PrawnHtml
   module Tags
-    class Div < Base
+    class Div < Tag
       ELEMENTS = [:div].freeze
 
       def block?

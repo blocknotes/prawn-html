@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe PrawnHtml::Tags::Base do
-  subject(:base) { described_class.new(:some_tag, 'style' => 'color: 0088ff') }
+RSpec.describe PrawnHtml::Tag do
+  subject(:tag) { described_class.new(:some_tag, 'style' => 'color: 0088ff') }
 
   describe '#initialize' do
     before do
@@ -9,24 +9,24 @@ RSpec.describe PrawnHtml::Tags::Base do
     end
 
     it 'instantiates a new Attributes object', :aggregate_failures do
-      base
+      tag
       expect(PrawnHtml::Attributes).to have_received(:new).with('style' => 'color: 0088ff')
-      expect(base.attrs).to be_kind_of(PrawnHtml::Attributes)
+      expect(tag.attrs).to be_kind_of(PrawnHtml::Attributes)
     end
 
     it 'sets the tag' do
-      expect(base.tag).to eq(:some_tag)
+      expect(tag.tag).to eq(:some_tag)
     end
   end
 
   describe '#apply_doc_styles' do
-    subject(:apply_doc_styles) { base.apply_doc_styles(document_styles) }
+    subject(:apply_doc_styles) { tag.apply_doc_styles(document_styles) }
 
     let(:document_styles) { { 'some_tag' => { 'text-align': 'center' } } }
 
     it 'merges the document styles' do
       apply_doc_styles
-      expect(base.styles).to match(color: '0088ff', 'text-align': 'center')
+      expect(tag.styles).to match(color: '0088ff', 'text-align': 'center')
     end
 
     context 'with a style already present in the tag' do
@@ -34,25 +34,25 @@ RSpec.describe PrawnHtml::Tags::Base do
 
       it 'merges the document styles' do
         apply_doc_styles
-        expect(base.styles).to match(color: '0088ff', 'font-weight': 'bold')
+        expect(tag.styles).to match(color: '0088ff', 'font-weight': 'bold')
       end
     end
   end
 
   describe '#block?' do
-    subject(:block?) { base.block? }
+    subject(:block?) { tag.block? }
 
     it { is_expected.to be_falsey }
   end
 
   describe '#extra_attrs' do
-    subject(:extra_attrs) { base.extra_attrs }
+    subject(:extra_attrs) { tag.extra_attrs }
 
     it { is_expected.to eq({}) }
   end
 
   describe '#options' do
-    subject(:options) { base.options }
+    subject(:options) { tag.options }
 
     let(:attributes) { instance_double(PrawnHtml::Attributes, styles: {}, options: :some_options) }
 
@@ -66,7 +66,7 @@ RSpec.describe PrawnHtml::Tags::Base do
   end
 
   describe '#post_styles' do
-    subject(:post_styles) { base.post_styles }
+    subject(:post_styles) { tag.post_styles }
 
     let(:attributes) { instance_double(PrawnHtml::Attributes, styles: {}, post_styles: :some_post_styles) }
 
@@ -80,7 +80,7 @@ RSpec.describe PrawnHtml::Tags::Base do
   end
 
   describe '#pre_styles' do
-    subject(:pre_styles) { base.pre_styles }
+    subject(:pre_styles) { tag.pre_styles }
 
     let(:attributes) { instance_double(PrawnHtml::Attributes, styles: {}, pre_styles: :some_pre_styles) }
 
@@ -93,11 +93,19 @@ RSpec.describe PrawnHtml::Tags::Base do
     end
   end
 
-  describe '.elements' do
-    subject(:elements) { described_class.elements }
+  describe '.class_for' do
+    subject(:class_for) { described_class.class_for(tag_name) }
 
-    it 'raises a NameError' do
-      expect { elements }.to raise_exception(NameError, 'uninitialized constant PrawnHtml::Tags::Base::ELEMENTS')
+    context 'with an unknown tag name' do
+      let(:tag_name) { :some_tag }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with an h6 tag' do
+      let(:tag_name) { :h6 }
+
+      it { is_expected.to eq(PrawnHtml::Tags::H) }
     end
   end
 end

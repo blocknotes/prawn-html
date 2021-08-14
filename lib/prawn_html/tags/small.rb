@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-
 module PrawnHtml
   module Tags
-    class Small < Base
+    class Small < Tag
       ELEMENTS = [:small].freeze
 
       def update_styles(styles)
