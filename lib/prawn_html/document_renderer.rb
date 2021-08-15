@@ -29,7 +29,7 @@ module PrawnHtml
     # @param element [Tag] closing element wrapper
     def on_tag_close(element)
       render_if_needed(element)
-      apply_post_styles(element&.post_styles)
+      apply_tag_close_styles(element)
       context.last_text_node = false
       context.pop
     end
@@ -44,7 +44,7 @@ module PrawnHtml
       tag_class = Tag.class_for(tag_name)
       return unless tag_class
 
-      tag_class.new(tag_name, attributes).tap do |element|
+      tag_class.new(tag_name, attributes, doc_styles).tap do |element|
         setup_element(element)
       end
     end
@@ -58,7 +58,7 @@ module PrawnHtml
       return if content.match?(/\A\s*\Z/)
 
       text = content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
-      buffer << context.merge_styles.merge(text: ::Oga::HTML::Entities.decode(context.before_content) + text)
+      buffer << context.text_node_styles.merge(text: ::Oga::HTML::Entities.decode(context.before_content) + text)
       context.last_text_node = true
       nil
     end
@@ -67,7 +67,7 @@ module PrawnHtml
     def render
       return if buffer.empty?
 
-      options = context.merge_options.slice(:align, :leading, :margin_left, :mode, :padding_left)
+      options = context.block_styles.slice(:align, :leading, :margin_left, :mode, :padding_left)
       output_content(buffer.dup, options)
       buffer.clear
       context.last_margin = 0
@@ -81,8 +81,7 @@ module PrawnHtml
 
     def setup_element(element)
       add_space_if_needed unless render_if_needed(element)
-      apply_pre_styles(element)
-      element.apply_doc_styles(doc_styles)
+      apply_tag_open_styles(element)
       context.push(element)
       element.custom_render(pdf, context) if element.respond_to?(:custom_render)
     end
@@ -99,20 +98,18 @@ module PrawnHtml
       true
     end
 
-    def apply_post_styles(styles)
-      context.last_margin = styles[:margin_bottom].to_f
-      return if !styles || styles.empty?
-
-      pdf.move_down(context.last_margin.round(4)) if context.last_margin > 0
-      pdf.move_down(styles[:padding_bottom].round(4)) if styles[:padding_bottom].to_f > 0
+    def apply_tag_close_styles(element)
+      tag_styles = element.tag_close_styles
+      context.last_margin = tag_styles[:margin_bottom].to_f
+      pdf.move_down(tag_styles[:padding_bottom]) if tag_styles.include?(:padding_bottom)
+      pdf.move_down(context.last_margin) if context.last_margin > 0
     end
 
-    def apply_pre_styles(element)
-      pdf.move_down(element.options[:padding_top].round(4)) if element.options.include?(:padding_top)
-      return if !element.pre_styles || element.pre_styles.empty?
-
-      margin = (element.pre_styles[:margin_top] - context.last_margin).round(4)
+    def apply_tag_open_styles(element)
+      tag_styles = element.tag_open_styles
+      margin = (tag_styles[:margin_top].to_f - context.last_margin)
       pdf.move_down(margin) if margin > 0
+      pdf.move_down(tag_styles[:padding_top]) if tag_styles.include?(:padding_top)
     end
 
     def output_content(buffer, options)

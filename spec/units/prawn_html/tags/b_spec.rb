@@ -6,8 +6,8 @@ RSpec.describe PrawnHtml::Tags::B do
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
-    it 'returns the expected extra_attrs for b tag' do
-      expect(b.extra_attrs).to eq('font-weight' => 'bold')
+    it 'returns the expected tag_styles for b tag' do
+      expect(b.tag_styles).to eq('font-weight' => 'bold')
     end
   end
 end

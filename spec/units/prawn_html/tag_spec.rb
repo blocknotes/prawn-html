@@ -19,88 +19,40 @@ RSpec.describe PrawnHtml::Tag do
     end
   end
 
-  describe '#apply_doc_styles' do
-    subject(:apply_doc_styles) { tag.apply_doc_styles(document_styles) }
-
-    let(:document_styles) { { 'some_tag' => { 'text-align': 'center' } } }
-
-    it 'merges the document styles' do
-      apply_doc_styles
-      expect(tag.styles).to match(color: '0088ff', 'text-align': 'center')
-    end
-
-    context 'with a style already present in the tag' do
-      let(:document_styles) { { 'some_tag' => { color: 'ffbb11', 'font-weight': 'bold' } } }
-
-      it 'merges the document styles' do
-        apply_doc_styles
-        expect(tag.styles).to match(color: '0088ff', 'font-weight': 'bold')
-      end
-    end
-  end
-
   describe '#block?' do
     subject(:block?) { tag.block? }
 
     it { is_expected.to be_falsey }
   end
 
-  describe '#extra_attrs' do
-    subject(:extra_attrs) { tag.extra_attrs }
+  describe '#block_styles' do
+    subject(:block_styles) { tag.block_styles }
+
+    it { is_expected.to eq({}) }
+
+    context 'with some data attributes' do
+      let(:attributes) { instance_double(PrawnHtml::Attributes, data: { 'mode' => 'mode1' }, hash: {}, styles: {}) }
+
+      before do
+        allow(PrawnHtml::Attributes).to receive(:new).and_return(attributes)
+      end
+
+      it 'delegates to the tag attributes' do
+        expect(block_styles).to eq(mode: :mode1)
+      end
+    end
+  end
+
+  describe '#tag_close_styles' do
+    subject(:tag_close_styles) { tag.tag_close_styles }
 
     it { is_expected.to eq({}) }
   end
 
-  describe '#options' do
-    subject(:options) { tag.options }
+  describe '#tag_open_styles' do
+    subject(:tag_open_styles) { tag.tag_open_styles }
 
-    let(:attributes) { instance_double(PrawnHtml::Attributes, data: {}, options: { opt1: 123 }, styles: {}) }
-
-    before do
-      allow(PrawnHtml::Attributes).to receive(:new).and_return(attributes)
-    end
-
-    it 'delegates to the tag attributes' do
-      expect(options).to eq(opt1: 123)
-    end
-
-    context 'with mode data attribute' do
-      let(:attributes) do
-        instance_double(PrawnHtml::Attributes, data: { 'mode' => 'some_mode' }, options: { opt1: 123 }, styles: {})
-      end
-
-      it 'merges the options' do
-        expect(options).to eq(mode: :some_mode, opt1: 123)
-      end
-    end
-  end
-
-  describe '#post_styles' do
-    subject(:post_styles) { tag.post_styles }
-
-    let(:attributes) { instance_double(PrawnHtml::Attributes, styles: {}, post_styles: :some_post_styles) }
-
-    before do
-      allow(PrawnHtml::Attributes).to receive(:new).and_return(attributes)
-    end
-
-    it 'delegates to the tag attributes' do
-      expect(post_styles).to eq(:some_post_styles)
-    end
-  end
-
-  describe '#pre_styles' do
-    subject(:pre_styles) { tag.pre_styles }
-
-    let(:attributes) { instance_double(PrawnHtml::Attributes, styles: {}, pre_styles: :some_pre_styles) }
-
-    before do
-      allow(PrawnHtml::Attributes).to receive(:new).and_return(attributes)
-    end
-
-    it 'delegates to the tag attributes' do
-      expect(pre_styles).to eq(:some_pre_styles)
-    end
+    it { is_expected.to eq({}) }
   end
 
   describe '.class_for' do

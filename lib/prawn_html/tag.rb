@@ -10,28 +10,13 @@ module PrawnHtml
     #
     # @param tag [Symbol] tag name
     # @param attributes [Hash] hash of element attributes
-    def initialize(tag, attributes = {})
+    # @param document_styles [Hash] hash of document styles
+    def initialize(tag, attributes = {}, document_styles = {})
       @attrs = Attributes.new(attributes)
       @styles = attrs.styles
       @tag = tag
-      attrs.process_styles(extra_attrs) unless extra_attrs.empty?
-    end
-
-    # Apply document styles to the tag
-    #
-    # @param document_styles [Hash] hash of document CSS rules
-    #
-    # @return [Hash] the merged styles
-    def apply_doc_styles(document_styles)
-      selectors = [
-        tag.to_s,
-        attrs.hash['class'] ? ".#{attrs.hash['class']}" : nil,
-        attrs.hash['id'] ? "##{attrs.hash['id']}" : nil
-      ].compact!
-      merged_styles = document_styles.each_with_object({}) do |(sel, attributes), res|
-        res.merge!(attributes) if selectors.include?(sel)
-      end
-      @styles = merged_styles.merge(styles)
+      merge_document_styles!(document_styles)
+      @styles.merge!(attrs.process_styles(tag_styles)) if respond_to?(:tag_styles)
     end
 
     # Is a block tag?
@@ -41,36 +26,27 @@ module PrawnHtml
       false
     end
 
-    # Extra attributes
+    # Styles to apply to the block
     #
-    # @return [Hash] hash of extra attributes
-    def extra_attrs
-      {}
+    # @return [Hash] hash of styles to apply
+    def block_styles
+      block_styles = styles.slice(*Attributes::STYLES_APPLY[:block])
+      block_styles[:mode] = attrs.data['mode'].to_sym if attrs.data.include?('mode')
+      block_styles
     end
 
-    # Options
+    # Styles to apply on tag closing
     #
-    # @return [Hash] hash of options
-    def options
-      if attrs.data.include?('mode')
-        { mode: attrs.data['mode'].to_sym }.merge(attrs.options)
-      else
-        attrs.options
-      end
+    # @return [Hash] hash of styles to apply
+    def tag_close_styles
+      styles.slice(*Attributes::STYLES_APPLY[:tag_close])
     end
 
-    # Post styles
+    # Styles to apply on tag opening
     #
-    # @return [Hash] hash of post styles
-    def post_styles
-      attrs.post_styles
-    end
-
-    # Pre styles
-    #
-    # @return [Hash] hash of pre styles
-    def pre_styles
-      attrs.pre_styles
+    # @return [Hash] hash of styles to apply
+    def tag_open_styles
+      styles.slice(*Attributes::STYLES_APPLY[:tag_open])
     end
 
     class << self
@@ -87,6 +63,20 @@ module PrawnHtml
         end
         @tag_classes[tag_name]
       end
+    end
+
+    private
+
+    def merge_document_styles!(document_styles)
+      selectors = [
+        tag.to_s,
+        attrs.hash['class'] ? ".#{attrs.hash['class']}" : nil,
+        attrs.hash['id'] ? "##{attrs.hash['id']}" : nil
+      ].compact!
+      merged_styles = document_styles.each_with_object({}) do |(sel, attributes), res|
+        res.merge!(attributes) if selectors.include?(sel)
+      end
+      @styles = merged_styles.merge(styles)
     end
   end
 end

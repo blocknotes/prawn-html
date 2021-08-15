@@ -6,8 +6,8 @@ RSpec.describe PrawnHtml::Tags::P do
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
-    it 'returns the expected extra_attrs for p tag' do
-      expect(p.extra_attrs).to eq(
+    it 'returns the expected tag_styles for p tag' do
+      expect(p.tag_styles).to eq(
         'margin-bottom' => PrawnHtml::Tags::P::MARGIN_BOTTOM.to_s,
         'margin-top' => PrawnHtml::Tags::P::MARGIN_TOP.to_s
       )

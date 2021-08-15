@@ -40,12 +40,12 @@ RSpec.describe PrawnHtml::DocumentRenderer do
     let(:element) { PrawnHtml::Tags::Div.new(:div) }
 
     before do
-      allow(element).to receive(:post_styles).and_call_original
+      allow(element).to receive(:tag_close_styles).and_call_original
     end
 
     it 'handles tag closing' do
       on_tag_close
-      expect(element).to have_received(:post_styles)
+      expect(element).to have_received(:tag_close_styles)
     end
   end
 
@@ -94,12 +94,12 @@ RSpec.describe PrawnHtml::DocumentRenderer do
     subject(:render) { document_renderer.render }
 
     before do
-      allow(context).to receive(:merge_styles).and_call_original
+      allow(context).to receive(:block_styles).and_call_original
     end
 
     it "renders nothing when the buffer's content is empty" do
       render
-      expect(context).not_to have_received(:merge_styles)
+      expect(context).not_to have_received(:block_styles)
     end
 
     context 'with some content in the buffer' do
@@ -109,7 +109,7 @@ RSpec.describe PrawnHtml::DocumentRenderer do
 
       it "renders the current buffer's content" do
         render
-        expect(context).to have_received(:merge_styles)
+        expect(context).to have_received(:block_styles)
       end
     end
   end

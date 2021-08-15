@@ -11,8 +11,8 @@ module PrawnHtml
         true
       end
 
-      def extra_attrs
-        @extra_attrs ||= {
+      def tag_styles
+        @tag_styles ||= {
           'margin-left' => MARGIN_LEFT.to_s,
         }
       end

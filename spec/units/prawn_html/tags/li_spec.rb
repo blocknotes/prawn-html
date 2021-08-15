@@ -11,11 +11,11 @@ RSpec.describe PrawnHtml::Tags::Li do
     it { is_expected.to be_truthy }
   end
 
-  describe '#options' do
-    subject(:options) { li.options }
+  describe '#tag_styles' do
+    subject(:tag_styles) { li.tag_styles }
 
-    it 'merges the before_content property into options' do
-      expect(options).to match(before_content: '&bullet;  ')
+    it 'merges the before_content property into tag_styles' do
+      expect(tag_styles).to match(before_content: '&bullet;  ')
     end
   end
 end

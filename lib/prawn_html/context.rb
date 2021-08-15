@@ -13,26 +13,26 @@ module PrawnHtml
     end
 
     def before_content
-      return '' if empty?
+      return '' if empty? || !last.respond_to?(:tag_styles)
 
-      last.options[:before_content].to_s
+      last.tag_styles[:before_content].to_s
     end
 
-    # Merges the context options
+    # Merges the context block styles
     #
-    # @return [Hash] the hash of merged options
-    def merge_options
+    # @return [Hash] the hash of merged styles
+    def block_styles
       each_with_object({}) do |element, res|
-        element.options.each do |key, value|
+        element.block_styles.each do |key, value|
           Attributes.merge_attr!(res, key, value)
         end
       end
     end
 
-    # Merge the context styles
+    # Merge the context styles for text nodes
     #
     # @return [Hash] the hash of merged styles
-    def merge_styles
+    def text_node_styles
       context_styles = each_with_object({}) do |element, res|
         evaluate_element_styles(element, res)
         element.update_styles(res) if element.respond_to?(:update_styles)
@@ -49,7 +49,8 @@ module PrawnHtml
     end
 
     def evaluate_element_styles(element, res)
-      element.styles.each do |key, val|
+      styles = element.styles.slice(*Attributes::STYLES_APPLY[:text_node])
+      styles.each do |key, val|
         if res.include?(key) && res[key].is_a?(Array)
           res[key] += val
         else

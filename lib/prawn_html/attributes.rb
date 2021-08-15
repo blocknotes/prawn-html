@@ -4,29 +4,38 @@ require 'ostruct'
 
 module PrawnHtml
   class Attributes
-    attr_reader :hash, :options, :post_styles, :pre_styles, :styles
+    attr_reader :hash, :styles
+
+    STYLES_APPLY = {
+      block: %i[align leading margin_left padding_left],
+      tag_close: %i[margin_bottom padding_bottom],
+      tag_open: %i[margin_top padding_top],
+      text_node: %i[background callback character_spacing color font link size styles]
+    }.freeze
 
     STYLES_LIST = {
-      # styles
-      'background' => { key: :background, set: :convert_color, dest: :styles },
-      'color' => { key: :color, set: :convert_color, dest: :styles },
-      'font-family' => { key: :font, set: :unquote, dest: :styles },
-      'font-size' => { key: :size, set: :convert_size, dest: :styles },
-      'font-style' => { key: :styles, set: :append_symbol, dest: :styles },
-      'font-weight' => { key: :styles, set: :append_symbol, dest: :styles },
-      'letter-spacing' => { key: :character_spacing, set: :convert_float, dest: :styles },
-      # pre styles
-      'margin-top' => { key: :margin_top, set: :convert_size, dest: :pre_styles },
-      # post styles
-      'margin-bottom' => { key: :margin_bottom, set: :convert_size, dest: :post_styles },
-      'padding-bottom' => { key: :padding_bottom, set: :convert_size, dest: :post_styles },
-      # options
-      'line-height' => { key: :leading, set: :convert_size, dest: :options },
-      'margin-left' => { key: :margin_left, set: :convert_size, dest: :options },
-      'padding-left' => { key: :padding_left, set: :convert_size, dest: :options },
-      'padding-top' => { key: :padding_top, set: :convert_size, dest: :options },
-      'text-align' => { key: :align, set: :convert_symbol, dest: :options },
-      'text-decoration' => { key: :styles, set: :append_symbol, dest: :styles }
+      # text node styles
+      'background' => { key: :background, set: :convert_color },
+      'callback' => { key: :callback, set: :copy },
+      'color' => { key: :color, set: :convert_color },
+      'font-family' => { key: :font, set: :unquote },
+      'font-size' => { key: :size, set: :convert_size },
+      'font-style' => { key: :styles, set: :append_symbol },
+      'font-weight' => { key: :styles, set: :append_symbol },
+      'href' => { key: :link, set: :copy },
+      'letter-spacing' => { key: :character_spacing, set: :convert_float },
+      'text-decoration' => { key: :styles, set: :append_symbol },
+      # tag opening styles
+      'margin-top' => { key: :margin_top, set: :convert_size },
+      'padding-top' => { key: :padding_top, set: :convert_size },
+      # tag closing styles
+      'margin-bottom' => { key: :margin_bottom, set: :convert_size },
+      'padding-bottom' => { key: :padding_bottom, set: :convert_size },
+      # block styles
+      'line-height' => { key: :leading, set: :convert_size },
+      'margin-left' => { key: :margin_left, set: :convert_size },
+      'padding-left' => { key: :padding_left, set: :convert_size },
+      'text-align' => { key: :align, set: :convert_symbol }
     }.freeze
 
     STYLES_MERGE = %i[margin_left padding_left].freeze
@@ -36,9 +45,6 @@ module PrawnHtml
     # @param attributes [Hash] hash of attributes to parse
     def initialize(attributes)
       @hash = ::OpenStruct.new(attributes)
-      @options = {}
-      @post_styles = {}
-      @pre_styles = {}
       @styles = {} # result styles
       parsed_styles = Attributes.parse_styles(hash.style)
       process_styles(parsed_styles)
@@ -57,13 +63,11 @@ module PrawnHtml
     # Processes the styles attributes
     #
     # @param attributes [Hash] hash of styles attributes
-    def process_styles(styles)
-      styles.each do |key, value|
-        rule = STYLES_LIST[key]
-        next unless rule
-
-        apply_rule(rule, value)
+    def process_styles(parsed_styles)
+      parsed_styles.each do |key, value|
+        apply_rule(STYLES_LIST[key], value)
       end
+      @styles
     end
 
     class << self
@@ -105,7 +109,6 @@ module PrawnHtml
           else
             val.to_f * PX
           end
-        # pdf.bounds.height
         val.round(4)
       end
 
@@ -116,6 +119,15 @@ module PrawnHtml
       # @return [Symbol] symbol
       def convert_symbol(value)
         value.to_sym if value && !value.match?(/\A\s*\Z/)
+      end
+
+      # Copy a value without conversion
+      #
+      # @param value
+      #
+      # @return value
+      def copy(value)
+        value
       end
 
       # Merges attributes
@@ -157,10 +169,12 @@ module PrawnHtml
     private
 
     def apply_rule(rule, value)
+      return unless rule
+
       if rule[:set] == :append_symbol
-        (send(rule[:dest])[rule[:key]] ||= []) << Attributes.convert_symbol(value)
+        (@styles[rule[:key]] ||= []) << Attributes.convert_symbol(value)
       else
-        send(rule[:dest])[rule[:key]] = Attributes.send(rule[:set], value)
+        @styles[rule[:key]] = Attributes.send(rule[:set], value)
       end
     end
   end

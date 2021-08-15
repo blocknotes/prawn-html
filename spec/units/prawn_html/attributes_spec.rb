@@ -5,6 +5,8 @@ RSpec.describe PrawnHtml::Attributes do
 
   let(:attributes_hash) { { attr1: 'value 1', attr2: 'value 2' } }
 
+  it { expect(described_class).to be < OpenStruct }
+
   describe '#initialize' do
     before do
       allow(OpenStruct).to receive(:new).and_call_original
@@ -164,6 +166,16 @@ RSpec.describe PrawnHtml::Attributes do
       let(:value) { 'some_string' }
 
       it { is_expected.to eq :some_string }
+    end
+  end
+
+  describe '.copy' do
+    subject(:copy) { described_class.copy(value) }
+
+    context 'with any value (ex. "some_string")' do
+      let(:value) { 'some_string' }
+
+      it { is_expected.to eq 'some_string' }
     end
   end
 

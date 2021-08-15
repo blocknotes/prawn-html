@@ -5,7 +5,7 @@ module PrawnHtml
     class I < Tag
       ELEMENTS = [:i, :em].freeze
 
-      def extra_attrs
+      def tag_styles
         {
           'font-style' => 'italic'
         }

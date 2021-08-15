@@ -6,8 +6,8 @@ RSpec.describe PrawnHtml::Tags::Ul do
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
-    it 'returns the expected extra_attrs for ul tag' do
-      expect(ul.extra_attrs).to eq('margin-left' => PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
+    it 'returns the expected tag_styles for ul tag' do
+      expect(ul.tag_styles).to eq('margin-left' => PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
     end
   end
 

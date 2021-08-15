@@ -36,8 +36,8 @@ module PrawnHtml
         true
       end
 
-      def extra_attrs
-        @extra_attrs ||= {
+      def tag_styles
+        @tag_styles ||= {
           'font-size' => SIZES[tag].to_s,
           'font-weight' => 'bold',
           'margin-bottom' => MARGINS_BOTTOM[tag].to_s,
