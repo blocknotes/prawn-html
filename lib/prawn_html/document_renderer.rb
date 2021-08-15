@@ -11,15 +11,15 @@ module PrawnHtml
     def initialize(pdf)
       @buffer = []
       @context = Context.new
-      @doc_styles = {}
+      @document_styles = {}
       @pdf = pdf
     end
 
-    # Assigns the document styles
+    # Evaluate the document styles and store the internally
     #
     # @param styles [Hash] styles hash with CSS selectors as keys and rules as values
     def assign_document_styles(styles)
-      @doc_styles = styles.transform_values do |style_rules|
+      @document_styles = styles.transform_values do |style_rules|
         Attributes.new(style: style_rules).styles
       end
     end
@@ -44,7 +44,7 @@ module PrawnHtml
       tag_class = Tag.class_for(tag_name)
       return unless tag_class
 
-      tag_class.new(tag_name, attributes, doc_styles).tap do |element|
+      tag_class.new(tag_name, attributes, document_styles).tap do |element|
         setup_element(element)
       end
     end
@@ -57,8 +57,9 @@ module PrawnHtml
     def on_text_node(content)
       return if content.match?(/\A\s*\Z/)
 
-      text = content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
-      buffer << context.text_node_styles.merge(text: ::Oga::HTML::Entities.decode(context.before_content) + text)
+      text = ::Oga::HTML::Entities.decode(context.before_content)
+      text += content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
+      buffer << context.text_node_styles.merge(text: text)
       context.last_text_node = true
       nil
     end
@@ -77,7 +78,7 @@ module PrawnHtml
 
     private
 
-    attr_reader :buffer, :context, :doc_styles, :pdf
+    attr_reader :buffer, :context, :document_styles, :pdf
 
     def setup_element(element)
       add_space_if_needed unless render_if_needed(element)
@@ -101,24 +102,21 @@ module PrawnHtml
     def apply_tag_close_styles(element)
       tag_styles = element.tag_close_styles
       context.last_margin = tag_styles[:margin_bottom].to_f
-      pdf.move_down(tag_styles[:padding_bottom]) if tag_styles.include?(:padding_bottom)
-      pdf.move_down(context.last_margin) if context.last_margin > 0
+      move_down = context.last_margin + tag_styles[:padding_bottom].to_f
+      pdf.move_down(move_down) if move_down > 0
     end
 
     def apply_tag_open_styles(element)
       tag_styles = element.tag_open_styles
-      margin = (tag_styles[:margin_top].to_f - context.last_margin)
-      pdf.move_down(margin) if margin > 0
-      pdf.move_down(tag_styles[:padding_top]) if tag_styles.include?(:padding_top)
+      move_down = (tag_styles[:margin_top].to_f - context.last_margin) + tag_styles[:padding_top].to_f
+      pdf.move_down(move_down) if move_down > 0
     end
 
     def output_content(buffer, options)
       buffer.each { |item| item[:callback] = item[:callback].new(pdf, item) if item[:callback] }
-      if (left = options.delete(:margin_left).to_f + options.delete(:padding_left).to_f) > 0
-        pdf.indent(left) { pdf.formatted_text(buffer, options) }
-      else
-        pdf.formatted_text(buffer, options)
-      end
+      left_indent = options.delete(:margin_left).to_f + options.delete(:padding_left).to_f
+      options[:indent_paragraphs] = left_indent if left_indent > 0
+      pdf.formatted_text(buffer, options)
     end
   end
 end

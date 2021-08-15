@@ -87,7 +87,7 @@ RSpec.describe 'Styles' do
     let(:html) { '<div style="margin-left: 40px">Some content...</div>' }
 
     let(:expected_buffer) { [{ size: TestUtils.default_font_size, text: "Some content..." }] }
-    let(:expected_options) { {} }
+    let(:expected_options) { { indent_paragraphs: (40 * PrawnHtml::PX).round(4) } }
 
     it 'sends the expected buffer elements to Prawn pdf' do
       expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
