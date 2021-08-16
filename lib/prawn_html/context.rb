@@ -10,8 +10,12 @@ module PrawnHtml
     def initialize(*_args)
       super
       @last_margin = 0
+      @last_text_node = false
     end
 
+    # Evaluate before content
+    #
+    # @return [String] before content string
     def before_content
       return '' if empty? || !last.respond_to?(:tag_styles)
 
@@ -33,11 +37,10 @@ module PrawnHtml
     #
     # @return [Hash] the hash of merged styles
     def text_node_styles
-      context_styles = each_with_object({}) do |element, res|
+      each_with_object(base_styles) do |element, res|
         evaluate_element_styles(element, res)
         element.update_styles(res) if element.respond_to?(:update_styles)
       end
-      base_styles.merge(context_styles)
     end
 
     private
