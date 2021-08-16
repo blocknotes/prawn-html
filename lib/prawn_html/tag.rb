@@ -52,7 +52,11 @@ module PrawnHtml
     #
     # @return [Hash] hash of options
     def options
-      attrs.options
+      if attrs.data.include?('mode')
+        { mode: attrs.data['mode'].to_sym }.merge(attrs.options)
+      else
+        attrs.options
+      end
     end
 
     # Post styles

@@ -8,7 +8,8 @@ HTML to PDF renderer using [Prawn PDF](https://github.com/prawnpdf/prawn).
 Features:
 - support a [good set](#supported-tags--attributes) of HTML tags and CSS properties;
 - handle [document styles](#document-styles);
-- no extra settings: it just parses an input HTML and output to a Prawn PDF document.
+- custom [data attributes](#data-attributes) for Prawn PDF features;
+- no extra settings: it just parses an input HTML and outputs to a Prawn PDF document.
 
 **Notice**: render HTML documents properly is not an easy task, this gem support only some HTML tags and a small set of CSS attributes. If you need more rendering accuracy take a look at other projects like WickedPDF.
 
@@ -76,6 +77,13 @@ CSS attributes (dimensional units are ignored and considered in pixel):
 - **text-align**: `left` | `center` | `right` | `justify`, ex. `style="text-align: center"`
 - **text-decoration**: `underline`, ex. `style="text-decoration: underline"`
 - **width**: for *img* tag, support also percentage, ex. `<img src="image.jpg" style="width: 50%; height: 200px"/>`
+
+## Data attributes
+
+Some custom data attributes are used to pass options:
+
+- **dash**: for *hr* tag, accepts an integer or a list of integers), ex. `data-data="2, 4, 3"`
+- **mode**: allow to specify the text mode (stroke|fill||fill_stroke), ex. `data-mode="stroke"`
 
 ## Document styles
 
