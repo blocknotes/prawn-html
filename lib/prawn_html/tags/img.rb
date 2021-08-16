@@ -10,10 +10,10 @@ module PrawnHtml
       end
 
       def custom_render(pdf, context)
-        styles = Attributes.parse_styles(attrs.hash.style)
+        styles = Attributes.parse_styles(attrs.style)
         block_styles = context.block_styles
         evaluated_styles = evaluate_styles(pdf, block_styles.merge(styles))
-        pdf.image(@attrs.hash.src, evaluated_styles)
+        pdf.image(@attrs.src, evaluated_styles) if @attrs.src
       end
 
       private

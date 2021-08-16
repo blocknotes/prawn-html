@@ -13,7 +13,7 @@ module PrawnHtml
     # @param document_styles [Hash] hash of document styles
     def initialize(tag, attributes = {}, document_styles = {})
       @attrs = Attributes.new(attributes)
-      @styles = attrs.styles
+      @styles = attrs.parsed_styles
       @tag = tag
       merge_document_styles!(document_styles)
       @styles.merge!(attrs.process_styles(tag_styles)) if respond_to?(:tag_styles)
@@ -70,8 +70,8 @@ module PrawnHtml
     def merge_document_styles!(document_styles)
       selectors = [
         tag.to_s,
-        attrs.hash['class'] ? ".#{attrs.hash['class']}" : nil,
-        attrs.hash['id'] ? "##{attrs.hash['id']}" : nil
+        attrs['class'] ? ".#{attrs['class']}" : nil,
+        attrs['id'] ? "##{attrs['id']}" : nil
       ].compact!
       merged_styles = document_styles.each_with_object({}) do |(sel, attributes), res|
         res.merge!(attributes) if selectors.include?(sel)

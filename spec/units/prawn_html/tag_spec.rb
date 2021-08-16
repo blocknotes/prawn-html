@@ -31,7 +31,9 @@ RSpec.describe PrawnHtml::Tag do
     it { is_expected.to eq({}) }
 
     context 'with some data attributes' do
-      let(:attributes) { instance_double(PrawnHtml::Attributes, data: { 'mode' => 'mode1' }, hash: {}, styles: {}) }
+      let(:attributes) do
+        instance_double(PrawnHtml::Attributes, data: { 'mode' => 'mode1' }, parsed_styles: {}, :[] => {})
+      end
 
       before do
         allow(PrawnHtml::Attributes).to receive(:new).and_return(attributes)

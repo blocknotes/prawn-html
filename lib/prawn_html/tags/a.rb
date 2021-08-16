@@ -6,7 +6,7 @@ module PrawnHtml
       ELEMENTS = [:a].freeze
 
       def tag_styles
-        attrs.hash.href ? { 'href' => attrs.hash.href } : {}
+        attrs.href ? { 'href' => attrs.href } : {}
       end
     end
   end

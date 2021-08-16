@@ -3,8 +3,8 @@
 require 'ostruct'
 
 module PrawnHtml
-  class Attributes
-    attr_reader :hash, :styles
+  class Attributes < OpenStruct
+    attr_reader :parsed_styles
 
     STYLES_APPLY = {
       block: %i[align leading margin_left padding_left],
@@ -41,20 +41,18 @@ module PrawnHtml
     STYLES_MERGE = %i[margin_left padding_left].freeze
 
     # Init the Attributes
-    #
-    # @param attributes [Hash] hash of attributes to parse
-    def initialize(attributes)
-      @hash = ::OpenStruct.new(attributes)
-      @styles = {} # result styles
-      parsed_styles = Attributes.parse_styles(hash.style)
-      process_styles(parsed_styles)
+    def initialize(attributes = {})
+      super
+      @parsed_styles = {} # result styles
+      result = Attributes.parse_styles(style)
+      process_styles(result)
     end
 
     # Processes the data attributes
     #
     # @return [Hash] hash of data attributes with 'data-' prefix removed and stripped values
     def data
-      hash.to_h.each_with_object({}) do |(key, value), res|
+      to_h.each_with_object({}) do |(key, value), res|
         data_key = key.match /\Adata-(.+)/
         res[data_key[1]] = value.strip if data_key
       end
@@ -62,12 +60,12 @@ module PrawnHtml
 
     # Processes the styles attributes
     #
-    # @param attributes [Hash] hash of styles attributes
-    def process_styles(parsed_styles)
-      parsed_styles.each do |key, value|
+    # @param styles_hash [Hash] hash of styles attributes
+    def process_styles(styles_hash)
+      styles_hash.each do |key, value|
         apply_rule(STYLES_LIST[key], value)
       end
-      @styles
+      @parsed_styles
     end
 
     class << self
@@ -132,17 +130,17 @@ module PrawnHtml
 
       # Merges attributes
       #
-      # @param hash [Hash] target attributes hash
+      # @param attributes [Hash] target attributes hash
       # @param key [Symbol] key
       # @param value
       #
       # @return [Hash] the updated hash of attributes
-      def merge_attr!(hash, key, value)
+      def merge_attr!(attributes, key, value)
         return unless key
-        return (hash[key] = value) unless Attributes::STYLES_MERGE.include?(key)
+        return (attributes[key] = value) unless Attributes::STYLES_MERGE.include?(key)
 
-        hash[key] ||= 0
-        hash[key] += value
+        attributes[key] ||= 0
+        attributes[key] += value
       end
 
       # Parses a string of styles
@@ -172,9 +170,9 @@ module PrawnHtml
       return unless rule
 
       if rule[:set] == :append_symbol
-        (@styles[rule[:key]] ||= []) << Attributes.convert_symbol(value)
+        (@parsed_styles[rule[:key]] ||= []) << Attributes.convert_symbol(value)
       else
-        @styles[rule[:key]] = Attributes.send(rule[:set], value)
+        @parsed_styles[rule[:key]] = Attributes.send(rule[:set], value)
       end
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Img do
-  subject(:img) { described_class.new(:img) }
+  subject(:img) { described_class.new(:img, src: 'some_image_url') }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
@@ -20,7 +20,7 @@ RSpec.describe PrawnHtml::Tags::Img do
     it 'calls image on the pdf instance', :aggregate_failures do
       custom_render
       expect(context).to have_received(:block_styles)
-      expect(pdf).to have_received(:image)
+      expect(pdf).to have_received(:image).with('some_image_url', {})
     end
   end
 end
