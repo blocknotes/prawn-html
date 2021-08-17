@@ -5,10 +5,10 @@ module PrawnHtml
     class Mark < Tag
       ELEMENTS = [:mark].freeze
 
-      def styles
-        super.merge(
-          callback: Callbacks::Highlight
-        )
+      def tag_styles
+        {
+          'callback' => Callbacks::Highlight
+        }
       end
     end
   end

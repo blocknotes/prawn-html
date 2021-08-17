@@ -5,8 +5,8 @@ module PrawnHtml
     class A < Tag
       ELEMENTS = [:a].freeze
 
-      def styles
-        attrs.hash.href ? super.merge(link: attrs.hash.href) : super
+      def tag_styles
+        attrs.href ? { 'href' => attrs.href } : {}
       end
     end
   end

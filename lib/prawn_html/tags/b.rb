@@ -5,7 +5,7 @@ module PrawnHtml
     class B < Tag
       ELEMENTS = [:b, :strong].freeze
 
-      def extra_attrs
+      def tag_styles
         {
           'font-weight' => 'bold'
         }

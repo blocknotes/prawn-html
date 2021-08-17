@@ -9,10 +9,10 @@ module PrawnHtml
         true
       end
 
-      def options
-        super.merge(
+      def tag_styles
+        {
           before_content: '&bullet;  '
-        )
+        }
       end
     end
   end

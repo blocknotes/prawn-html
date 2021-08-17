@@ -5,10 +5,10 @@ module PrawnHtml
     class Del < Tag
       ELEMENTS = [:del, :s].freeze
 
-      def styles
-        super.merge(
-          callback: Callbacks::StrikeThrough
-        )
+      def tag_styles
+        {
+          'callback' => Callbacks::StrikeThrough
+        }
       end
     end
   end

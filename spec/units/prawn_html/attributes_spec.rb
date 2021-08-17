@@ -5,14 +5,19 @@ RSpec.describe PrawnHtml::Attributes do
 
   let(:attributes_hash) { { attr1: 'value 1', attr2: 'value 2' } }
 
+  it { expect(described_class).to be < OpenStruct }
+
   describe '#initialize' do
-    before do
-      allow(OpenStruct).to receive(:new).and_call_original
+    it 'returns an empty styles hash' do
+      expect(attributes.styles).to eq({})
     end
 
-    it 'stores the attributes hash in an open struct' do
-      attributes
-      expect(OpenStruct).to have_received(:new).with(attributes_hash)
+    context 'with some styles' do
+      let(:attributes_hash) { { 'style' => 'color: #fb1; font-weight: bold' } }
+
+      it 'returns the parsed styles' do
+        expect(attributes.styles).to eq(color: 'ffbb11', styles: [:bold])
+      end
     end
   end
 
@@ -24,6 +29,15 @@ RSpec.describe PrawnHtml::Attributes do
 
       it { is_expected.to match('dash' => '5', 'something-else' => '"some value"') }
     end
+  end
+
+  describe '#merge_styles!' do
+    subject(:merge_styles!) { attributes.merge_styles!(parsed_styles) }
+
+    let(:attributes_hash) { { 'style' => 'font-size: 12px' } }
+    let(:parsed_styles) { { color: 'fb1' } }
+
+    it { is_expected.to match(color: 'fb1', size: 12 * PrawnHtml::PX) }
   end
 
   describe '#process_styles' do
@@ -164,6 +178,16 @@ RSpec.describe PrawnHtml::Attributes do
       let(:value) { 'some_string' }
 
       it { is_expected.to eq :some_string }
+    end
+  end
+
+  describe '.copy' do
+    subject(:copy) { described_class.copy(value) }
+
+    context 'with any value (ex. "some_string")' do
+      let(:value) { 'some_string' }
+
+      it { is_expected.to eq 'some_string' }
     end
   end
 

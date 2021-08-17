@@ -24,10 +24,15 @@ RSpec.describe 'Lists' do
     end
 
     it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do
-      expect(pdf_doc).to have_received(:formatted_text).with([{ size: size, text: "•  First item" }], {})
-      expect(pdf_doc).to have_received(:formatted_text).with([{ size: size, text: "•  Second item" }], {})
-      expect(pdf_doc).to have_received(:formatted_text).with([{ size: size, text: "•  Third item" }], {})
-      expect(pdf_doc).to have_received(:indent).with(margin_left).exactly(3).times
+      expect(pdf_doc).to have_received(:formatted_text).with(
+        [{ size: size, text: "•  First item" }], { indent_paragraphs: margin_left }
+      )
+      expect(pdf_doc).to have_received(:formatted_text).with(
+        [{ size: size, text: "•  Second item" }], { indent_paragraphs: margin_left }
+      )
+      expect(pdf_doc).to have_received(:formatted_text).with(
+        [{ size: size, text: "•  Third item" }], { indent_paragraphs: margin_left }
+      )
     end
   end
 end
