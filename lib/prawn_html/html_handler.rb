@@ -53,7 +53,7 @@ module PrawnHtml
     end
 
     def prepare_attributes(node)
-      node.attributes.each_with_object(Attributes.new) do |attr, res|
+      node.attributes.each_with_object({}) do |attr, res|
         res[attr.name] = attr.value
       end
     end

@@ -4,7 +4,7 @@ require 'ostruct'
 
 module PrawnHtml
   class Attributes < OpenStruct
-    attr_reader :parsed_styles
+    attr_reader :styles
 
     STYLES_APPLY = {
       block: %i[align leading margin_left padding_left],
@@ -43,9 +43,11 @@ module PrawnHtml
     # Init the Attributes
     def initialize(attributes = {})
       super
-      @parsed_styles = {} # result styles
-      result = Attributes.parse_styles(style)
-      process_styles(result)
+      @styles = {} # result styles
+      return unless style
+
+      styles_hash = Attributes.parse_styles(style)
+      process_styles(styles_hash)
     end
 
     # Processes the data attributes
@@ -58,14 +60,21 @@ module PrawnHtml
       end
     end
 
+    # Merge already parsed styles
+    #
+    # @param parsed_styles [Hash] hash of parsed styles
+    def merge_styles!(parsed_styles)
+      @styles.merge!(parsed_styles)
+    end
+
     # Processes the styles attributes
     #
     # @param styles_hash [Hash] hash of styles attributes
     def process_styles(styles_hash)
       styles_hash.each do |key, value|
-        apply_rule(STYLES_LIST[key], value)
+        apply_rule!(@styles, STYLES_LIST[key], value)
       end
-      @parsed_styles
+      @styles
     end
 
     class << self
@@ -166,13 +175,13 @@ module PrawnHtml
 
     private
 
-    def apply_rule(rule, value)
+    def apply_rule!(result, rule, value)
       return unless rule
 
       if rule[:set] == :append_symbol
-        (@parsed_styles[rule[:key]] ||= []) << Attributes.convert_symbol(value)
+        (result[rule[:key]] ||= []) << Attributes.convert_symbol(value)
       else
-        @parsed_styles[rule[:key]] = Attributes.send(rule[:set], value)
+        result[rule[:key]] = Attributes.send(rule[:set], value)
       end
     end
   end

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tag do
-  subject(:tag) { described_class.new(:some_tag, 'style' => 'color: 0088ff') }
+  subject(:tag) { described_class.new(:some_tag, attributes) }
+
+  let(:attributes) { { 'style' => 'color: 0088ff' } }
 
   describe '#initialize' do
     before do
@@ -31,18 +33,18 @@ RSpec.describe PrawnHtml::Tag do
     it { is_expected.to eq({}) }
 
     context 'with some data attributes' do
-      let(:attributes) do
-        instance_double(PrawnHtml::Attributes, data: { 'mode' => 'mode1' }, parsed_styles: {}, :[] => {})
-      end
-
-      before do
-        allow(PrawnHtml::Attributes).to receive(:new).and_return(attributes)
-      end
+      let(:attributes) { { 'data-mode' => 'mode1' } }
 
       it 'delegates to the tag attributes' do
         expect(block_styles).to eq(mode: :mode1)
       end
     end
+  end
+
+  describe '#styles' do
+    subject(:styles) { tag.styles }
+
+    it { is_expected.to eq(color: '0088ff') }
   end
 
   describe '#tag_close_styles' do
