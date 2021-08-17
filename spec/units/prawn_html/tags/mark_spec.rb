@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Mark do
-  subject(:mark) { described_class.new(:mark, 'style' => 'color: ffbb11') }
+  subject(:mark) { described_class.new(:mark, 'style' => 'color: #ffbb11') }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 

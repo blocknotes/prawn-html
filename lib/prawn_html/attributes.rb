@@ -84,8 +84,9 @@ module PrawnHtml
       #
       # @return [String] adjusted string color
       def convert_color(value)
-        val = value&.downcase || +''
-        val.gsub!(/[^a-f0-9]/, '')
+        return '' if !value&.include? '#'
+
+        val = value.downcase.gsub!(/[^a-f0-9]/, '')
         return val unless val.size == 3
 
         a, b, c = val.chars

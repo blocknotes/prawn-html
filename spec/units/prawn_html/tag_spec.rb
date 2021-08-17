@@ -3,7 +3,7 @@
 RSpec.describe PrawnHtml::Tag do
   subject(:tag) { described_class.new(:some_tag, attributes) }
 
-  let(:attributes) { { 'style' => 'color: 0088ff' } }
+  let(:attributes) { { 'style' => 'color: #0088ff' } }
 
   describe '#initialize' do
     before do
@@ -12,7 +12,7 @@ RSpec.describe PrawnHtml::Tag do
 
     it 'instantiates a new Attributes object', :aggregate_failures do
       tag
-      expect(PrawnHtml::Attributes).to have_received(:new).with('style' => 'color: 0088ff')
+      expect(PrawnHtml::Attributes).to have_received(:new).with('style' => 'color: #0088ff')
       expect(tag.attrs).to be_kind_of(PrawnHtml::Attributes)
     end
 
