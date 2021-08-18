@@ -14,7 +14,7 @@ module PrawnHtml
       def custom_render(pdf, context)
         return if context.last_text_node
 
-        @spacing ||= Attributes.convert_size(BR_SPACING.to_s)
+        @spacing ||= Utils.convert_size(BR_SPACING.to_s)
         pdf.move_down(@spacing)
       end
     end

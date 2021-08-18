@@ -71,7 +71,7 @@ RSpec.describe 'Styles' do
   describe 'attribute font-size' do
     context 'with some content with a font size of 20px' do
       let(:html) { '<div style="font-size: 20px">Some content</div>' }
-      let(:size) { PrawnHtml::Attributes.convert_size('20px') }
+      let(:size) { PrawnHtml::Utils.convert_size('20px') }
 
       let(:expected_content) { ['Some content'] }
       let(:expected_positions) do
@@ -135,7 +135,7 @@ RSpec.describe 'Styles' do
 
   describe 'attribute margin-left' do
     let(:html) { '<div style="margin-left: 40px">Some content</div>' }
-    let(:size) { PrawnHtml::Attributes.convert_size('40px') }
+    let(:size) { PrawnHtml::Utils.convert_size('40px') }
 
     let(:expected_content) { ['Some content'] }
     let(:expected_positions) do
@@ -150,7 +150,7 @@ RSpec.describe 'Styles' do
 
   describe 'attribute margin-top' do
     let(:html) { '<div style="margin-top: 40px">Some content</div>' }
-    let(:size) { PrawnHtml::Attributes.convert_size('40px') }
+    let(:size) { PrawnHtml::Utils.convert_size('40px') }
 
     let(:expected_content) { ['Some content'] }
     let(:expected_positions) do

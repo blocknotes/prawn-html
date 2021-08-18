@@ -20,8 +20,8 @@ module PrawnHtml
 
       def evaluate_styles(pdf, styles)
         {}.tap do |result|
-          result[:width] = Attributes.convert_size(styles['width'], pdf.bounds.width) if styles.include?('width')
-          result[:height] = Attributes.convert_size(styles['height'], pdf.bounds.height) if styles.include?('height')
+          result[:width] = Utils.convert_size(styles['width'], pdf.bounds.width) if styles.include?('width')
+          result[:height] = Utils.convert_size(styles['height'], pdf.bounds.height) if styles.include?('height')
           result[:position] = styles[:align] if %i[left center right].include?(styles[:align])
         end
       end
