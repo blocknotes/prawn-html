@@ -24,7 +24,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
     subject(:custom_render) { hr.custom_render(pdf, context) }
 
     let(:context) { nil }
-    let(:pdf) { instance_double(Prawn::Document, stroke_horizontal_rule: true) }
+    let(:pdf) { instance_double(Prawn::Document, stroke_horizontal_rule: true, stroke_color: '000000') }
 
     it 'calls stroke_horizontal_rule on the pdf instance' do
       custom_render
@@ -34,7 +34,9 @@ RSpec.describe PrawnHtml::Tags::Hr do
     context 'with a dash number set' do
       subject(:hr) { described_class.new(:hr, 'data-dash' => '5') }
 
-      let(:pdf) { instance_double(Prawn::Document, dash: true, stroke_horizontal_rule: true, undash: true) }
+      let(:pdf) do
+        instance_double(Prawn::Document, dash: true, stroke_horizontal_rule: true, undash: true, stroke_color: '000000')
+      end
 
       it 'calls the dash methods around stroke', :aggregate_failures do
         custom_render
@@ -47,13 +49,31 @@ RSpec.describe PrawnHtml::Tags::Hr do
     context 'with a dash array set' do
       subject(:hr) { described_class.new(:hr, 'data-dash' => '1, 2, 3') }
 
-      let(:pdf) { instance_double(Prawn::Document, dash: true, stroke_horizontal_rule: true, undash: true) }
+      let(:pdf) do
+        instance_double(Prawn::Document, dash: true, stroke_horizontal_rule: true, undash: true, stroke_color: '000000')
+      end
 
       it 'calls the dash methods around stroke', :aggregate_failures do
         custom_render
         expect(pdf).to have_received(:dash).with([1, 2, 3]).ordered
         expect(pdf).to have_received(:stroke_horizontal_rule).ordered
         expect(pdf).to have_received(:undash).ordered
+      end
+    end
+
+    context 'with a color set via style attributes' do
+      subject(:hr) { described_class.new(:hr, 'style' => 'color: red') }
+
+      let(:pdf) do
+        instance_double(Prawn::Document, stroke_horizontal_rule: true, stroke_color: '000000', 'stroke_color=': true)
+      end
+
+      it 'calls the color methods around stroke', :aggregate_failures do
+        custom_render
+        expect(pdf).to have_received(:stroke_color).ordered
+        expect(pdf).to have_received(:'stroke_color=').with('ff0000').ordered
+        expect(pdf).to have_received(:stroke_horizontal_rule).ordered
+        expect(pdf).to have_received(:'stroke_color=').with('000000').ordered
       end
     end
   end
