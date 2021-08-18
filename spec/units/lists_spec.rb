@@ -20,7 +20,7 @@ RSpec.describe 'Lists' do
     end
     let(:size) { TestUtils.default_font_size }
     let(:margin_left) do
-      PrawnHtml::Attributes.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
+      PrawnHtml::Utils.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
     end
 
     it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do

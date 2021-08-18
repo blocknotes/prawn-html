@@ -36,7 +36,7 @@ RSpec.describe 'Lists' do
       expect(text_analysis.font_settings).to match_array(expected_array)
 
       font = TestUtils.default_font
-      margin_left = PrawnHtml::Attributes.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
+      margin_left = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
       x = pdf.page.margins[:left] + margin_left
       y = pdf.y - font.ascender
 

@@ -24,7 +24,7 @@ RSpec.describe 'Blocks' do
 
     let(:expected_content) { ['Some content in a element p'] }
     let(:expected_positions) do
-      margin = PrawnHtml::Attributes.convert_size(PrawnHtml::Tags::P::MARGIN_TOP.to_s)
+      margin = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::P::MARGIN_TOP.to_s)
       y = pdf_doc.y - TestUtils.default_font.ascender - margin
       [[pdf_doc.page.margins[:left], y.round(4)]]
     end

@@ -29,7 +29,7 @@ RSpec.describe 'Styles' do
 
   describe 'attribute font-size' do
     let(:html) { '<div style="font-size: 20px">Some content...</div>' }
-    let(:size) { PrawnHtml::Attributes.convert_size('20px') }
+    let(:size) { PrawnHtml::Utils.convert_size('20px') }
 
     let(:expected_buffer) { [{ size: size, text: "Some content..." }] }
     let(:expected_options) { {} }
