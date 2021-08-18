@@ -16,13 +16,13 @@ module PrawnHtml
     STYLES_LIST = {
       # text node styles
       'background' => { key: :background, set: :convert_color },
-      'callback' => { key: :callback, set: :copy },
+      'callback' => { key: :callback, set: :copy_value },
       'color' => { key: :color, set: :convert_color },
       'font-family' => { key: :font, set: :unquote },
       'font-size' => { key: :size, set: :convert_size },
       'font-style' => { key: :styles, set: :append_symbol },
       'font-weight' => { key: :styles, set: :append_symbol },
-      'href' => { key: :link, set: :copy },
+      'href' => { key: :link, set: :copy_value },
       'letter-spacing' => { key: :character_spacing, set: :convert_float },
       'text-decoration' => { key: :styles, set: :append_symbol },
       # tag opening styles

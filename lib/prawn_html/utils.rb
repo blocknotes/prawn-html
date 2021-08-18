@@ -58,7 +58,7 @@ module PrawnHtml
     # @param value
     #
     # @return value
-    def copy(value)
+    def copy_value(value)
       value
     end
 
@@ -73,6 +73,6 @@ module PrawnHtml
       end
     end
 
-    module_function :convert_color, :convert_float, :convert_size, :convert_symbol, :copy, :unquote
+    module_function :convert_color, :convert_float, :convert_size, :convert_symbol, :copy_value, :unquote
   end
 end

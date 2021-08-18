@@ -109,8 +109,8 @@ RSpec.describe PrawnHtml::Utils do
     end
   end
 
-  describe '.copy' do
-    subject(:copy) { described_class.copy(value) }
+  describe '.copy_value' do
+    subject(:copy_value) { described_class.copy_value(value) }
 
     context 'with any value (ex. "some_string")' do
       let(:value) { 'some_string' }
