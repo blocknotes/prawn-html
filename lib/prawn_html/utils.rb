@@ -6,15 +6,19 @@ module PrawnHtml
     #
     # @param value [String] HTML string color
     #
-    # @return [String] adjusted string color
+    # @return [String] adjusted string color or nil if value is invalid
     def convert_color(value)
-      return '' if !value&.include? '#'
+      val = value.to_s.strip.downcase
+      return Regexp.last_match[1] if val.match /\A#([a-f0-9]{6})\Z/ # rubocop:disable Performance/RedundantMatch
 
-      val = value.downcase.gsub!(/[^a-f0-9]/, '')
-      return val unless val.size == 3
-
-      a, b, c = val.chars
-      a * 2 + b * 2 + c * 2
+      if val.match /\A#([a-f0-9]{3})\Z/ # rubocop:disable Performance/RedundantMatch
+        r, g, b = Regexp.last_match[1].chars
+        return r * 2 + g * 2 + b * 2
+      end
+      if val.match /\Argb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\Z/ # rubocop:disable Style/GuardClause, Performance/RedundantMatch
+        r, g, b = Regexp.last_match[1..3].map { |v| v.to_i.to_s(16) }
+        "#{r.rjust(2, '0')}#{g.rjust(2, '0')}#{b.rjust(2, '0')}"
+      end
     end
 
     # Converts a decimal number string

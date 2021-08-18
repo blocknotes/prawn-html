@@ -7,25 +7,31 @@ RSpec.describe PrawnHtml::Utils do
     context 'with a nil value' do
       let(:value) { nil }
 
-      it { is_expected.to eq '' }
+      it { is_expected.to be_nil }
     end
 
     context 'with a blank string value' do
       let(:value) { '' }
 
-      it { is_expected.to eq '' }
+      it { is_expected.to be_nil }
     end
 
     context 'with a 3 characters string value (ex. "#A80")' do
-      let(:value) { '#A80' }
+      let(:value) { ' #A80' }
 
       it { is_expected.to eq 'aa8800' }
     end
 
     context 'with a 6 characters string value (ex. "#12aB0f")' do
-      let(:value) { '#12aB0f' }
+      let(:value) { '#12aB0f ' }
 
       it { is_expected.to eq '12ab0f' }
+    end
+
+    context 'with an RGB value (ex. "RGB(192, 0, 255)")' do
+      let(:value) { 'RGB(192, 0, 255)' }
+
+      it { is_expected.to eq 'c000ff' }
     end
   end
 
