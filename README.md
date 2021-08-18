@@ -60,8 +60,8 @@ HTML tags:
 
 CSS attributes (dimensional units are ignored and considered in pixel):
 
-- **background**: for *mark* tag, only 3 or 6 hex digits format, ex. `style="background: #FECD08"`
-- **color**: only 3 or 6 hex digits format - ex. `style="color: #FB1"`
+- **background**: for *mark* tag (3/6 hex digits or RGB or color name), ex. `style="background: #FECD08"`
+- **color**: (3/6 hex digits or RGB or color name) ex. `style="color: #FB1"`
 - **font-family**: font must be registered, quotes are optional, ex. `style="font-family: Courier"`
 - **font-size**: ex. `style="font-size: 20px"`
 - **font-style**: values: *:italic*, ex. `style="font-style: italic"`
@@ -77,6 +77,12 @@ CSS attributes (dimensional units are ignored and considered in pixel):
 - **text-align**: `left` | `center` | `right` | `justify`, ex. `style="text-align: center"`
 - **text-decoration**: `underline`, ex. `style="text-decoration: underline"`
 - **width**: for *img* tag, support also percentage, ex. `<img src="image.jpg" style="width: 50%; height: 200px"/>`
+
+For colors, the supported formats are:
+- 3 hex digits, ex. `color: #FB1`;
+- 6 hex digits, ex. `color: #abcdef`;
+- RGB, ex. `color: RGB(64, 0, 128)`;
+- color name, ex. `color: yellow`.
 
 ## Data attributes
 

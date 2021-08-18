@@ -4,6 +4,12 @@ module PrawnHtml
   module Utils
     # Converts a color string
     #
+    # Supported formats:
+    # - 3 hex digits, ex. `color: #FB1`;
+    # - 6 hex digits, ex. `color: #abcdef`;
+    # - RGB, ex. `color: RGB(64, 0, 128)`;
+    # - color name, ex. `color: red`.
+    #
     # @param value [String] HTML string color
     #
     # @return [String] adjusted string color or nil if value is invalid
@@ -15,10 +21,12 @@ module PrawnHtml
         r, g, b = Regexp.last_match[1].chars
         return r * 2 + g * 2 + b * 2
       end
-      if val.match /\Argb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\Z/ # rubocop:disable Style/GuardClause, Performance/RedundantMatch
+      if val.match /\Argb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\Z/ # rubocop:disable Performance/RedundantMatch
         r, g, b = Regexp.last_match[1..3].map { |v| v.to_i.to_s(16) }
-        "#{r.rjust(2, '0')}#{g.rjust(2, '0')}#{b.rjust(2, '0')}"
+        return "#{r.rjust(2, '0')}#{g.rjust(2, '0')}#{b.rjust(2, '0')}"
       end
+
+      COLORS[val]
     end
 
     # Converts a decimal number string

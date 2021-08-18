@@ -10,8 +10,8 @@ RSpec.describe PrawnHtml::Utils do
       it { is_expected.to be_nil }
     end
 
-    context 'with a blank string value' do
-      let(:value) { '' }
+    context 'with an invalid value' do
+      let(:value) { ' unknown color ' }
 
       it { is_expected.to be_nil }
     end
@@ -32,6 +32,12 @@ RSpec.describe PrawnHtml::Utils do
       let(:value) { 'RGB(192, 0, 255)' }
 
       it { is_expected.to eq 'c000ff' }
+    end
+
+    context 'with a color name (ex. "rebeccapurple")' do
+      let(:value) { ' rebeccapurple ' }
+
+      it { is_expected.to eq '663399' }
     end
   end
 
