@@ -50,13 +50,14 @@ HTML tags:
 - **img**: image
 - **li**: list item
 - **mark**: highlight
+- **ol**: ordered list
 - **p**: block element
 - **s**: strike-through
 - **small**: smaller text
 - **span**: inline element
 - **strong**: bold
 - **u**: underline
-- **ul**: list
+- **ul**: unordered list
 
 CSS attributes (dimensional units are ignored and considered in pixel):
 
