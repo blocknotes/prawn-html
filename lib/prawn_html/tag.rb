@@ -12,7 +12,7 @@ module PrawnHtml
     # @param tag [Symbol] tag name
     # @param attributes [Hash] hash of element attributes
     # @param document_styles [Hash] hash of document styles
-    def initialize(tag, attributes = {}, document_styles = {})
+    def initialize(tag, attributes: {}, document_styles: {})
       @tag = tag
       element_styles = attributes.delete(:style)
       @attrs = Attributes.new(attributes)
