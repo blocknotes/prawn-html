@@ -15,6 +15,31 @@ RSpec.describe PrawnHtml::Context do
     end
   end
 
+  describe '#add' do
+    let(:some_tag_class) do
+      Class.new(PrawnHtml::Tag) do
+        def on_context_add(context)
+          # extra init after context insertion
+        end
+      end
+    end
+    let(:tag1) { instance_double(PrawnHtml::Tag, 'parent=': true) }
+    let(:tag2) { instance_double(some_tag_class, 'parent=': true, on_context_add: true) }
+
+    it 'adds the elements', :aggregate_failures do
+      expect { context.add(tag1) }.to change(context, :size).from(0).to(1)
+      expect(tag1).to have_received('parent=').with(nil)
+
+      expect { context.add(tag2) }.to change(context, :size).from(1).to(2)
+      expect(tag2).to have_received(:'parent=').with(tag1)
+      expect(tag2).to have_received(:on_context_add).with(context)
+    end
+
+    it 'returns the context itself' do
+      expect(context.add(tag1)).to eq(context)
+    end
+  end
+
   describe '#before_content' do
     subject(:before_content) { context.before_content }
 

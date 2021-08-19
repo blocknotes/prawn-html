@@ -52,10 +52,22 @@ RSpec.describe PrawnHtml::DocumentRenderer do
   describe '#on_tag_open' do
     subject(:on_tag_open) { document_renderer.on_tag_open(tag, attributes) }
 
-    let(:tag) { :div }
     let(:attributes) { { 'class' => 'green' } }
 
-    it { is_expected.to be_kind_of PrawnHtml::Tags::Div }
+    context 'with a div tag' do
+      let(:tag) { :div }
+
+      before do
+        allow(context).to receive(:add)
+      end
+
+      it { is_expected.to be_kind_of PrawnHtml::Tags::Div }
+
+      it 'adds the element to the context' do
+        on_tag_open
+        expect(context).to have_received(:add)
+      end
+    end
 
     context 'with an unknown tag' do
       let(:tag) { :unknown_tag }

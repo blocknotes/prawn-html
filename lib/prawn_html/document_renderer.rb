@@ -83,7 +83,7 @@ module PrawnHtml
     def setup_element(element)
       add_space_if_needed unless render_if_needed(element)
       apply_tag_open_styles(element)
-      context.push(element)
+      context.add(element)
       element.custom_render(pdf, context) if element.respond_to?(:custom_render)
     end
 

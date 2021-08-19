@@ -4,6 +4,7 @@ module PrawnHtml
   class Tag
     TAG_CLASSES = %w[A B Body Br Del Div H Hr I Img Li Mark P Small Span U Ul].freeze
 
+    attr_accessor :parent
     attr_reader :attrs, :tag
 
     # Init the Tag
