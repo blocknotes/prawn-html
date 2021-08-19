@@ -19,9 +19,11 @@ module PrawnHtml
     #
     # @param styles [Hash] styles hash with CSS selectors as keys and rules as values
     def assign_document_styles(styles)
-      @document_styles = styles.transform_values do |style_rules|
-        Attributes.new(style: style_rules).styles
-      end
+      @document_styles.merge!(
+        styles.transform_values do |style_rules|
+          Attributes.new(style: style_rules).styles
+        end
+      )
     end
 
     # On tag close callback
