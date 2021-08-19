@@ -9,9 +9,13 @@ module PrawnHtml
         true
       end
 
+      def on_context_add(_context)
+        @counter = (parent.counter += 1) if parent.is_a? Ol
+      end
+
       def tag_styles
         {
-          before_content: '&bullet;  '
+          before_content: @counter ? "#{@counter}.  " : '&bullet;  '
         }
       end
     end
