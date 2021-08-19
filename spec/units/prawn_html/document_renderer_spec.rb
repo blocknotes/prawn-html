@@ -51,9 +51,12 @@ RSpec.describe PrawnHtml::DocumentRenderer do
   end
 
   describe '#on_tag_open' do
-    subject(:on_tag_open) { document_renderer.on_tag_open(tag, attributes) }
+    subject(:on_tag_open) do
+      document_renderer.on_tag_open(tag, attributes: attributes, document_styles: document_styles)
+    end
 
     let(:attributes) { { 'class' => 'green' } }
+    let(:document_styles) { 'color: red' }
 
     context 'with a div tag' do
       let(:tag) { :div }
@@ -128,11 +131,11 @@ RSpec.describe PrawnHtml::DocumentRenderer do
 
     context 'with an element with position absolute' do
       before do
-        document_renderer.on_tag_open(:div, { 'style' => 'position: absolute; left: 50px; top: 10px' })
+        document_renderer.on_tag_open(:div, attributes: { 'style' => 'position: absolute; left: 50px; top: 10px' })
         document_renderer.on_text_node('Some content')
       end
 
-      it "renders the current buffer's content in a bounded box", :aggregate_failures do
+      it "renders the current buffer's content in a bounded box" do
         render
         expect(pdf).to have_received(:puts)
       end

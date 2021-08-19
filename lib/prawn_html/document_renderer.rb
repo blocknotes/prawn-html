@@ -40,13 +40,14 @@ module PrawnHtml
     #
     # @param tag_name [String] the tag name of the opening element
     # @param attributes [Hash] an hash of the element attributes
+    # @param document_styles [String] document styles to apply to the element
     #
     # @return [Tag] the opening element wrapper
-    def on_tag_open(tag_name, attributes)
+    def on_tag_open(tag_name, attributes:, document_styles: '')
       tag_class = Tag.class_for(tag_name)
       return unless tag_class
 
-      tag_class.new(tag_name, attributes, document_styles).tap do |element|
+      tag_class.new(tag_name, attributes: attributes, document_styles: document_styles).tap do |element|
         setup_element(element)
       end
     end

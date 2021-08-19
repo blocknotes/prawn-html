@@ -11,12 +11,13 @@ module PrawnHtml
     #
     # @param tag [Symbol] tag name
     # @param attributes [Hash] hash of element attributes
-    # @param document_styles [Hash] hash of document styles
-    def initialize(tag, attributes: {}, document_styles: {})
+    # @param document_styles [String] string of document styles
+    def initialize(tag, attributes: {}, document_styles: '')
       @tag = tag
       element_styles = attributes.delete(:style)
       @attrs = Attributes.new(attributes)
-      process_styles(document_styles, element_styles)
+      doc_styles = Attributes.new(style: document_styles).styles
+      process_styles(doc_styles, element_styles)
     end
 
     # Is a block tag?
@@ -74,21 +75,9 @@ module PrawnHtml
 
     private
 
-    def evaluate_document_styles(document_styles)
-      selectors = [
-        tag.to_s,
-        attrs['class'] ? ".#{attrs['class']}" : nil,
-        attrs['id'] ? "##{attrs['id']}" : nil
-      ].compact!
-      document_styles.each_with_object({}) do |(sel, attributes), res|
-        res.merge!(attributes) if selectors.include?(sel)
-      end
-    end
-
     def process_styles(document_styles, element_styles)
       attrs.merge_styles!(attrs.process_styles(tag_styles)) if respond_to?(:tag_styles)
-      doc_styles = evaluate_document_styles(document_styles)
-      attrs.merge_styles!(doc_styles)
+      attrs.merge_styles!(document_styles)
       el_styles = Attributes.parse_styles(element_styles)
       attrs.merge_styles!(attrs.process_styles(el_styles)) if el_styles
     end
