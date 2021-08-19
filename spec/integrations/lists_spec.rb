@@ -32,7 +32,7 @@ RSpec.describe 'Lists' do
 
       expected_array = [{ name: TestUtils.default_font_family, size: TestUtils.default_font_size }] * 3
 
-      expect(text_analysis.strings).to match_array(['•  First item', '•  Second item', '•  Third item'])
+      expect(text_analysis.strings).to match_array(['• First item', '• Second item', '• Third item'])
       expect(text_analysis.font_settings).to match_array(expected_array)
 
       font = TestUtils.default_font

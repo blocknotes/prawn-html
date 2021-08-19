@@ -14,8 +14,16 @@ RSpec.describe PrawnHtml::Tags::Li do
   describe '#tag_styles' do
     subject(:tag_styles) { li.tag_styles }
 
+    let(:context) { instance_double(PrawnHtml::Context) }
+    let(:parent) { PrawnHtml::Tags::Ul.new(:ul) }
+
+    before do
+      li.parent = parent
+      li.on_context_add(context)
+    end
+
     it 'merges the before_content property into tag_styles' do
-      expect(tag_styles).to match(before_content: '&bullet;  ')
+      expect(tag_styles).to match(before_content: '&bullet; ')
     end
   end
 
@@ -31,7 +39,7 @@ RSpec.describe PrawnHtml::Tags::Li do
     end
 
     it 'sets the counter in before content' do
-      expect(li.tag_styles).to eq(before_content: '1.  ')
+      expect(li.tag_styles).to eq(before_content: '1. ')
     end
   end
 end

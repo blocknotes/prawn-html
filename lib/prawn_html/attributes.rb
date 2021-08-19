@@ -10,7 +10,7 @@ module PrawnHtml
       block: %i[align leading margin_left padding_left],
       tag_close: %i[margin_bottom padding_bottom],
       tag_open: %i[margin_top padding_top],
-      text_node: %i[background callback character_spacing color font link size styles]
+      text_node: %i[background callback character_spacing color font link list_style_type size styles]
     }.freeze
 
     STYLES_LIST = {
@@ -24,6 +24,7 @@ module PrawnHtml
       'font-weight' => { key: :styles, set: :append_symbol },
       'href' => { key: :link, set: :copy_value },
       'letter-spacing' => { key: :character_spacing, set: :convert_float },
+      'list-style-type' => { key: :list_style_type, set: :unquote },
       'text-decoration' => { key: :styles, set: :append_symbol },
       # tag opening styles
       'margin-top' => { key: :margin_top, set: :convert_size },

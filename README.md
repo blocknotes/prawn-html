@@ -71,6 +71,7 @@ CSS attributes (dimensional units are ignored and considered in pixel):
 - **href**: for *a* tag, ex. `<a href="http://www.google.com/">Google</a>`
 - **letter-spacing**: ex. `style="letter-spacing: 1.5"`
 - **line-height**: ex. `style="line-height: 10px"`
+- **list-style-type**: for *ul*, a string, ex. `style="list-style-type: '- '"`
 - **margin-bottom**: ex. `style="margin-bottom: 10px"`
 - **margin-left**: ex. `style="margin-left: 15px"`
 - **margin-top**: ex. `style="margin-top: 20px"`
