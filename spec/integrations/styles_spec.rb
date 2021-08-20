@@ -54,6 +54,24 @@ RSpec.describe 'Styles' do
     end
   end
 
+  describe 'attribute break-after' do
+    let(:html) { '<div style="break-after: auto">Some content</div>' }
+
+    it 'creates a new page' do
+      pdf.render
+      expect(pdf.page_count).to eq 2
+    end
+  end
+
+  describe 'attribute break-before' do
+    let(:html) { '<div style="break-before: auto">Some content</div>' }
+
+    it 'creates a new page' do
+      pdf.render
+      expect(pdf.page_count).to eq 2
+    end
+  end
+
   describe 'attribute font-family' do
     context 'with some content with Courier font' do
       let(:html) { '<div style="font-family: Courier">Some content</div>' }

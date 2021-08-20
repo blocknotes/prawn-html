@@ -3,11 +3,21 @@
 RSpec.describe PrawnHtml::PdfWrapper do
   subject(:pdf_wrapper) { described_class.new(pdf) }
 
-  let(:pdf) { instance_double(Prawn::Document, bounds: true, formatted_text: true, image: true) }
+  let(:pdf) { instance_double(Prawn::Document) }
 
-  it 'delegates some methods to the pdf instance', :aggregate_failures do
-    pdf_wrapper.bounds
-    expect(pdf).to have_received(:bounds)
+  describe 'delegated methods' do
+    %i[bounds start_new_page].each do |method_name|
+      context "with #{method_name} method" do
+        before do
+          allow(pdf).to receive(method_name)
+        end
+
+        it 'delegates the method call to the pdf instance' do
+          pdf_wrapper.send(method_name)
+          expect(pdf).to have_received(method_name)
+        end
+      end
+    end
   end
 
   describe '#advance_cursor' do
@@ -79,6 +89,10 @@ RSpec.describe PrawnHtml::PdfWrapper do
     let(:src) { 'some_image_path' }
     let(:options) { {} }
 
+    before do
+      allow(pdf).to receive(:image)
+    end
+
     it 'calls the PDF image method' do
       image
       expect(pdf).to have_received(:image).with(src, options)
@@ -91,6 +105,10 @@ RSpec.describe PrawnHtml::PdfWrapper do
     let(:bounding_box) { nil }
     let(:buffer) { [] }
     let(:options) { {} }
+
+    before do
+      allow(pdf).to receive(:formatted_text)
+    end
 
     it 'calls the PDF formatted_text method' do
       puts
