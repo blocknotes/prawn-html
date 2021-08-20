@@ -11,7 +11,7 @@ Features:
 - custom [data attributes](#data-attributes) for Prawn PDF features;
 - no extra settings: it just parses an input HTML and outputs to a Prawn PDF document.
 
-**Notice**: render HTML documents properly is not an easy task, this gem support only some HTML tags and a small set of CSS attributes. If you need more rendering accuracy take a look at other projects like WickedPDF.
+**Notice**: render HTML documents properly is not an easy task, this gem support only some HTML tags and a small set of CSS attributes. If you need more rendering accuracy take a look at other projects like *WickedPDF* or *PDFKit*.
 
 > [prawn-styled-text](https://github.com/blocknotes/prawn-styled-text) rewritten from scratch, finally!
 
@@ -112,6 +112,28 @@ Only single CSS selectors and basic ones are supported. Example:
 </body>
 </html>
 ```
+
+## Additional notes
+
+### Rails: generate PDF on the fly
+
+Sample controller's action to create a PDF from Rails:
+
+```rb
+class SomeController < ApplicationController
+  def sample_action
+    respond_to do |format|
+      format.pdf do
+        pdf = Prawn::Document.new
+        PrawnHtml.append_html(pdf, '<h1 style="text-align: center">Just a test</h1>')
+        send_data(pdf.render, filename: 'sample.pdf', type: 'application/pdf')
+      end
+    end
+  end
+end
+```
+
+More details in this blogpost: [generate PDF from HTML](https://www.blocknot.es/2021-08-20-rails-generate-pdf-from-html/)
 
 ## Do you like it? Star it!
 
