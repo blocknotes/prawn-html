@@ -53,6 +53,28 @@ RSpec.describe PrawnHtml::PdfWrapper do
     end
   end
 
+  describe '#horizontal_rule' do
+    subject(:horizontal_rule) { pdf_wrapper.horizontal_rule(color: color, dash: dash) }
+
+    let(:color) { 'ffbb11' }
+    let(:dash) { 5 }
+
+    before do
+      methods = { dash: nil, stroke_color: 'abcdef', :stroke_color= => nil, stroke_horizontal_rule: nil, undash: nil }
+      allow(pdf).to receive_messages(methods)
+    end
+
+    it 'calls the PDF stroke_horizontal_rule method', :aggregate_failures do
+      horizontal_rule
+      expect(pdf).to have_received(:stroke_color).ordered
+      expect(pdf).to have_received(:dash).with(5).ordered
+      expect(pdf).to have_received(:stroke_color=).with('ffbb11').ordered
+      expect(pdf).to have_received(:stroke_horizontal_rule).ordered
+      expect(pdf).to have_received(:stroke_color=).with('abcdef').ordered
+      expect(pdf).to have_received(:undash).ordered
+    end
+  end
+
   describe '#puts' do
     subject(:puts) { pdf_wrapper.puts(buffer, options, bounding_box: bounding_box) }
 
@@ -63,6 +85,25 @@ RSpec.describe PrawnHtml::PdfWrapper do
     it 'calls the PDF formatted_text method' do
       puts
       expect(pdf).to have_received(:formatted_text).with(buffer, options)
+    end
+  end
+
+  describe '#underline' do
+    subject(:underline) { pdf_wrapper.underline(x1: x1, x2: x2, y: y) }
+
+    let(:x1) { 20 }
+    let(:x2) { 50 }
+    let(:y) { 40 }
+
+    before do
+      allow(pdf).to receive(:stroke).and_yield
+      allow(pdf).to receive(:line)
+    end
+
+    it 'calls the PDF formatted_text method', :aggregate_failures do
+      underline
+      expect(pdf).to have_received(:stroke).ordered
+      expect(pdf).to have_received(:line).with([20, 40], [50, 40]).ordered
     end
   end
 end

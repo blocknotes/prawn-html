@@ -6,7 +6,7 @@ module PrawnHtml
   class PdfWrapper
     extend Forwardable
 
-    def_delegators :@pdf, :bounds, :dash, :image, :line, :stroke, :stroke_color, :stroke_color=, :stroke_horizontal_rule, :undash
+    def_delegators :@pdf, :bounds, :image
 
     # Wrapper for Prawn PDF Document
     #
@@ -31,11 +31,24 @@ module PrawnHtml
     # @param width [Float] width of the rectangle
     # @param height [Float] height of the rectangle
     # @param color [String] fill color
-    def draw_rectangle(x:, y:, width:, height:, color:) # rubocop:disable Naming/MethodParameterName
+    def draw_rectangle(x:, y:, width:, height:, color:)
       current_fill_color = pdf.fill_color
       pdf.fill_color = color
       pdf.fill_rectangle([y, x], width, height)
       pdf.fill_color = current_fill_color
+    end
+
+    # Horizontal line
+    #
+    # @param color [String] line color
+    # @param dash [Integer|Array] integer or array of integer with dash options
+    def horizontal_rule(color:, dash:)
+      current_color = pdf.stroke_color
+      pdf.dash(dash) if dash
+      pdf.stroke_color = color if color
+      pdf.stroke_horizontal_rule
+      pdf.stroke_color = current_color if color
+      pdf.undash if dash
     end
 
     # Output to the PDF document
@@ -51,6 +64,17 @@ module PrawnHtml
         pdf.formatted_text(buffer, options)
       end
       pdf.move_cursor_to(current_y)
+    end
+
+    # Underline
+    #
+    # @param x1 [Float] left position of the line
+    # @param x2 [Float] right position of the line
+    # @param y [Float] vertical position of the line
+    def underline(x1:, x2:, y:)
+      pdf.stroke do
+        pdf.line [x1, y], [x2, y]
+      end
     end
 
     private

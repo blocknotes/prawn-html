@@ -2,7 +2,7 @@
 
 RSpec.describe 'Misc' do
   let(:pdf_doc) do
-    methods = { advance_cursor: true, puts: true, stroke_color: true, stroke_horizontal_rule: true }
+    methods = { advance_cursor: true, puts: true, horizontal_rule: true }
     instance_double(PrawnHtml::PdfWrapper, methods)
   end
 
