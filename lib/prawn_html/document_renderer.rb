@@ -70,8 +70,7 @@ module PrawnHtml
     def render
       return if buffer.empty?
 
-      options = context.block_styles.slice(:align, :leading, :margin_left, :mode, :padding_left)
-      output_content(buffer.dup, options)
+      output_content(buffer.dup, context.block_styles)
       buffer.clear
       context.last_margin = 0
     end
@@ -114,11 +113,28 @@ module PrawnHtml
       pdf.move_down(move_down) if move_down > 0
     end
 
-    def output_content(buffer, options)
+    def output_content(buffer, block_styles)
       buffer.each { |item| item[:callback] = item[:callback].new(pdf, item) if item[:callback] }
-      left_indent = options.delete(:margin_left).to_f + options.delete(:padding_left).to_f
+      left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
+      options = block_styles.slice(:align, :leading, :mode, :padding_left)
       options[:indent_paragraphs] = left_indent if left_indent > 0
-      pdf.formatted_text(buffer, options)
+      formatted_text(buffer, options, bounding_box: bounds(block_styles))
+    end
+
+    def formatted_text(buffer, options, bounding_box: nil)
+      return pdf.formatted_text(buffer, options) unless bounding_box
+
+      pdf.bounding_box(*bounding_box) do
+        pdf.formatted_text(buffer, options)
+      end
+    end
+
+    def bounds(block_styles)
+      return unless block_styles[:position] == :absolute
+
+      y = pdf.bounds.height - (block_styles[:top] || 0)
+      w = pdf.bounds.width - (block_styles[:left] || 0)
+      [[block_styles[:left] || 0, y], { width: w }]
     end
   end
 end
