@@ -11,4 +11,30 @@ RSpec.describe PrawnHtml::PdfWrapper do
     expect(pdf).to have_received(:formatted_text).with([])
     expect(pdf).to have_received(:image).with('some_image')
   end
+
+  describe '#advance_cursor' do
+    subject(:advance_cursor) { pdf_wrapper.advance_cursor(quantity) }
+
+    before do
+      allow(pdf).to receive(:move_down)
+    end
+
+    context 'with some quantity' do
+      let(:quantity) { 20 }
+
+      it do
+        advance_cursor
+        expect(pdf).to have_received(:move_down).with(20)
+      end
+    end
+
+    context 'with zero quantity' do
+      let(:quantity) { 0 }
+
+      it do
+        advance_cursor
+        expect(pdf).not_to have_received(:move_down).with(20)
+      end
+    end
+  end
 end

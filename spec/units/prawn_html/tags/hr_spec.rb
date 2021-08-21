@@ -24,7 +24,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
     subject(:custom_render) { hr.custom_render(pdf, context) }
 
     let(:context) { nil }
-    let(:pdf) { instance_double(Prawn::Document, stroke_horizontal_rule: true, stroke_color: '000000') }
+    let(:pdf) { instance_double(PrawnHtml::PdfWrapper, stroke_horizontal_rule: true, stroke_color: '000000') }
 
     it 'calls stroke_horizontal_rule on the pdf instance' do
       custom_render
@@ -35,7 +35,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
       subject(:hr) { described_class.new(:hr, 'data-dash' => '5') }
 
       let(:pdf) do
-        instance_double(Prawn::Document, dash: true, stroke_horizontal_rule: true, undash: true, stroke_color: '000000')
+        instance_double(PrawnHtml::PdfWrapper, dash: true, stroke_horizontal_rule: true, undash: true, stroke_color: '000000')
       end
 
       it 'calls the dash methods around stroke', :aggregate_failures do
@@ -50,7 +50,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
       subject(:hr) { described_class.new(:hr, 'data-dash' => '1, 2, 3') }
 
       let(:pdf) do
-        instance_double(Prawn::Document, dash: true, stroke_horizontal_rule: true, undash: true, stroke_color: '000000')
+        instance_double(PrawnHtml::PdfWrapper, dash: true, stroke_horizontal_rule: true, undash: true, stroke_color: '000000')
       end
 
       it 'calls the dash methods around stroke', :aggregate_failures do
@@ -65,7 +65,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
       subject(:hr) { described_class.new(:hr, 'style' => 'color: red') }
 
       let(:pdf) do
-        instance_double(Prawn::Document, stroke_horizontal_rule: true, stroke_color: '000000', 'stroke_color=': true)
+        instance_double(PrawnHtml::PdfWrapper, stroke_horizontal_rule: true, stroke_color: '000000', 'stroke_color=': true)
       end
 
       it 'calls the color methods around stroke', :aggregate_failures do

@@ -103,14 +103,13 @@ module PrawnHtml
     def apply_tag_close_styles(element)
       tag_styles = element.tag_close_styles
       context.last_margin = tag_styles[:margin_bottom].to_f
-      move_down = context.last_margin + tag_styles[:padding_bottom].to_f
-      pdf.move_down(move_down) if move_down > 0
+      pdf.advance_cursor(context.last_margin + tag_styles[:padding_bottom].to_f)
     end
 
     def apply_tag_open_styles(element)
       tag_styles = element.tag_open_styles
       move_down = (tag_styles[:margin_top].to_f - context.last_margin) + tag_styles[:padding_top].to_f
-      pdf.move_down(move_down) if move_down > 0
+      pdf.advance_cursor(move_down) if move_down > 0
     end
 
     def output_content(buffer, block_styles)

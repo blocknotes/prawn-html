@@ -5,7 +5,7 @@ module PrawnHtml
     class Br < Tag
       ELEMENTS = [:br].freeze
 
-      BR_SPACING = 12
+      BR_SPACING = Utils.convert_size('12')
 
       def block?
         true
@@ -14,8 +14,7 @@ module PrawnHtml
       def custom_render(pdf, context)
         return if context.last_text_node
 
-        @spacing ||= Utils.convert_size(BR_SPACING.to_s)
-        pdf.move_down(@spacing)
+        pdf.advance_cursor(BR_SPACING)
       end
     end
   end
