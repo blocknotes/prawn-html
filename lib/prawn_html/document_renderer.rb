@@ -124,9 +124,11 @@ module PrawnHtml
     def formatted_text(buffer, options, bounding_box: nil)
       return pdf.formatted_text(buffer, options) unless bounding_box
 
+      current_y = pdf.cursor
       pdf.bounding_box(*bounding_box) do
         pdf.formatted_text(buffer, options)
       end
+      pdf.move_cursor_to(current_y)
     end
 
     def bounds(block_styles)

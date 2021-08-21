@@ -106,7 +106,7 @@ RSpec.describe PrawnHtml::DocumentRenderer do
     subject(:render) { document_renderer.render }
 
     before do
-      allow(pdf_doc).to receive_messages(formatted_text: true)
+      allow(pdf_doc).to receive_messages(formatted_text: true, move_cursor_to: true)
     end
 
     it "renders nothing when the buffer's content is empty" do
@@ -136,6 +136,7 @@ RSpec.describe PrawnHtml::DocumentRenderer do
         render
         expect(pdf_doc).to have_received(:bounding_box)
         expect(pdf_doc).to have_received(:formatted_text)
+        expect(pdf_doc).to have_received(:move_cursor_to)
       end
     end
   end
