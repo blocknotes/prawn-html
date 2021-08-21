@@ -157,8 +157,8 @@ module PrawnHtml
   }.freeze
 
   def append_html(pdf, html)
-    handler = PrawnHtml::HtmlHandler.new(pdf)
-    handler.process(html)
+    html_parser = PrawnHtml::HtmlParser.new(pdf)
+    html_parser.process(html)
   end
 
   module_function :append_html
@@ -173,4 +173,4 @@ Dir["#{__dir__}/prawn_html/callbacks/*.rb"].sort.each { |f| require f }
 require 'prawn_html/attributes'
 require 'prawn_html/context'
 require 'prawn_html/document_renderer'
-require 'prawn_html/html_handler'
+require 'prawn_html/html_parser'

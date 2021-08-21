@@ -3,8 +3,8 @@
 require 'oga'
 
 module PrawnHtml
-  class HtmlHandler
-    # Init the HtmlHandler
+  class HtmlParser
+    # Init the HtmlParser
     #
     # @param pdf [Prawn::Document] Target Prawn PDF document
     def initialize(pdf)
@@ -65,4 +65,6 @@ module PrawnHtml
       @processing = false if element.tag == :body
     end
   end
+
+  HtmlHandler = HtmlParser
 end
