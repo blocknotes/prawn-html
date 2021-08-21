@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'prawn'
-
 module PrawnHtml
   PX = 0.66 # conversion constant for pixel sixes
 
@@ -157,13 +155,16 @@ module PrawnHtml
   }.freeze
 
   def append_html(pdf, html)
-    renderer = DocumentRenderer.new(pdf)
+    pdf_wrapper = PdfWrapper.new(pdf)
+    renderer = DocumentRenderer.new(pdf_wrapper)
     html_parser = PrawnHtml::HtmlParser.new(renderer)
     html_parser.process(html)
   end
 
   module_function :append_html
 end
+
+require 'prawn'
 
 require 'prawn_html/utils'
 
@@ -173,5 +174,6 @@ Dir["#{__dir__}/prawn_html/callbacks/*.rb"].sort.each { |f| require f }
 
 require 'prawn_html/attributes'
 require 'prawn_html/context'
+require 'prawn_html/pdf_wrapper'
 require 'prawn_html/document_renderer'
 require 'prawn_html/html_parser'

@@ -7,7 +7,7 @@ module PrawnHtml
 
     # Init the DocumentRenderer
     #
-    # @param pdf [Prawn::Document] target Prawn PDF document
+    # @param pdf [PdfWrapper] target PDF wrapper
     def initialize(pdf)
       @buffer = []
       @context = Context.new

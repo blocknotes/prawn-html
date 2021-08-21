@@ -4,7 +4,8 @@ RSpec.describe PrawnHtml::DocumentRenderer do
   subject(:document_renderer) { described_class.new(pdf_doc) }
 
   let(:context) { PrawnHtml::Context.new }
-  let(:pdf_doc) { Prawn::Document.new }
+  let(:pdf_doc) { PrawnHtml::PdfWrapper.new(prawn_pdf_doc) }
+  let(:prawn_pdf_doc) { Prawn::Document.new }
 
   before do
     allow(PrawnHtml::Context).to receive(:new).and_return(context)
