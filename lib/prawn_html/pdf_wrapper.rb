@@ -6,7 +6,7 @@ module PrawnHtml
   class PdfWrapper
     extend Forwardable
 
-    def_delegators :@pdf, :bounding_box, :bounds, :cursor, :dash, :fill_color, :fill_color=, :fill_rectangle, :formatted_text, :image, :line, :move_cursor_to, :stroke, :stroke_color, :stroke_color=, :stroke_horizontal_rule, :undash
+    def_delegators :@pdf, :bounds, :dash, :fill_color, :fill_color=, :fill_rectangle, :image, :line, :stroke, :stroke_color, :stroke_color=, :stroke_horizontal_rule, :undash
 
     # Wrapper for Prawn PDF Document
     #
@@ -22,6 +22,21 @@ module PrawnHtml
       return if !move_down || move_down == 0
 
       pdf.move_down(move_down)
+    end
+
+    # Output to the PDF document
+    #
+    # @param buffer [Array] array of text items
+    # @param options [Hash] hash of options
+    # @param bounding_box [Array] bounding box arguments, if bounded
+    def puts(buffer, options, bounding_box: nil)
+      return pdf.formatted_text(buffer, options) unless bounding_box
+
+      current_y = pdf.cursor
+      pdf.bounding_box(*bounding_box) do
+        pdf.formatted_text(buffer, options)
+      end
+      pdf.move_cursor_to(current_y)
     end
 
     private

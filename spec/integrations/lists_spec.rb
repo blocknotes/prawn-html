@@ -1,14 +1,21 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Lists' do
+  let(:pdf) { Prawn::Document.new(page_size: 'A4', page_layout: :portrait) }
+
+  before do
+    PrawnHtml.append_html(pdf, html)
+  end
+
   context 'with an empty ul list' do
-    it 'renders no strings', :aggregate_failures do
-      html = <<~HTML
+    let(:html) do
+      <<~HTML
         <ul>
         </ul>
       HTML
+    end
 
-      pdf = TestUtils.styled_text_document(html)
+    it 'renders no strings', :aggregate_failures do
       text_analysis = PDF::Inspector::Text.analyze(pdf.render)
 
       expect(text_analysis.strings).to be_empty
@@ -18,16 +25,17 @@ RSpec.describe 'Lists' do
   end
 
   context 'with an ul list' do
-    it 'renders the list of elements', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
-      html = <<~HTML
+    let(:html) do
+      <<~HTML
         <ul>
           <li>First item</li>
           <li>Second item</li>
           <li>Third item</li>
         </ul>
       HTML
+    end
 
-      pdf = TestUtils.styled_text_document(html)
+    it 'renders the list of elements', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
       text_analysis = PDF::Inspector::Text.analyze(pdf.render)
 
       expected_array = [{ name: TestUtils.default_font_family, size: TestUtils.default_font_size }] * 3

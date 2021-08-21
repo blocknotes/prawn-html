@@ -107,12 +107,12 @@ RSpec.describe PrawnHtml::DocumentRenderer do
     subject(:render) { document_renderer.render }
 
     before do
-      allow(pdf).to receive_messages(formatted_text: true, move_cursor_to: true)
+      allow(pdf).to receive_messages(puts: true)
     end
 
     it "renders nothing when the buffer's content is empty" do
       render
-      expect(pdf).not_to have_received(:formatted_text)
+      expect(pdf).not_to have_received(:puts)
     end
 
     context 'with some content in the buffer' do
@@ -122,7 +122,7 @@ RSpec.describe PrawnHtml::DocumentRenderer do
 
       it "renders the current buffer's content" do
         render
-        expect(pdf).to have_received(:formatted_text)
+        expect(pdf).to have_received(:puts)
       end
     end
 
@@ -130,14 +130,11 @@ RSpec.describe PrawnHtml::DocumentRenderer do
       before do
         document_renderer.on_tag_open(:div, { 'style' => 'position: absolute; left: 50px; top: 10px' })
         document_renderer.on_text_node('Some content')
-        allow(pdf).to receive(:bounding_box).and_call_original
       end
 
       it "renders the current buffer's content in a bounded box", :aggregate_failures do
         render
-        expect(pdf).to have_received(:bounding_box)
-        expect(pdf).to have_received(:formatted_text)
-        expect(pdf).to have_received(:move_cursor_to)
+        expect(pdf).to have_received(:puts)
       end
     end
   end

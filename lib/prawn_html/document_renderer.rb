@@ -117,17 +117,7 @@ module PrawnHtml
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
       options = block_styles.slice(:align, :leading, :mode, :padding_left)
       options[:indent_paragraphs] = left_indent if left_indent > 0
-      formatted_text(buffer, options, bounding_box: bounds(block_styles))
-    end
-
-    def formatted_text(buffer, options, bounding_box: nil)
-      return pdf.formatted_text(buffer, options) unless bounding_box
-
-      current_y = pdf.cursor
-      pdf.bounding_box(*bounding_box) do
-        pdf.formatted_text(buffer, options)
-      end
-      pdf.move_cursor_to(current_y)
+      pdf.puts(buffer, options, bounding_box: bounds(block_styles))
     end
 
     def bounds(block_styles)
