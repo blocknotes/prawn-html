@@ -1,20 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::HtmlParser do
-  subject(:html_parser) { described_class.new(pdf_doc) }
+  subject(:html_parser) { described_class.new(renderer) }
 
-  let(:pdf_doc) { instance_double(Prawn::Document, formatted_text: nil) }
-
-  describe '#initialize' do
-    before do
-      allow(PrawnHtml::DocumentRenderer).to receive(:new).and_call_original
-    end
-
-    it 'prepares the document renderer' do
-      html_parser
-      expect(PrawnHtml::DocumentRenderer).to have_received(:new).with(pdf_doc)
-    end
-  end
+  let(:renderer) { instance_double(PrawnHtml::DocumentRenderer, flush: true, on_text_node: nil) }
 
   describe '#process' do
     subject(:process) { html_parser.process('some html') }
@@ -26,6 +15,7 @@ RSpec.describe PrawnHtml::HtmlParser do
     it 'calls Oga parse html', :aggregate_failures do
       process
       expect(Oga).to have_received(:parse_html).with('some html')
+      expect(renderer).to have_received(:on_text_node)
     end
   end
 end

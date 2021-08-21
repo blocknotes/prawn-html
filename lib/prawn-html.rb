@@ -157,7 +157,8 @@ module PrawnHtml
   }.freeze
 
   def append_html(pdf, html)
-    html_parser = PrawnHtml::HtmlParser.new(pdf)
+    renderer = DocumentRenderer.new(pdf)
+    html_parser = PrawnHtml::HtmlParser.new(renderer)
     html_parser.process(html)
   end
 
