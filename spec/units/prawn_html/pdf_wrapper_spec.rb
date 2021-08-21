@@ -38,6 +38,21 @@ RSpec.describe PrawnHtml::PdfWrapper do
     end
   end
 
+  describe '#draw_rectangle' do
+    subject(:draw_rectangle) { pdf_wrapper.draw_rectangle(x: 50, y: 80, width: 200, height: 150, color: 'ffbb111') }
+
+    before do
+      allow(pdf).to receive_messages(fill_color: 'aabbbcc', :fill_color= => true, fill_rectangle: true)
+    end
+
+    it 'calls the PDF fill_rectangle method', :aggregate_failures do
+      draw_rectangle
+      expect(pdf).to have_received(:fill_color=).with('ffbb111').ordered
+      expect(pdf).to have_received(:fill_rectangle).with([80, 50], 200, 150).ordered
+      expect(pdf).to have_received(:fill_color=).with('aabbbcc').ordered
+    end
+  end
+
   describe '#puts' do
     subject(:puts) { pdf_wrapper.puts(buffer, options, bounding_box: bounding_box) }
 

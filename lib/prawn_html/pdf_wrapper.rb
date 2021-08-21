@@ -6,7 +6,7 @@ module PrawnHtml
   class PdfWrapper
     extend Forwardable
 
-    def_delegators :@pdf, :bounds, :dash, :fill_color, :fill_color=, :fill_rectangle, :image, :line, :stroke, :stroke_color, :stroke_color=, :stroke_horizontal_rule, :undash
+    def_delegators :@pdf, :bounds, :dash, :image, :line, :stroke, :stroke_color, :stroke_color=, :stroke_horizontal_rule, :undash
 
     # Wrapper for Prawn PDF Document
     #
@@ -22,6 +22,20 @@ module PrawnHtml
       return if !move_down || move_down == 0
 
       pdf.move_down(move_down)
+    end
+
+    # Draw a rectangle
+    #
+    # @param x [Float] left position of the rectangle
+    # @param y [Float] top position of the rectangle
+    # @param width [Float] width of the rectangle
+    # @param height [Float] height of the rectangle
+    # @param color [String] fill color
+    def draw_rectangle(x:, y:, width:, height:, color:) # rubocop:disable Naming/MethodParameterName
+      current_fill_color = pdf.fill_color
+      pdf.fill_color = color
+      pdf.fill_rectangle([y, x], width, height)
+      pdf.fill_color = current_fill_color
     end
 
     # Output to the PDF document
