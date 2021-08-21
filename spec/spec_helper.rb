@@ -5,6 +5,7 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 
+require 'ostruct'
 require 'prawn-html'
 require 'pdf/inspector'
 require 'pry'

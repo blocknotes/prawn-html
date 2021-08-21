@@ -4,7 +4,7 @@ RSpec.describe PrawnHtml::DocumentRenderer do
   subject(:document_renderer) { described_class.new(pdf_doc) }
 
   let(:context) { PrawnHtml::Context.new }
-  let(:pdf_doc) { instance_double(Prawn::Document, formatted_text: nil) }
+  let(:pdf_doc) { Prawn::Document.new }
 
   before do
     allow(PrawnHtml::Context).to receive(:new).and_return(context)
@@ -106,12 +106,12 @@ RSpec.describe PrawnHtml::DocumentRenderer do
     subject(:render) { document_renderer.render }
 
     before do
-      allow(context).to receive(:block_styles).and_call_original
+      allow(pdf_doc).to receive_messages(formatted_text: true, move_cursor_to: true)
     end
 
     it "renders nothing when the buffer's content is empty" do
       render
-      expect(context).not_to have_received(:block_styles)
+      expect(pdf_doc).not_to have_received(:formatted_text)
     end
 
     context 'with some content in the buffer' do
@@ -121,7 +121,22 @@ RSpec.describe PrawnHtml::DocumentRenderer do
 
       it "renders the current buffer's content" do
         render
-        expect(context).to have_received(:block_styles)
+        expect(pdf_doc).to have_received(:formatted_text)
+      end
+    end
+
+    context 'with an element with position absolute' do
+      before do
+        document_renderer.on_tag_open(:div, { 'style' => 'position: absolute; left: 50px; top: 10px' })
+        document_renderer.on_text_node('Some content')
+        allow(pdf_doc).to receive(:bounding_box).and_call_original
+      end
+
+      it "renders the current buffer's content in a bounded box", :aggregate_failures do
+        render
+        expect(pdf_doc).to have_received(:bounding_box)
+        expect(pdf_doc).to have_received(:formatted_text)
+        expect(pdf_doc).to have_received(:move_cursor_to)
       end
     end
   end

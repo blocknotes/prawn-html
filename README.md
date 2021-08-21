@@ -69,15 +69,18 @@ CSS attributes (dimensional units are ignored and considered in pixel):
 - **font-weight**: values: *:bold*, ex. `style="font-weight: bold"`
 - **height**: for *img* tag, ex. `<img src="image.jpg" style="height: 200px"/>`
 - **href**: for *a* tag, ex. `<a href="http://www.google.com/">Google</a>`
+- **left**: see *position (absolute)*
 - **letter-spacing**: ex. `style="letter-spacing: 1.5"`
 - **line-height**: ex. `style="line-height: 10px"`
 - **list-style-type**: for *ul*, a string, ex. `style="list-style-type: '- '"`
 - **margin-bottom**: ex. `style="margin-bottom: 10px"`
 - **margin-left**: ex. `style="margin-left: 15px"`
 - **margin-top**: ex. `style="margin-top: 20px"`
+- **position**: `absolute`, ex. `style="position: absolute; left: 20px; top: 100px"`
 - **src**: for *img* tag, ex. `<img src="image.jpg"/>`
 - **text-align**: `left` | `center` | `right` | `justify`, ex. `style="text-align: center"`
 - **text-decoration**: `underline`, ex. `style="text-decoration: underline"`
+- **top**: see *position (absolute)*
 - **width**: for *img* tag, support also percentage, ex. `<img src="image.jpg" style="width: 50%; height: 200px"/>`
 
 For colors, the supported formats are:
