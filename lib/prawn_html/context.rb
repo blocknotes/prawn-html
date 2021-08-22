@@ -13,6 +13,21 @@ module PrawnHtml
       @last_text_node = false
     end
 
+    # Add an element to the context
+    #
+    # Set the parent for the previous element in the chain.
+    # Run `on_context_add` callback method on the added element.
+    #
+    # @param element [Tag] the element to add
+    #
+    # @return [Context] the context updated
+    def add(element)
+      element.parent = last
+      push(element)
+      element.on_context_add(self) if element.respond_to?(:on_context_add)
+      self
+    end
+
     # Evaluate before content
     #
     # @return [String] before content string

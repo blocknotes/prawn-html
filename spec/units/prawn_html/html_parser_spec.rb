@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe PrawnHtml::HtmlHandler do
-  subject(:html_handler) { described_class.new(pdf_doc) }
+RSpec.describe PrawnHtml::HtmlParser do
+  subject(:html_parser) { described_class.new(pdf_doc) }
 
   let(:pdf_doc) { instance_double(Prawn::Document, formatted_text: nil) }
 
@@ -11,13 +11,13 @@ RSpec.describe PrawnHtml::HtmlHandler do
     end
 
     it 'prepares the document renderer' do
-      html_handler
+      html_parser
       expect(PrawnHtml::DocumentRenderer).to have_received(:new).with(pdf_doc)
     end
   end
 
   describe '#process' do
-    subject(:process) { html_handler.process('some html') }
+    subject(:process) { html_parser.process('some html') }
 
     before do
       allow(Oga).to receive(:parse_html).and_call_original

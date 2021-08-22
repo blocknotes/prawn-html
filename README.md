@@ -50,33 +50,44 @@ HTML tags:
 - **img**: image
 - **li**: list item
 - **mark**: highlight
+- **ol**: ordered list
 - **p**: block element
 - **s**: strike-through
 - **small**: smaller text
 - **span**: inline element
 - **strong**: bold
 - **u**: underline
-- **ul**: list
+- **ul**: unordered list
 
 CSS attributes (dimensional units are ignored and considered in pixel):
 
-- **background**: for *mark* tag, only 3 or 6 hex digits format, ex. `style="background: #FECD08"`
-- **color**: only 3 or 6 hex digits format - ex. `style="color: #FB1"`
+- **background**: for *mark* tag (3/6 hex digits or RGB or color name), ex. `style="background: #FECD08"`
+- **color**: (3/6 hex digits or RGB or color name) ex. `style="color: #FB1"`
 - **font-family**: font must be registered, quotes are optional, ex. `style="font-family: Courier"`
 - **font-size**: ex. `style="font-size: 20px"`
 - **font-style**: values: *:italic*, ex. `style="font-style: italic"`
 - **font-weight**: values: *:bold*, ex. `style="font-weight: bold"`
 - **height**: for *img* tag, ex. `<img src="image.jpg" style="height: 200px"/>`
 - **href**: for *a* tag, ex. `<a href="http://www.google.com/">Google</a>`
+- **left**: see *position (absolute)*
 - **letter-spacing**: ex. `style="letter-spacing: 1.5"`
 - **line-height**: ex. `style="line-height: 10px"`
+- **list-style-type**: for *ul*, a string, ex. `style="list-style-type: '- '"`
 - **margin-bottom**: ex. `style="margin-bottom: 10px"`
 - **margin-left**: ex. `style="margin-left: 15px"`
 - **margin-top**: ex. `style="margin-top: 20px"`
+- **position**: `absolute`, ex. `style="position: absolute; left: 20px; top: 100px"`
 - **src**: for *img* tag, ex. `<img src="image.jpg"/>`
 - **text-align**: `left` | `center` | `right` | `justify`, ex. `style="text-align: center"`
 - **text-decoration**: `underline`, ex. `style="text-decoration: underline"`
+- **top**: see *position (absolute)*
 - **width**: for *img* tag, support also percentage, ex. `<img src="image.jpg" style="width: 50%; height: 200px"/>`
+
+For colors, the supported formats are:
+- 3 hex digits, ex. `color: #FB1`;
+- 6 hex digits, ex. `color: #abcdef`;
+- RGB, ex. `color: RGB(64, 0, 128)`;
+- color name, ex. `color: yellow`.
 
 ## Data attributes
 

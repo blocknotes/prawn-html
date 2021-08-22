@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require 'oga'
+
 module PrawnHtml
-  class HtmlHandler
-    # Init the HtmlHandler
+  class HtmlParser
+    # Init the HtmlParser
     #
     # @param pdf [Prawn::Document] Target Prawn PDF document
     def initialize(pdf)
@@ -44,7 +46,7 @@ module PrawnHtml
     def init_element(node)
       node.name.downcase.to_sym.tap do |tag_name|
         @processing = true if tag_name == :body
-        renderer.assign_document_styles(extract_styles(node.text)) if tag_name == :style && !@processing
+        renderer.assign_document_styles(extract_styles(node.text)) if tag_name == :style
       end
     end
 
@@ -63,4 +65,6 @@ module PrawnHtml
       @processing = false if element.tag == :body
     end
   end
+
+  HtmlHandler = HtmlParser
 end

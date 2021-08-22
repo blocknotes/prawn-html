@@ -7,23 +7,24 @@ module PrawnHtml
     attr_reader :styles
 
     STYLES_APPLY = {
-      block: %i[align leading margin_left padding_left],
+      block: %i[align leading left margin_left padding_left position top],
       tag_close: %i[margin_bottom padding_bottom],
       tag_open: %i[margin_top padding_top],
-      text_node: %i[background callback character_spacing color font link size styles]
+      text_node: %i[background callback character_spacing color font link list_style_type size styles]
     }.freeze
 
     STYLES_LIST = {
       # text node styles
       'background' => { key: :background, set: :convert_color },
-      'callback' => { key: :callback, set: :copy },
+      'callback' => { key: :callback, set: :copy_value },
       'color' => { key: :color, set: :convert_color },
       'font-family' => { key: :font, set: :unquote },
       'font-size' => { key: :size, set: :convert_size },
       'font-style' => { key: :styles, set: :append_symbol },
       'font-weight' => { key: :styles, set: :append_symbol },
-      'href' => { key: :link, set: :copy },
+      'href' => { key: :link, set: :copy_value },
       'letter-spacing' => { key: :character_spacing, set: :convert_float },
+      'list-style-type' => { key: :list_style_type, set: :unquote },
       'text-decoration' => { key: :styles, set: :append_symbol },
       # tag opening styles
       'margin-top' => { key: :margin_top, set: :convert_size },
@@ -32,10 +33,13 @@ module PrawnHtml
       'margin-bottom' => { key: :margin_bottom, set: :convert_size },
       'padding-bottom' => { key: :padding_bottom, set: :convert_size },
       # block styles
+      'left' => { key: :left, set: :convert_size },
       'line-height' => { key: :leading, set: :convert_size },
       'margin-left' => { key: :margin_left, set: :convert_size },
       'padding-left' => { key: :padding_left, set: :convert_size },
-      'text-align' => { key: :align, set: :convert_symbol }
+      'position' => { key: :position, set: :convert_symbol },
+      'text-align' => { key: :align, set: :convert_symbol },
+      'top' => { key: :top, set: :convert_size }
     }.freeze
 
     STYLES_MERGE = %i[margin_left padding_left].freeze
@@ -78,65 +82,6 @@ module PrawnHtml
     end
 
     class << self
-      # Converts a color string
-      #
-      # @param value [String] HTML string color
-      #
-      # @return [String] adjusted string color
-      def convert_color(value)
-        val = value&.downcase || +''
-        val.gsub!(/[^a-f0-9]/, '')
-        return val unless val.size == 3
-
-        a, b, c = val.chars
-        a * 2 + b * 2 + c * 2
-      end
-
-      # Converts a decimal number string
-      #
-      # @param value [String] string decimal
-      #
-      # @return [Float] converted and rounded float number
-      def convert_float(value)
-        val = value&.gsub(/[^0-9.]/, '') || ''
-        val.to_f.round(4)
-      end
-
-      # Converts a size string
-      #
-      # @param value [String] size string
-      # @param container_size [Numeric] container size
-      #
-      # @return [Float] converted and rounded size
-      def convert_size(value, container_size = nil)
-        val = value&.gsub(/[^0-9.]/, '') || ''
-        val =
-          if container_size && value.include?('%')
-            val.to_f * container_size * 0.01
-          else
-            val.to_f * PX
-          end
-        val.round(4)
-      end
-
-      # Converts a string to symbol
-      #
-      # @param value [String] string
-      #
-      # @return [Symbol] symbol
-      def convert_symbol(value)
-        value.to_sym if value && !value.match?(/\A\s*\Z/)
-      end
-
-      # Copy a value without conversion
-      #
-      # @param value
-      #
-      # @return value
-      def copy(value)
-        value
-      end
-
       # Merges attributes
       #
       # @param attributes [Hash] target attributes hash
@@ -160,17 +105,6 @@ module PrawnHtml
       def parse_styles(styles)
         (styles || '').scan(/\s*([^:;]+)\s*:\s*([^;]+)\s*/).to_h
       end
-
-      # Unquotes a string
-      #
-      # @param value [String] string
-      #
-      # @return [String] string without quotes at the beginning/ending
-      def unquote(value)
-        (value&.strip || +'').tap do |val|
-          val.gsub!(/\A['"]|["']\Z/, '')
-        end
-      end
     end
 
     private
@@ -179,9 +113,9 @@ module PrawnHtml
       return unless rule
 
       if rule[:set] == :append_symbol
-        (result[rule[:key]] ||= []) << Attributes.convert_symbol(value)
+        (result[rule[:key]] ||= []) << Utils.convert_symbol(value)
       else
-        result[rule[:key]] = Attributes.send(rule[:set], value)
+        result[rule[:key]] = Utils.send(rule[:set], value)
       end
     end
   end

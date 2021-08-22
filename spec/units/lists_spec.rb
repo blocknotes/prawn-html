@@ -20,18 +20,18 @@ RSpec.describe 'Lists' do
     end
     let(:size) { TestUtils.default_font_size }
     let(:margin_left) do
-      PrawnHtml::Attributes.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
+      PrawnHtml::Utils.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
     end
 
     it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do
       expect(pdf_doc).to have_received(:formatted_text).with(
-        [{ size: size, text: "•  First item" }], { indent_paragraphs: margin_left }
+        [{ size: size, text: "• First item" }], { indent_paragraphs: margin_left }
       )
       expect(pdf_doc).to have_received(:formatted_text).with(
-        [{ size: size, text: "•  Second item" }], { indent_paragraphs: margin_left }
+        [{ size: size, text: "• Second item" }], { indent_paragraphs: margin_left }
       )
       expect(pdf_doc).to have_received(:formatted_text).with(
-        [{ size: size, text: "•  Third item" }], { indent_paragraphs: margin_left }
+        [{ size: size, text: "• Third item" }], { indent_paragraphs: margin_left }
       )
     end
   end

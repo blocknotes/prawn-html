@@ -6,16 +6,16 @@ RSpec.describe PrawnHtml do
 
     let(:pdf) { instance_double(Prawn::Document) }
     let(:html) { '<div>some html</div>' }
-    let(:html_handler) { instance_double(PrawnHtml::HtmlHandler, process: true) }
+    let(:html_parser) { instance_double(PrawnHtml::HtmlParser, process: true) }
 
     before do
-      allow(PrawnHtml::HtmlHandler).to receive(:new).and_return(html_handler)
+      allow(PrawnHtml::HtmlParser).to receive(:new).and_return(html_parser)
     end
 
-    it 'creates an instance of PrawnHtml::HtmlHandler and call process', :aggregate_failures do
+    it 'creates an instance of PrawnHtml::HtmlParser and call process', :aggregate_failures do
       append_html
-      expect(PrawnHtml::HtmlHandler).to have_received(:new).with(pdf)
-      expect(html_handler).to have_received(:process).with(html)
+      expect(PrawnHtml::HtmlParser).to have_received(:new).with(pdf)
+      expect(html_parser).to have_received(:process).with(html)
     end
   end
 end

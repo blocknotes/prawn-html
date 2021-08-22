@@ -14,9 +14,9 @@ module PrawnHtml
 
       def custom_render(pdf, _context)
         dash = parse_dash_value(attrs.data['dash']) if attrs.data.include?('dash')
-        pdf.dash(dash) if dash
-        pdf.stroke_horizontal_rule
-        pdf.undash if dash
+        around_stroke(pdf, old_color: pdf.stroke_color, new_color: attrs.styles[:color], dash: dash) do
+          pdf.stroke_horizontal_rule
+        end
       end
 
       def tag_styles
@@ -27,6 +27,14 @@ module PrawnHtml
       end
 
       private
+
+      def around_stroke(pdf, old_color:, new_color:, dash:)
+        pdf.dash(dash) if dash
+        pdf.stroke_color = new_color if new_color
+        yield
+        pdf.stroke_color = old_color if new_color
+        pdf.undash if dash
+      end
 
       def parse_dash_value(dash_string)
         if dash_string.match? /\A\d+\Z/

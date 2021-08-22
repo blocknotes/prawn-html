@@ -19,9 +19,11 @@ module PrawnHtml
     #
     # @param styles [Hash] styles hash with CSS selectors as keys and rules as values
     def assign_document_styles(styles)
-      @document_styles = styles.transform_values do |style_rules|
-        Attributes.new(style: style_rules).styles
-      end
+      @document_styles.merge!(
+        styles.transform_values do |style_rules|
+          Attributes.new(style: style_rules).styles
+        end
+      )
     end
 
     # On tag close callback
@@ -68,8 +70,7 @@ module PrawnHtml
     def render
       return if buffer.empty?
 
-      options = context.block_styles.slice(:align, :leading, :margin_left, :mode, :padding_left)
-      output_content(buffer.dup, options)
+      output_content(buffer.dup, context.block_styles)
       buffer.clear
       context.last_margin = 0
     end
@@ -83,7 +84,7 @@ module PrawnHtml
     def setup_element(element)
       add_space_if_needed unless render_if_needed(element)
       apply_tag_open_styles(element)
-      context.push(element)
+      context.add(element)
       element.custom_render(pdf, context) if element.respond_to?(:custom_render)
     end
 
@@ -112,11 +113,30 @@ module PrawnHtml
       pdf.move_down(move_down) if move_down > 0
     end
 
-    def output_content(buffer, options)
+    def output_content(buffer, block_styles)
       buffer.each { |item| item[:callback] = item[:callback].new(pdf, item) if item[:callback] }
-      left_indent = options.delete(:margin_left).to_f + options.delete(:padding_left).to_f
+      left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
+      options = block_styles.slice(:align, :leading, :mode, :padding_left)
       options[:indent_paragraphs] = left_indent if left_indent > 0
-      pdf.formatted_text(buffer, options)
+      formatted_text(buffer, options, bounding_box: bounds(block_styles))
+    end
+
+    def formatted_text(buffer, options, bounding_box: nil)
+      return pdf.formatted_text(buffer, options) unless bounding_box
+
+      current_y = pdf.cursor
+      pdf.bounding_box(*bounding_box) do
+        pdf.formatted_text(buffer, options)
+      end
+      pdf.move_cursor_to(current_y)
+    end
+
+    def bounds(block_styles)
+      return unless block_styles[:position] == :absolute
+
+      y = pdf.bounds.height - (block_styles[:top] || 0)
+      w = pdf.bounds.width - (block_styles[:left] || 0)
+      [[block_styles[:left] || 0, y], { width: w }]
     end
   end
 end
