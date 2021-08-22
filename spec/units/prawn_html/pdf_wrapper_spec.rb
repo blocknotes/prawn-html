@@ -7,9 +7,7 @@ RSpec.describe PrawnHtml::PdfWrapper do
 
   it 'delegates some methods to the pdf instance', :aggregate_failures do
     pdf_wrapper.bounds
-    pdf_wrapper.image('some_image')
     expect(pdf).to have_received(:bounds)
-    expect(pdf).to have_received(:image).with('some_image')
   end
 
   describe '#advance_cursor' do
@@ -72,6 +70,18 @@ RSpec.describe PrawnHtml::PdfWrapper do
       expect(pdf).to have_received(:stroke_horizontal_rule).ordered
       expect(pdf).to have_received(:stroke_color=).with('abcdef').ordered
       expect(pdf).to have_received(:undash).ordered
+    end
+  end
+
+  describe '#image' do
+    subject(:image) { pdf_wrapper.image(src, options) }
+
+    let(:src) { 'some_image_path' }
+    let(:options) { {} }
+
+    it 'calls the PDF image method' do
+      image
+      expect(pdf).to have_received(:image).with(src, options)
     end
   end
 

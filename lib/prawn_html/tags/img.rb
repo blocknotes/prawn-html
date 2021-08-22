@@ -13,7 +13,7 @@ module PrawnHtml
         parsed_styles = Attributes.parse_styles(attrs.style)
         block_styles = context.block_styles
         evaluated_styles = evaluate_styles(pdf, block_styles.merge(parsed_styles))
-        pdf.image(@attrs.src, evaluated_styles) if @attrs.src
+        pdf.image(@attrs.src, evaluated_styles)
       end
 
       private

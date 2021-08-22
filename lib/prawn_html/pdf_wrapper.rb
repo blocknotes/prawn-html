@@ -6,7 +6,7 @@ module PrawnHtml
   class PdfWrapper
     extend Forwardable
 
-    def_delegators :@pdf, :bounds, :image
+    def_delegators :@pdf, :bounds
 
     # Wrapper for Prawn PDF Document
     #
@@ -49,6 +49,16 @@ module PrawnHtml
       pdf.stroke_horizontal_rule
       pdf.stroke_color = current_color if color
       pdf.undash if dash
+    end
+
+    # Image
+    #
+    # @param src [String] image source path
+    # @param options [Hash] hash of options
+    def image(src, options = {})
+      return unless src
+
+      pdf.image(src, options)
     end
 
     # Output to the PDF document
