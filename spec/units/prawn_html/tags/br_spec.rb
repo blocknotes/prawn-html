@@ -15,19 +15,19 @@ RSpec.describe PrawnHtml::Tags::Br do
     subject(:custom_render) { br.custom_render(pdf, context) }
 
     let(:context) { instance_double(PrawnHtml::Context, last_text_node: false) }
-    let(:pdf) { instance_double(Prawn::Document, move_down: true) }
+    let(:pdf) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true) }
 
-    it 'calls move_down on the pdf instance' do
+    it 'calls advance_cursor on the pdf wrapper' do
       custom_render
-      expect(pdf).to have_received(:move_down)
+      expect(pdf).to have_received(:advance_cursor)
     end
 
     context 'when the last node in the context is of type text' do
       let(:context) { instance_double(PrawnHtml::Context, last_text_node: true) }
 
-      it "doesn't call move_down on the pdf instance" do
+      it "doesn't call advance_cursor on the pdf wrapper" do
         custom_render
-        expect(pdf).not_to have_received(:move_down)
+        expect(pdf).not_to have_received(:advance_cursor)
       end
     end
   end

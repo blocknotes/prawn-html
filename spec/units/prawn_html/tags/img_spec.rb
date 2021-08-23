@@ -15,7 +15,7 @@ RSpec.describe PrawnHtml::Tags::Img do
     subject(:custom_render) { img.custom_render(pdf, context) }
 
     let(:context) { instance_double(PrawnHtml::Context, block_styles: {}) }
-    let(:pdf) { instance_double(Prawn::Document, image: true) }
+    let(:pdf) { instance_double(PrawnHtml::PdfWrapper, image: true) }
 
     it 'calls image on the pdf instance', :aggregate_failures do
       custom_render

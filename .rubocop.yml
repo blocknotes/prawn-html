@@ -19,6 +19,10 @@ Naming/FileName:
   Exclude:
     - lib/prawn-html.rb
 
+Naming/MethodParameterName:
+  Exclude:
+    - lib/prawn_html/pdf_wrapper.rb
+
 RSpec/ExampleLength:
   # default: 5
   Max: 10

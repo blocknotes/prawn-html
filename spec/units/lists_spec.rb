@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Lists' do
-  let(:pdf_doc) do
-    TestUtils.styled_text_document(html) do |pdf|
-      allow(pdf).to receive(:indent).and_call_original
-      allow(pdf).to receive(:formatted_text)
-    end
+  let(:pdf_doc) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
+
+  before do
+    allow(PrawnHtml::PdfWrapper).to receive(:new).and_return(pdf_doc)
+    pdf_document = Prawn::Document.new(page_size: 'A4', page_layout: :portrait)
+    PrawnHtml.append_html(pdf_document, html)
   end
 
   context 'with an ul list' do
@@ -24,14 +25,14 @@ RSpec.describe 'Lists' do
     end
 
     it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do
-      expect(pdf_doc).to have_received(:formatted_text).with(
-        [{ size: size, text: "• First item" }], { indent_paragraphs: margin_left }
+      expect(pdf_doc).to have_received(:puts).with(
+        [{ size: size, text: "• First item" }], { indent_paragraphs: margin_left }, { bounding_box: nil }
       )
-      expect(pdf_doc).to have_received(:formatted_text).with(
-        [{ size: size, text: "• Second item" }], { indent_paragraphs: margin_left }
+      expect(pdf_doc).to have_received(:puts).with(
+        [{ size: size, text: "• Second item" }], { indent_paragraphs: margin_left }, { bounding_box: nil }
       )
-      expect(pdf_doc).to have_received(:formatted_text).with(
-        [{ size: size, text: "• Third item" }], { indent_paragraphs: margin_left }
+      expect(pdf_doc).to have_received(:puts).with(
+        [{ size: size, text: "• Third item" }], { indent_paragraphs: margin_left }, { bounding_box: nil }
       )
     end
   end

@@ -6,13 +6,13 @@ module PrawnHtml
   class HtmlParser
     # Init the HtmlParser
     #
-    # @param pdf [Prawn::Document] Target Prawn PDF document
-    def initialize(pdf)
+    # @param renderer [DocumentRenderer] document renderer
+    def initialize(renderer)
       @processing = false
-      @renderer = DocumentRenderer.new(pdf)
+      @renderer = renderer
     end
 
-    # Processes HTML and renders it on the PDF document
+    # Processes HTML and renders it
     #
     # @param html [String] The HTML content to process
     def process(html)

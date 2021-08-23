@@ -8,10 +8,10 @@ module PrawnHtml
       end
 
       def render_in_front(fragment)
-        y = (fragment.top_left[1] + fragment.bottom_left[1]) / 2
-        @pdf.stroke do
-          @pdf.line [fragment.top_left[0], y], [fragment.top_right[0], y]
-        end
+        x1 = fragment.left
+        x2 = fragment.right
+        y = (fragment.top + fragment.bottom) / 2
+        @pdf.underline(x1: x1, x2: x2, y: y)
       end
     end
   end
