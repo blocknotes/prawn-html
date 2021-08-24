@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Hr do
-  subject(:hr) { described_class.new(:hr, 'style' => 'color: ffbb11') }
+  subject(:hr) { described_class.new(:hr, attributes: { 'style' => 'color: ffbb11' }) }
 
   let(:pdf) { instance_double(PrawnHtml::PdfWrapper, horizontal_rule: true) }
 
@@ -33,7 +33,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
     end
 
     context 'with a dash number set' do
-      subject(:hr) { described_class.new(:hr, 'data-dash' => '5') }
+      subject(:hr) { described_class.new(:hr, attributes: { 'data-dash' => '5' }) }
 
       it 'calls the dash methods around stroke', :aggregate_failures do
         custom_render
@@ -42,7 +42,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
     end
 
     context 'with a dash array set' do
-      subject(:hr) { described_class.new(:hr, 'data-dash' => '1, 2, 3') }
+      subject(:hr) { described_class.new(:hr, attributes: { 'data-dash' => '1, 2, 3' }) }
 
       it 'calls the dash methods around stroke', :aggregate_failures do
         custom_render
@@ -51,7 +51,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
     end
 
     context 'with a color set via style attributes' do
-      subject(:hr) { described_class.new(:hr, 'style' => 'color: red') }
+      subject(:hr) { described_class.new(:hr, attributes: { 'style' => 'color: red' }) }
 
       it 'calls the color methods around stroke', :aggregate_failures do
         custom_render

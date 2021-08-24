@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::A do
-  subject(:a) { described_class.new(:a, 'style' => 'color: #ffbb11') }
+  subject(:a) { described_class.new(:a, attributes: { 'style' => 'color: #ffbb11' }) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
@@ -12,7 +12,9 @@ RSpec.describe PrawnHtml::Tags::A do
   end
 
   context 'with an href attribute' do
-    subject(:a) { described_class.new(:a, 'href' => 'https://www.google.it', 'style' => 'color: #ffbb11') }
+    subject(:a) do
+      described_class.new(:a, attributes: { 'href' => 'https://www.google.it', 'style' => 'color: #ffbb11' })
+    end
 
     it 'includes the link property in the styles' do
       expect(a.styles).to eq(color: 'ffbb11', link: 'https://www.google.it')

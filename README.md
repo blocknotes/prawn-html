@@ -100,8 +100,7 @@ Some custom data attributes are used to pass options:
 
 ## Document styles
 
-[Experimental feature] You can define document CSS rules inside an _head_ tag, but with a limited support for now.
-Only single CSS selectors and basic ones are supported. Example:
+You can define document CSS rules inside an _head_ tag. Example:
 
 ```html
 <!DOCTYPE html>

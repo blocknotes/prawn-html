@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::B do
-  subject(:b) { described_class.new(:b, 'style' => 'color: ffbb11') }
+  subject(:b) { described_class.new(:b, attributes: { 'style' => 'color: ffbb11' }) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
