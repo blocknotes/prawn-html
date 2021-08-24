@@ -6,7 +6,7 @@ module PrawnHtml
   class PdfWrapper
     extend Forwardable
 
-    def_delegators :@pdf, :bounds
+    def_delegators :@pdf, :bounds, :start_new_page
 
     # Wrapper for Prawn PDF Document
     #
