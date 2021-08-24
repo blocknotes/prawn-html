@@ -11,30 +11,6 @@ RSpec.describe PrawnHtml::DocumentRenderer do
     allow(PrawnHtml::Context).to receive(:new).and_return(context)
   end
 
-  describe '#assign_document_styles' do
-    let(:styles) do
-      {
-        'body' => 'font-family: Courier',
-        '.a_class' => 'color: #08f; font-size: 10px',
-        '#an_id' => 'font-weight: bold'
-      }
-    end
-
-    before do
-      allow(PrawnHtml::Attributes).to receive(:new).and_call_original
-    end
-
-    it 'assigns the document styles' do
-      expected_styles = {
-        'body' => { font: 'Courier' },
-        '.a_class' => { color: '0088ff', size: (10 * PrawnHtml::PX).round(4) },
-        '#an_id' => { styles: [:bold] }
-      }
-
-      expect(document_renderer.assign_document_styles(styles)).to eq(expected_styles)
-    end
-  end
-
   describe '#on_tag_close' do
     subject(:on_tag_close) { document_renderer.on_tag_close(element) }
 
@@ -52,11 +28,11 @@ RSpec.describe PrawnHtml::DocumentRenderer do
 
   describe '#on_tag_open' do
     subject(:on_tag_open) do
-      document_renderer.on_tag_open(tag, attributes: attributes, document_styles: document_styles)
+      document_renderer.on_tag_open(tag, attributes: attributes, element_styles: element_styles)
     end
 
     let(:attributes) { { 'class' => 'green' } }
-    let(:document_styles) { 'color: red' }
+    let(:element_styles) { 'color: red' }
 
     context 'with a div tag' do
       let(:tag) { :div }

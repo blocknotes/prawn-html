@@ -43,7 +43,7 @@ module PrawnHtml
       return renderer.on_text_node(node.text) unless tag
 
       attributes = prepare_attributes(node)
-      renderer.on_tag_open(tag, attributes: attributes, document_styles: styles[node])
+      renderer.on_tag_open(tag, attributes: attributes, element_styles: styles[node])
     end
 
     def init_element(node)
@@ -60,7 +60,6 @@ module PrawnHtml
           styles[node] = rule
         end
       end
-      renderer.assign_document_styles(styles_hash)
     end
 
     def prepare_attributes(node)
