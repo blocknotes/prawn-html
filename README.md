@@ -39,6 +39,7 @@ HTML tags:
 
 - **a**: link
 - **b**: bold
+- **blockquote**: block quotation element
 - **br**: new line
 - **del**: strike-through
 - **div**: block element
