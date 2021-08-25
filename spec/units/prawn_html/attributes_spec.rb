@@ -11,14 +11,6 @@ RSpec.describe PrawnHtml::Attributes do
     it 'returns an empty styles hash' do
       expect(attributes.styles).to eq({})
     end
-
-    context 'with some styles' do
-      let(:attributes_hash) { { 'style' => 'color: #fb1; font-weight: bold' } }
-
-      it 'returns the parsed styles' do
-        expect(attributes.styles).to eq(color: 'ffbb11', styles: [:bold])
-      end
-    end
   end
 
   describe '#data' do
@@ -31,11 +23,13 @@ RSpec.describe PrawnHtml::Attributes do
     end
   end
 
-  describe '#merge_styles!' do
-    subject(:merge_styles!) { attributes.merge_styles!(parsed_styles) }
+  describe '#merge_hash_styles!' do
+    subject(:merge_hash_styles!) do
+      described_class.create_from_text_styles(text_styles).merge_hash_styles!(parsed_styles)
+    end
 
-    let(:attributes_hash) { { 'style' => 'font-size: 12px' } }
     let(:parsed_styles) { { color: 'fb1' } }
+    let(:text_styles) { 'font-size: 12px' }
 
     it { is_expected.to match(color: 'fb1', size: 12 * PrawnHtml::PX) }
   end
@@ -70,6 +64,18 @@ RSpec.describe PrawnHtml::Attributes do
         expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '16px')
         expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '22px')
       end
+    end
+  end
+
+  describe '.create_from_text_styles' do
+    subject(:create_from_text_styles) { described_class.create_from_text_styles(text_styles) }
+
+    let(:text_styles) { 'color: #fb1; font-weight: bold' }
+
+    it 'returns the parsed styles', :aggregate_failures do
+      attrs = create_from_text_styles
+      expect(attrs).to be_a_kind_of described_class
+      expect(attrs.styles).to eq(color: 'ffbb11', styles: [:bold])
     end
   end
 
