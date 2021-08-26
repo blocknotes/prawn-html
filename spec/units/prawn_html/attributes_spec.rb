@@ -11,14 +11,6 @@ RSpec.describe PrawnHtml::Attributes do
     it 'returns an empty styles hash' do
       expect(attributes.styles).to eq({})
     end
-
-    context 'with some styles' do
-      let(:attributes_hash) { { 'style' => 'color: #fb1; font-weight: bold' } }
-
-      it 'returns the parsed styles' do
-        expect(attributes.styles).to eq(color: 'ffbb11', styles: [:bold])
-      end
-    end
   end
 
   describe '#data' do
@@ -31,40 +23,33 @@ RSpec.describe PrawnHtml::Attributes do
     end
   end
 
-  describe '#merge_styles!' do
-    subject(:merge_styles!) { attributes.merge_styles!(parsed_styles) }
-
-    let(:attributes_hash) { { 'style' => 'font-size: 12px' } }
-    let(:parsed_styles) { { color: 'fb1' } }
-
-    it { is_expected.to match(color: 'fb1', size: 12 * PrawnHtml::PX) }
-  end
-
-  describe '#process_styles' do
-    subject(:process_styles) { attributes.process_styles(hash_styles) }
+  describe '#merge_text_styles!' do
+    subject(:merge_text_styles!) { attributes.merge_text_styles!(text_styles) }
 
     before do
       allow(PrawnHtml::Utils).to receive(:send).and_call_original
     end
 
     context 'with an empty hash' do
-      let(:hash_styles) { {} }
+      let(:text_styles) { '' }
 
-      it { is_expected.to eq({}) }
+      it "doesn't merge new styles" do
+        expect(attributes.styles).to eq({})
+      end
     end
 
     context 'with some styles' do
-      let(:hash_styles) do
-        {
-          'font-family' => "'Times-Roman'",
-          'font-size' => "16px",
-          'font-weight' => "bold",
-          'margin-bottom' => "22px"
-        }
+      let(:text_styles) do
+        <<~STYLES
+          font-family: 'Times-Roman';
+          font-size: 16px;
+          font-weight: bold;
+          margin-bottom: 22px;
+        STYLES
       end
 
       it 'receives the expected convert messages', :aggregate_failures do
-        process_styles
+        merge_text_styles!
 
         expect(PrawnHtml::Utils).to have_received(:send).with(:unquote, "'Times-Roman'")
         expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '16px')

@@ -50,10 +50,6 @@ module PrawnHtml
     def initialize(attributes = {})
       super
       @styles = {} # result styles
-      return unless style
-
-      styles_hash = Attributes.parse_styles(style)
-      process_styles(styles_hash)
     end
 
     # Processes the data attributes
@@ -66,21 +62,12 @@ module PrawnHtml
       end
     end
 
-    # Merge already parsed styles
+    # Merge text styles
     #
-    # @param parsed_styles [Hash] hash of parsed styles
-    def merge_styles!(parsed_styles)
-      @styles.merge!(parsed_styles)
-    end
-
-    # Processes the styles attributes
-    #
-    # @param styles_hash [Hash] hash of styles attributes
-    def process_styles(styles_hash)
-      styles_hash.each do |key, value|
-        apply_rule!(@styles, STYLES_LIST[key], value)
-      end
-      @styles
+    # @param text_styles [String] styles to parse and process
+    def merge_text_styles!(text_styles)
+      hash_styles = Attributes.parse_styles(text_styles)
+      process_styles(hash_styles) unless hash_styles.empty?
     end
 
     class << self
@@ -119,6 +106,13 @@ module PrawnHtml
       else
         result[rule[:key]] = Utils.send(rule[:set], value)
       end
+    end
+
+    def process_styles(hash_styles)
+      hash_styles.each do |key, value|
+        apply_rule!(@styles, STYLES_LIST[key], value)
+      end
+      @styles
     end
   end
 end

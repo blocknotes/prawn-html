@@ -19,9 +19,7 @@ module PrawnHtml
       end
 
       def tag_styles
-        @tag_styles ||= {
-          'margin-left' => MARGIN_LEFT.to_s,
-        }
+        "margin-left: #{MARGIN_LEFT}px"
       end
     end
   end

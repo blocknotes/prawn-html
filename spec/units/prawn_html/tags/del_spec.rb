@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Del do
-  subject(:del) { described_class.new(:del, attributes: { 'style' => 'color: #ffbb11' }) }
+  subject(:del) { described_class.new(:del, attributes: { 'style' => 'color: #fb1' }) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
@@ -9,7 +9,7 @@ RSpec.describe PrawnHtml::Tags::Del do
     subject(:styles) { del.styles }
 
     it 'merges the callback property into styles' do
-      expect(styles).to match(color: 'ffbb11', callback: PrawnHtml::Callbacks::StrikeThrough)
+      expect(styles).to match(color: 'ffbb11', callback: 'StrikeThrough')
     end
   end
 end

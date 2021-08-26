@@ -37,12 +37,12 @@ module PrawnHtml
       end
 
       def tag_styles
-        @tag_styles ||= {
-          'font-size' => SIZES[tag].to_s,
-          'font-weight' => 'bold',
-          'margin-bottom' => MARGINS_BOTTOM[tag].to_s,
-          'margin-top' => MARGINS_TOP[tag].to_s
-        }
+        <<~STYLES
+          font-size: #{SIZES[tag]}px;
+          font-weight: bold;
+          margin-bottom: #{MARGINS_BOTTOM[tag]}px;
+          margin-top: #{MARGINS_TOP[tag]}px;
+        STYLES
       end
     end
   end

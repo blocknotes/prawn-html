@@ -2,6 +2,10 @@
 
 module PrawnHtml
   class Tag
+    CALLBACKS = {
+      'Highlight' => Callbacks::Highlight,
+      'StrikeThrough' => Callbacks::StrikeThrough
+    }.freeze
     TAG_CLASSES = %w[A B Blockquote Body Br Del Div H Hr I Img Li Mark Ol P Small Span U Ul].freeze
 
     attr_accessor :parent
@@ -14,9 +18,8 @@ module PrawnHtml
     # @param element_styles [String] document styles tp apply to the element
     def initialize(tag, attributes: {}, element_styles: '')
       @tag = tag
-      inline_styles = attributes.delete(:style)
       @attrs = Attributes.new(attributes)
-      process_styles(element_styles, inline_styles)
+      process_styles(element_styles, attributes['style'])
     end
 
     # Is a block tag?
@@ -75,11 +78,9 @@ module PrawnHtml
     private
 
     def process_styles(element_styles, inline_styles)
-      el_styles = Attributes.new(style: element_styles).styles
-      in_styles = Attributes.parse_styles(inline_styles)
-      attrs.merge_styles!(attrs.process_styles(tag_styles)) if respond_to?(:tag_styles)
-      attrs.merge_styles!(el_styles)
-      attrs.merge_styles!(attrs.process_styles(in_styles)) if in_styles
+      attrs.merge_text_styles!(tag_styles) if respond_to?(:tag_styles)
+      attrs.merge_text_styles!(element_styles)
+      attrs.merge_text_styles!(inline_styles)
     end
   end
 end

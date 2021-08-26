@@ -168,9 +168,10 @@ require 'prawn'
 
 require 'prawn_html/utils'
 
+Dir["#{__dir__}/prawn_html/callbacks/*.rb"].sort.each { |f| require f }
+
 require 'prawn_html/tag'
 Dir["#{__dir__}/prawn_html/tags/*.rb"].sort.each { |f| require f }
-Dir["#{__dir__}/prawn_html/callbacks/*.rb"].sort.each { |f| require f }
 
 require 'prawn_html/attributes'
 require 'prawn_html/context'

@@ -6,9 +6,7 @@ module PrawnHtml
       ELEMENTS = [:del, :s].freeze
 
       def tag_styles
-        {
-          'callback' => Callbacks::StrikeThrough
-        }
+        'callback: StrikeThrough'
       end
     end
   end

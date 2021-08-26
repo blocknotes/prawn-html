@@ -53,9 +53,9 @@ module PrawnHtml
       end
     end
 
-    def process_styles(styles_string)
-      styles_hash = styles_string.scan(REGEXP_STYLES).to_h
-      styles_hash.each do |selector, rule|
+    def process_styles(text_styles)
+      hash_styles = text_styles.scan(REGEXP_STYLES).to_h
+      hash_styles.each do |selector, rule|
         document.css(selector).each do |node|
           styles[node] = rule
         end

@@ -14,11 +14,11 @@ module PrawnHtml
       end
 
       def tag_styles
-        @tag_styles ||= {
-          'margin-bottom' => MARGIN_BOTTOM.to_s,
-          'margin-left' => MARGIN_LEFT.to_s,
-          'margin-top' => MARGIN_TOP.to_s
-        }
+        <<~STYLES
+          margin-bottom: #{MARGIN_BOTTOM}px;
+          margin-left: #{MARGIN_LEFT}px;
+          margin-top: #{MARGIN_TOP}px;
+        STYLES
       end
     end
   end

@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Hr do
-  subject(:hr) { described_class.new(:hr, attributes: { 'style' => 'color: ffbb11' }) }
+  subject(:hr) { described_class.new(:hr, attributes: { 'style' => 'color: #fb1' }) }
 
   let(:pdf) { instance_double(PrawnHtml::PdfWrapper, horizontal_rule: true) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
-    it 'returns the expected tag_styles for hr tag' do
-      expect(hr.tag_styles).to eq(
-        'margin-bottom' => PrawnHtml::Tags::Hr::MARGIN_BOTTOM.to_s,
-        'margin-top' => PrawnHtml::Tags::Hr::MARGIN_TOP.to_s
-      )
+    it 'returns the expected styles for hr tag' do
+      expected_styles = {
+        color: 'ffbb11',
+        margin_bottom: PrawnHtml::Utils.convert_size(described_class::MARGIN_BOTTOM.to_s),
+        margin_top: PrawnHtml::Utils.convert_size(described_class::MARGIN_TOP.to_s)
+      }
+      expect(hr.styles).to match(expected_styles)
     end
   end
 
@@ -29,7 +31,7 @@ RSpec.describe PrawnHtml::Tags::Hr do
 
     it 'calls horizontal_rule on the pdf wrapper' do
       custom_render
-      expect(pdf).to have_received(:horizontal_rule).with(color: nil, dash: nil)
+      expect(pdf).to have_received(:horizontal_rule).with(color: 'ffbb11', dash: nil)
     end
 
     context 'with a dash number set' do
