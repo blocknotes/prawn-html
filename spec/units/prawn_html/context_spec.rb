@@ -58,10 +58,8 @@ RSpec.describe PrawnHtml::Context do
     context 'with the last element that has some tag_styles' do
       let(:some_tag_class) do
         Class.new(PrawnHtml::Tag) do
-          def tag_styles
-            {
-              before_content: 'Some before content'
-            }
+          def before_content
+            'Some before content'
           end
         end
       end

@@ -104,11 +104,18 @@ module PrawnHtml
     end
 
     def output_content(buffer, block_styles)
-      buffer.each { |item| item[:callback] = item[:callback].new(pdf, item) if item[:callback] }
+      apply_callbacks(buffer)
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
       options = block_styles.slice(:align, :leading, :mode, :padding_left)
       options[:indent_paragraphs] = left_indent if left_indent > 0
       pdf.puts(buffer, options, bounding_box: bounds(block_styles))
+    end
+
+    def apply_callbacks(buffer)
+      buffer.select { |item| item[:callback] }.each do |item|
+        callback = Tag::CALLBACKS[item[:callback]]
+        item[:callback] = callback.new(pdf, item)
+      end
     end
 
     def bounds(block_styles)

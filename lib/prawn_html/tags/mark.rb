@@ -6,9 +6,7 @@ module PrawnHtml
       ELEMENTS = [:mark].freeze
 
       def tag_styles
-        {
-          'callback' => Callbacks::Highlight
-        }
+        'callback: Highlight'
       end
     end
   end

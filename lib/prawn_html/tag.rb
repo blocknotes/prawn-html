@@ -2,6 +2,10 @@
 
 module PrawnHtml
   class Tag
+    CALLBACKS = {
+      'Highlight' => Callbacks::Highlight,
+      'StrikeThrough' => Callbacks::StrikeThrough
+    }.freeze
     TAG_CLASSES = %w[A B Blockquote Body Br Del Div H Hr I Img Li Mark Ol P Small Span U Ul].freeze
 
     attr_accessor :parent
@@ -74,7 +78,7 @@ module PrawnHtml
     private
 
     def process_styles(element_styles, inline_styles)
-      attrs.merge_hash_styles!(attrs.process_styles(tag_styles)) if respond_to?(:tag_styles)
+      attrs.merge_text_styles!(tag_styles) if respond_to?(:tag_styles)
       attrs.merge_text_styles!(element_styles)
       attrs.merge_text_styles!(inline_styles)
     end

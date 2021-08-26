@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Ul do
-  subject(:ul) { described_class.new(:ul) }
+  subject(:ul) { described_class.new(:ul, attributes: { 'style' => 'color: #fb1' }) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
-    it 'returns the expected tag_styles for ul tag' do
-      expect(ul.tag_styles).to eq('margin-left' => PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
+    it 'returns the expected styles for ul tag' do
+      expected_styles = {
+        color: 'ffbb11',
+        margin_left: PrawnHtml::Utils.convert_size(described_class::MARGIN_LEFT.to_s),
+      }
+      expect(ul.styles).to match(expected_styles)
     end
   end
 

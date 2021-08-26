@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Blockquote do
-  subject(:blockquote) { described_class.new(:blockquote) }
+  subject(:blockquote) { described_class.new(:blockquote, attributes: { 'style' => 'color: #fb1' }) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
-    it 'returns the expected tag_styles for blockquote tag' do
-      expect(blockquote.tag_styles).to eq(
-        'margin-bottom' => described_class::MARGIN_BOTTOM.to_s,
-        'margin-left' => described_class::MARGIN_LEFT.to_s,
-        'margin-top' => described_class::MARGIN_TOP.to_s
-      )
+    it 'returns the expected styles for blockquote tag' do
+      expected_styles = {
+        color: 'ffbb11',
+        margin_bottom: PrawnHtml::Utils.convert_size(described_class::MARGIN_BOTTOM.to_s),
+        margin_left: PrawnHtml::Utils.convert_size(described_class::MARGIN_LEFT.to_s),
+        margin_top: PrawnHtml::Utils.convert_size(described_class::MARGIN_TOP.to_s)
+      }
+      expect(blockquote.styles).to match(expected_styles)
     end
   end
 
