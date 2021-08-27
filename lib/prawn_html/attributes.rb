@@ -20,12 +20,12 @@ module PrawnHtml
       'color' => { key: :color, set: :convert_color },
       'font-family' => { key: :font, set: :unquote },
       'font-size' => { key: :size, set: :convert_size },
-      'font-style' => { key: :styles, set: :append_symbol },
-      'font-weight' => { key: :styles, set: :append_symbol },
+      'font-style' => { key: :styles, set: :append_styles },
+      'font-weight' => { key: :styles, set: :append_styles },
       'href' => { key: :link, set: :copy_value },
       'letter-spacing' => { key: :character_spacing, set: :convert_float },
       'list-style-type' => { key: :list_style_type, set: :unquote },
-      'text-decoration' => { key: :styles, set: :append_symbol },
+      'text-decoration' => { key: :styles, set: :append_styles },
       # tag opening styles
       'break-before' => { key: :break_before, set: :convert_symbol },
       'margin-top' => { key: :margin_top, set: :convert_size },
@@ -101,8 +101,8 @@ module PrawnHtml
     def apply_rule!(result, rule, value)
       return unless rule
 
-      if rule[:set] == :append_symbol
-        (result[rule[:key]] ||= []) << Utils.convert_symbol(value)
+      if rule[:set] == :append_styles
+        (result[rule[:key]] ||= []) << Utils.normalize_style(value)
       else
         result[rule[:key]] = Utils.send(rule[:set], value)
       end
