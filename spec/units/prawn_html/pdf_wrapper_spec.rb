@@ -46,6 +46,38 @@ RSpec.describe PrawnHtml::PdfWrapper do
     end
   end
 
+  describe '#calc_buffer_height' do
+    subject(:calc_buffer_height) { pdf_wrapper.calc_buffer_height(buffer, options) }
+
+    let(:buffer) { [{ text: 'some content' }] }
+    let(:options) { {} }
+
+    before do
+      allow(pdf).to receive(:height_of_formatted)
+    end
+
+    it 'calls the PDF height_of_formatted method' do
+      calc_buffer_height
+      expect(pdf).to have_received(:height_of_formatted).with(buffer, options)
+    end
+  end
+
+  describe '#calc_buffer_width' do
+    subject(:calc_buffer_width) { pdf_wrapper.calc_buffer_width(buffer) }
+
+    let(:buffer) { [{ text: 'some content', font: 'Courier', size: 12 }] }
+
+    before do
+      allow(pdf).to receive(:font).and_yield
+      allow(pdf).to receive(:width_of).and_return(0)
+    end
+
+    it 'calls the PDF width_of method' do
+      calc_buffer_width
+      expect(pdf).to have_received(:width_of) # .with(buffer, inline_format: true)
+    end
+  end
+
   describe '#draw_rectangle' do
     subject(:draw_rectangle) { pdf_wrapper.draw_rectangle(x: 50, y: 80, width: 200, height: 150, color: 'ffbb111') }
 

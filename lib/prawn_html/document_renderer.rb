@@ -113,7 +113,7 @@ module PrawnHtml
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
       options = block_styles.slice(:align, :leading, :mode, :padding_left)
       options[:indent_paragraphs] = left_indent if left_indent > 0
-      pdf.puts(buffer, options, bounding_box: bounds(block_styles))
+      pdf.puts(buffer, options, bounding_box: bounds(buffer, options, block_styles))
     end
 
     def apply_callbacks(buffer)
@@ -123,12 +123,22 @@ module PrawnHtml
       end
     end
 
-    def bounds(block_styles)
+    def bounds(buffer, options, block_styles)
       return unless block_styles[:position] == :absolute
 
-      y = pdf.bounds.height - (block_styles[:top] || 0)
-      w = pdf.bounds.width - (block_styles[:left] || 0)
-      [[block_styles[:left] || 0, y], { width: w }]
+      x = if block_styles.include?(:right)
+            x1 = pdf.calc_buffer_width(buffer) + block_styles[:right]
+            x1 < pdf.bounds.width ? (pdf.bounds.width - x1) : 0
+          else
+            block_styles[:left] || 0
+          end
+      y = if block_styles.include?(:bottom)
+            pdf.calc_buffer_height(buffer, options) + block_styles[:bottom]
+          else
+            pdf.bounds.height - (block_styles[:top] || 0)
+          end
+
+      [[x, y], { width: pdf.bounds.width - x }]
     end
   end
 end

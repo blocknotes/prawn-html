@@ -7,7 +7,7 @@ module PrawnHtml
     attr_reader :styles
 
     STYLES_APPLY = {
-      block: %i[align leading left margin_left padding_left position top],
+      block: %i[align bottom leading left margin_left padding_left position right top],
       tag_close: %i[margin_bottom padding_bottom break_after],
       tag_open: %i[margin_top padding_top break_before],
       text_node: %i[background callback character_spacing color font link list_style_type size styles white_space]
@@ -37,11 +37,13 @@ module PrawnHtml
       'margin-bottom' => { key: :margin_bottom, set: :convert_size },
       'padding-bottom' => { key: :padding_bottom, set: :convert_size },
       # block styles
+      'bottom' => { key: :bottom, set: :convert_size },
       'left' => { key: :left, set: :convert_size },
       'line-height' => { key: :leading, set: :convert_size },
       'margin-left' => { key: :margin_left, set: :convert_size },
       'padding-left' => { key: :padding_left, set: :convert_size },
       'position' => { key: :position, set: :convert_symbol },
+      'right' => { key: :right, set: :convert_size },
       'text-align' => { key: :align, set: :convert_symbol },
       'top' => { key: :top, set: :convert_size }
     }.freeze

@@ -24,6 +24,32 @@ module PrawnHtml
       pdf.move_down(move_down)
     end
 
+    # Calculate the height of a buffer of items
+    #
+    # @param buffer [Array] Buffer of items
+    # @param options [Hash] Output options
+    #
+    # @return [Float] calculated height
+    def calc_buffer_height(buffer, options)
+      pdf.height_of_formatted(buffer, options)
+    end
+
+    # Calculate the width of a buffer of items
+    #
+    # @param buffer [Array] Buffer of items
+    #
+    # @return [Float] calculated width
+    def calc_buffer_width(buffer)
+      width = 0
+      buffer.each do |item|
+        font_family = item[:font] || pdf.font.name
+        pdf.font(font_family, size: item[:size] || pdf.font_size) do
+          width += pdf.width_of(item[:text], inline_format: true)
+        end
+      end
+      width
+    end
+
     # Draw a rectangle
     #
     # @param x [Float] left position of the rectangle
