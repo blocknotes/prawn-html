@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Styles' do
-  let(:pdf_doc) do
-    TestUtils.styled_text_document(html) { |pdf| allow(pdf).to receive(:formatted_text) }
+  let(:pdf_doc) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
+
+  before do
+    allow(PrawnHtml::PdfWrapper).to receive(:new).and_return(pdf_doc)
+    pdf_document = Prawn::Document.new(page_size: 'A4', page_layout: :portrait)
+    PrawnHtml.append_html(pdf_document, html)
   end
 
   describe 'attribute color' do
@@ -12,7 +16,7 @@ RSpec.describe 'Styles' do
     let(:expected_options) { {} }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
+      expect(pdf_doc).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
     end
   end
 
@@ -23,7 +27,7 @@ RSpec.describe 'Styles' do
     let(:expected_options) { {} }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
+      expect(pdf_doc).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
     end
   end
 
@@ -35,7 +39,7 @@ RSpec.describe 'Styles' do
     let(:expected_options) { {} }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
+      expect(pdf_doc).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
     end
   end
 
@@ -46,7 +50,7 @@ RSpec.describe 'Styles' do
     let(:expected_options) { {} }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
+      expect(pdf_doc).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
     end
   end
 
@@ -57,7 +61,7 @@ RSpec.describe 'Styles' do
     let(:expected_options) { {} }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
+      expect(pdf_doc).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
     end
   end
 
@@ -66,9 +70,15 @@ RSpec.describe 'Styles' do
     let(:size) { TestUtils.default_font_size }
 
     it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do
-      expect(pdf_doc).to have_received(:formatted_text).with([{ character_spacing: 1.5, size: size, text: 'aaa' }], {})
-      expect(pdf_doc).to have_received(:formatted_text).with([{ size: size, text: ' bbb ' }], {})
-      expect(pdf_doc).to have_received(:formatted_text).with([{ character_spacing: 2.0, size: size, text: 'ccc' }], {})
+      expect(pdf_doc).to have_received(:puts).with(
+        [{ character_spacing: 1.5, size: size, text: 'aaa' }], {}, bounding_box: nil
+      )
+      expect(pdf_doc).to have_received(:puts).with(
+        [{ size: size, text: ' bbb ' }], {}, bounding_box: nil
+      )
+      expect(pdf_doc).to have_received(:puts).with(
+        [{ character_spacing: 2.0, size: size, text: 'ccc' }], {}, bounding_box: nil
+      )
     end
   end
 
@@ -76,9 +86,10 @@ RSpec.describe 'Styles' do
     let(:html) { '<div style="line-height: 12">Some content...</div>' }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:formatted_text).with(
+      expect(pdf_doc).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, text: "Some content..." }],
-        { leading: 12 * PrawnHtml::PX }
+        { leading: 12 * PrawnHtml::PX },
+        bounding_box: nil
       )
     end
   end
@@ -90,7 +101,7 @@ RSpec.describe 'Styles' do
     let(:expected_options) { { indent_paragraphs: (40 * PrawnHtml::PX).round(4) } }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
+      expect(pdf_doc).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
     end
   end
 
@@ -98,8 +109,10 @@ RSpec.describe 'Styles' do
     let(:html) { '<div style="margin-top: 40">Some content...</div>' }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:formatted_text).with(
-        [{ size: TestUtils.default_font_size, text: "Some content..." }], {}
+      expect(pdf_doc).to have_received(:puts).with(
+        [{ size: TestUtils.default_font_size, text: "Some content..." }],
+        {},
+        bounding_box: nil
       )
     end
   end
@@ -112,7 +125,7 @@ RSpec.describe 'Styles' do
       let(:expected_options) { { align: :left } }
 
       it 'sends the expected buffer elements to Prawn pdf' do
-        expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
+        expect(pdf_doc).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
       end
     end
 
@@ -123,7 +136,7 @@ RSpec.describe 'Styles' do
       let(:expected_options) { { align: :center } }
 
       it 'sends the expected buffer elements to Prawn pdf' do
-        expect(pdf_doc).to have_received(:formatted_text).with(expected_buffer, expected_options)
+        expect(pdf_doc).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
       end
     end
   end

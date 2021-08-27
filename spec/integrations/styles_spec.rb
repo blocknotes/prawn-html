@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Styles' do
-  let(:pdf_doc) { TestUtils.styled_text_document(html) }
+  let(:pdf) { Prawn::Document.new(page_size: 'A4', page_layout: :portrait) }
+
+  before do
+    PrawnHtml.append_html(pdf, html)
+  end
 
   describe 'attribute text-align' do
     context 'with some content left aligned' do
@@ -10,8 +14,8 @@ RSpec.describe 'Styles' do
       let(:expected_content) { ['Some content'] }
       let(:expected_positions) do
         [[
-          pdf_doc.page.margins[:left],
-          (pdf_doc.y - TestUtils.default_font.ascender).round(4)
+          pdf.page.margins[:left],
+          (pdf.y - TestUtils.default_font.ascender).round(4)
         ]]
       end
 
@@ -21,12 +25,12 @@ RSpec.describe 'Styles' do
     context 'with some content center aligned' do
       let(:html) { '<div style="text-align: center">Some content</div>' }
 
-      let(:content_width) { TestUtils.font_string_width(pdf_doc, expected_content.first) }
+      let(:content_width) { TestUtils.font_string_width(pdf, expected_content.first) }
       let(:expected_content) { ['Some content'] }
       let(:expected_positions) do
         [[
-          (pdf_doc.page.margins[:left] + (pdf_doc.bounds.width - content_width) / 2).round(4),
-          (pdf_doc.y - TestUtils.default_font.ascender).round(4)
+          (pdf.page.margins[:left] + (pdf.bounds.width - content_width) / 2).round(4),
+          (pdf.y - TestUtils.default_font.ascender).round(4)
         ]]
       end
 
@@ -36,17 +40,35 @@ RSpec.describe 'Styles' do
     context 'with some content right aligned' do
       let(:html) { '<div style="text-align: right">Some content</div>' }
 
-      let(:content_width) { TestUtils.font_string_width(pdf_doc, expected_content.first) }
+      let(:content_width) { TestUtils.font_string_width(pdf, expected_content.first) }
       let(:expected_content) { ['Some content'] }
       let(:expected_positions) do
-        x = pdf_doc.page.margins[:left] + pdf_doc.bounds.width - content_width
+        x = pdf.page.margins[:left] + pdf.bounds.width - content_width
         [[
           x.round(4),
-          (pdf_doc.y - TestUtils.default_font.ascender).round(4)
+          (pdf.y - TestUtils.default_font.ascender).round(4)
         ]]
       end
 
       include_examples 'checks contents and positions'
+    end
+  end
+
+  describe 'attribute break-after' do
+    let(:html) { '<div style="break-after: auto">Some content</div>' }
+
+    it 'creates a new page' do
+      pdf.render
+      expect(pdf.page_count).to eq 2
+    end
+  end
+
+  describe 'attribute break-before' do
+    let(:html) { '<div style="break-before: auto">Some content</div>' }
+
+    it 'creates a new page' do
+      pdf.render
+      expect(pdf.page_count).to eq 2
     end
   end
 
@@ -58,8 +80,8 @@ RSpec.describe 'Styles' do
       let(:expected_content) { ['Some content'] }
       let(:expected_positions) do
         [[
-          pdf_doc.page.margins[:left],
-          (pdf_doc.y - TestUtils.font_ascender(font_family: 'Courier', font_size: size)).round(4)
+          pdf.page.margins[:left],
+          (pdf.y - TestUtils.font_ascender(font_family: 'Courier', font_size: size)).round(4)
         ]]
       end
       let(:expected_font_settings) { [{ name: :Courier, size: size }] }
@@ -76,8 +98,8 @@ RSpec.describe 'Styles' do
       let(:expected_content) { ['Some content'] }
       let(:expected_positions) do
         [[
-          pdf_doc.page.margins[:left],
-          (pdf_doc.y - TestUtils.prawn_document.font('Helvetica', size: size).ascender).round(4)
+          pdf.page.margins[:left],
+          (pdf.y - TestUtils.prawn_document.font('Helvetica', size: size).ascender).round(4)
         ]]
       end
       let(:expected_font_settings) { [{ name: TestUtils.default_font_family, size: size }] }
@@ -94,8 +116,8 @@ RSpec.describe 'Styles' do
       let(:expected_content) { ['Some content'] }
       let(:expected_positions) do
         [[
-          pdf_doc.page.margins[:left],
-          (pdf_doc.y - TestUtils.prawn_document.font('Helvetica-Oblique', size: size).ascender).round(4)
+          pdf.page.margins[:left],
+          (pdf.y - TestUtils.prawn_document.font('Helvetica-Oblique', size: size).ascender).round(4)
         ]]
       end
       let(:expected_font_settings) { [{ name: :'Helvetica-Oblique', size: size }] }
@@ -112,8 +134,8 @@ RSpec.describe 'Styles' do
       let(:expected_content) { ['Some content'] }
       let(:expected_positions) do
         [[
-          pdf_doc.page.margins[:left],
-          (pdf_doc.y - TestUtils.prawn_document.font('Helvetica-Bold', size: size).ascender).round(4)
+          pdf.page.margins[:left],
+          (pdf.y - TestUtils.prawn_document.font('Helvetica-Bold', size: size).ascender).round(4)
         ]]
       end
       let(:expected_font_settings) { [{ name: :'Helvetica-Bold', size: size }] }
@@ -123,9 +145,9 @@ RSpec.describe 'Styles' do
   end
 
   describe 'attribute letter-spacing' do
+    let(:html) { '<div style="letter-spacing: 1.5">aaa</div> bbb <div style="letter-spacing: 2">ccc</div>' }
+
     it 'renders some content with letter spacing', :aggregate_failures do
-      html = '<div style="letter-spacing: 1.5">aaa</div> bbb <div style="letter-spacing: 2">ccc</div>'
-      pdf = TestUtils.styled_text_document(html)
       text_analysis = PDF::Inspector::Text.analyze(pdf.render)
 
       expect(text_analysis.strings).to eq(['aaa', 'bbb', 'ccc'])
@@ -140,8 +162,8 @@ RSpec.describe 'Styles' do
     let(:expected_content) { ['Some content'] }
     let(:expected_positions) do
       [[
-        pdf_doc.page.margins[:left] + size,
-        (pdf_doc.y - TestUtils.default_font.ascender).round(4)
+        pdf.page.margins[:left] + size,
+        (pdf.y - TestUtils.default_font.ascender).round(4)
       ]]
     end
 
@@ -155,8 +177,8 @@ RSpec.describe 'Styles' do
     let(:expected_content) { ['Some content'] }
     let(:expected_positions) do
       [[
-        pdf_doc.page.margins[:left],
-        (pdf_doc.y - TestUtils.default_font.ascender - size).round(4)
+        pdf.page.margins[:left],
+        (pdf.y - TestUtils.default_font.ascender - size).round(4)
       ]]
     end
 

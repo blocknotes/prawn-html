@@ -7,7 +7,7 @@ module PrawnHtml
 
     # Init the DocumentRenderer
     #
-    # @param pdf [Prawn::Document] target Prawn PDF document
+    # @param pdf [PdfWrapper] target PDF wrapper
     def initialize(pdf)
       @buffer = []
       @context = Context.new
@@ -103,14 +103,15 @@ module PrawnHtml
     def apply_tag_close_styles(element)
       tag_styles = element.tag_close_styles
       context.last_margin = tag_styles[:margin_bottom].to_f
-      move_down = context.last_margin + tag_styles[:padding_bottom].to_f
-      pdf.move_down(move_down) if move_down > 0
+      pdf.advance_cursor(context.last_margin + tag_styles[:padding_bottom].to_f)
+      pdf.start_new_page if tag_styles[:break_after]
     end
 
     def apply_tag_open_styles(element)
       tag_styles = element.tag_open_styles
       move_down = (tag_styles[:margin_top].to_f - context.last_margin) + tag_styles[:padding_top].to_f
-      pdf.move_down(move_down) if move_down > 0
+      pdf.advance_cursor(move_down) if move_down > 0
+      pdf.start_new_page if tag_styles[:break_before]
     end
 
     def output_content(buffer, block_styles)
@@ -118,17 +119,7 @@ module PrawnHtml
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
       options = block_styles.slice(:align, :leading, :mode, :padding_left)
       options[:indent_paragraphs] = left_indent if left_indent > 0
-      formatted_text(buffer, options, bounding_box: bounds(block_styles))
-    end
-
-    def formatted_text(buffer, options, bounding_box: nil)
-      return pdf.formatted_text(buffer, options) unless bounding_box
-
-      current_y = pdf.cursor
-      pdf.bounding_box(*bounding_box) do
-        pdf.formatted_text(buffer, options)
-      end
-      pdf.move_cursor_to(current_y)
+      pdf.puts(buffer, options, bounding_box: bounds(block_styles))
     end
 
     def bounds(block_styles)

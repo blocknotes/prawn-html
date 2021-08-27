@@ -62,6 +62,8 @@ HTML tags:
 CSS attributes (dimensional units are ignored and considered in pixel):
 
 - **background**: for *mark* tag (3/6 hex digits or RGB or color name), ex. `style="background: #FECD08"`
+- **break-after**: go to a new page after some elements, ex. `style="break-after: auto"`
+- **break-before**: go to a new page before some elements, ex. `style="break-before: auto"`
 - **color**: (3/6 hex digits or RGB or color name) ex. `style="color: #FB1"`
 - **font-family**: font must be registered, quotes are optional, ex. `style="font-family: Courier"`
 - **font-size**: ex. `style="font-size: 20px"`

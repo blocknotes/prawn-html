@@ -51,7 +51,7 @@ module PrawnHtml
         if container_size && value.include?('%')
           val.to_f * container_size * 0.01
         else
-          val.to_f * PX
+          val.to_f * PrawnHtml::PX
         end
       val.round(4)
     end

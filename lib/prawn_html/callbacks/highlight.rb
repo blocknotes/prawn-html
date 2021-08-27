@@ -11,10 +11,8 @@ module PrawnHtml
       end
 
       def render_behind(fragment)
-        original_color = @pdf.fill_color
-        @pdf.fill_color = @color
-        @pdf.fill_rectangle(fragment.top_left, fragment.width, fragment.height)
-        @pdf.fill_color = original_color
+        top, left = fragment.top_left
+        @pdf.draw_rectangle(x: left, y: top, width: fragment.width, height: fragment.height, color: @color)
       end
     end
   end

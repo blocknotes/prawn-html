@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Headings' do
+  let(:pdf) { Prawn::Document.new(page_size: 'A4', page_layout: :portrait) }
+
+  before do
+    PrawnHtml.append_html(pdf, html)
+  end
+
   def base_position(pdf, font_size, margin_top: 16)
     font = Prawn::Document.new(page_size: 'A4', page_layout: :portrait).font('Helvetica-Bold', size: font_size)
     [pdf.page.margins[:left], pdf.y - font.ascender - margin_top]
   end
-
-  let(:pdf_doc) { TestUtils.styled_text_document(html) }
 
   context 'with some content in an element h1' do
     let(:html) { '<h1>Some content in a element h1</h1>' }
@@ -15,8 +19,8 @@ RSpec.describe 'Headings' do
     let(:expected_content) { ['Some content in a element h1'] }
     let(:expected_positions) do
       margin = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::MARGINS_TOP[:h1].to_s)
-      y = pdf_doc.y - TestUtils.font_ascender(font_size: size) - margin
-      [[pdf_doc.page.margins[:left], y.round(4)]]
+      y = pdf.y - TestUtils.font_ascender(font_size: size) - margin
+      [[pdf.page.margins[:left], y.round(4)]]
     end
     let(:expected_font_settings) { [{ name: :'Helvetica-Bold', size: size }] }
 
@@ -30,8 +34,8 @@ RSpec.describe 'Headings' do
     let(:expected_content) { ['Some content in a element h2'] }
     let(:expected_positions) do
       margin = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::MARGINS_TOP[:h2].to_s)
-      y = pdf_doc.y - TestUtils.font_ascender(font_size: size) - margin
-      [[pdf_doc.page.margins[:left], y.round(4)]]
+      y = pdf.y - TestUtils.font_ascender(font_size: size) - margin
+      [[pdf.page.margins[:left], y.round(4)]]
     end
     let(:expected_font_settings) { [{ name: :'Helvetica-Bold', size: size }] }
 
@@ -45,8 +49,8 @@ RSpec.describe 'Headings' do
     let(:expected_content) { ['Some content in a element h3'] }
     let(:expected_positions) do
       margin = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::MARGINS_TOP[:h3].to_s)
-      y = pdf_doc.y - TestUtils.font_ascender(font_size: size) - margin
-      [[pdf_doc.page.margins[:left], y.round(4)]]
+      y = pdf.y - TestUtils.font_ascender(font_size: size) - margin
+      [[pdf.page.margins[:left], y.round(4)]]
     end
     let(:expected_font_settings) { [{ name: :'Helvetica-Bold', size: size }] }
 
@@ -60,8 +64,8 @@ RSpec.describe 'Headings' do
     let(:expected_content) { ['Some content in a element h4'] }
     let(:expected_positions) do
       margin = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::MARGINS_TOP[:h4].to_s)
-      y = pdf_doc.y - TestUtils.font_ascender(font_size: size) - margin
-      [[pdf_doc.page.margins[:left], y.round(4)]]
+      y = pdf.y - TestUtils.font_ascender(font_size: size) - margin
+      [[pdf.page.margins[:left], y.round(4)]]
     end
     let(:expected_font_settings) { [{ name: :'Helvetica-Bold', size: size }] }
 
@@ -76,8 +80,8 @@ RSpec.describe 'Headings' do
     let(:expected_positions) do
       ascender = TestUtils.font_ascender(font_family: 'Helvetica-Bold', font_size: size)
       margin = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::MARGINS_TOP[:h5].to_s)
-      y = pdf_doc.y - ascender - margin
-      [[pdf_doc.page.margins[:left], y.round(4)]]
+      y = pdf.y - ascender - margin
+      [[pdf.page.margins[:left], y.round(4)]]
     end
     let(:expected_font_settings) { [{ name: :'Helvetica-Bold', size: size }] }
 
@@ -92,8 +96,8 @@ RSpec.describe 'Headings' do
     let(:expected_positions) do
       ascender = TestUtils.font_ascender(font_family: 'Helvetica-Bold', font_size: size)
       margin = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::MARGINS_TOP[:h6].to_s)
-      y = pdf_doc.y - ascender - margin
-      [[pdf_doc.page.margins[:left], y.round(4)]]
+      y = pdf.y - ascender - margin
+      [[pdf.page.margins[:left], y.round(4)]]
     end
     let(:expected_font_settings) { [{ name: :'Helvetica-Bold', size: size }] }
 

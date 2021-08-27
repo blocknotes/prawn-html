@@ -28,11 +28,4 @@ module TestUtils
   def prawn_document
     ::Prawn::Document.new(page_size: 'A4', page_layout: :portrait)
   end
-
-  def styled_text_document(html)
-    prawn_document.tap do |pdf|
-      yield(pdf) if block_given?
-      PrawnHtml.append_html(pdf, html)
-    end
-  end
 end
