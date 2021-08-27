@@ -131,6 +131,22 @@ RSpec.describe PrawnHtml::Utils do
     end
   end
 
+  describe '.normalize_style' do
+    subject(:normalize_style) { described_class.normalize_style(value) }
+
+    context 'with an invalid value (ex. "some_string")' do
+      let(:value) { 'some_string' }
+
+      it { is_expected.to eq nil }
+    end
+
+    context 'with a valid value (ex. " bOlD ")' do
+      let(:value) { ' bOlD ' }
+
+      it { is_expected.to eq :bold }
+    end
+  end
+
   describe '.unquote' do
     subject(:unquote) { described_class.unquote(value) }
 
