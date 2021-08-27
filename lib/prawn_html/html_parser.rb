@@ -9,8 +9,11 @@ module PrawnHtml
     # Init the HtmlParser
     #
     # @param renderer [DocumentRenderer] document renderer
-    def initialize(renderer)
+    # @param ignore_content_tags [Array] array of tags (symbols) to skip their contents while preparing the PDF document
+    def initialize(renderer, ignore_content_tags: %i[script style])
       @processing = false
+      @ignore = false
+      @ignore_content_tags = ignore_content_tags
       @renderer = renderer
       @styles = {}
     end
@@ -27,10 +30,12 @@ module PrawnHtml
 
     private
 
-    attr_reader :document, :processing, :renderer, :styles
+    attr_reader :document, :ignore, :processing, :renderer, :styles
 
     def traverse_nodes(nodes)
       nodes.each do |node|
+        next if node.is_a?(Oga::XML::Comment)
+
         element = node_open(node)
         traverse_nodes(node.children) if node.children.any?
         node_close(element) if element
@@ -40,15 +45,16 @@ module PrawnHtml
     def node_open(node)
       tag = node.is_a?(Oga::XML::Element) && init_element(node)
       return unless processing
+      return IgnoredTag.new(tag) if ignore
       return renderer.on_text_node(node.text) unless tag
 
-      attributes = prepare_attributes(node)
-      renderer.on_tag_open(tag, attributes: attributes, element_styles: styles[node])
+      renderer.on_tag_open(tag, attributes: prepare_attributes(node), element_styles: styles[node])
     end
 
     def init_element(node)
       node.name.downcase.to_sym.tap do |tag_name|
         @processing = true if tag_name == :body
+        @ignore = true if @processing && @ignore_content_tags.include?(tag_name)
         process_styles(node.text) if tag_name == :style
       end
     end
@@ -69,8 +75,19 @@ module PrawnHtml
     end
 
     def node_close(element)
-      renderer.on_tag_close(element) if @processing
+      if processing
+        renderer.on_tag_close(element) unless ignore
+        @ignore = false if ignore && @ignore_content_tags.include?(element.tag)
+      end
       @processing = false if element.tag == :body
+    end
+  end
+
+  class IgnoredTag
+    attr_accessor :tag
+
+    def initialize(tag_name)
+      @tag = tag_name
     end
   end
 
