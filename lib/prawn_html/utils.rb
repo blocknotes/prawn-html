@@ -6,6 +6,7 @@ module PrawnHtml
       'bold' => :bold,
       'italic' => :italic,
       'sub' => :subscript,
+      'super' => :superscript,
       'underline' => :underline
     }.freeze
 
