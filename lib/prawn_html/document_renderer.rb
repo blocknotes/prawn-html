@@ -35,7 +35,9 @@ module PrawnHtml
       tag_class = Tag.class_for(tag_name)
       return unless tag_class
 
-      tag_class.new(tag_name, attributes: attributes, element_styles: element_styles).tap do |element|
+      tag_class.new(tag_name, attributes: attributes).tap do |element|
+        options = { width: pdf.bounds.width, height: pdf.bounds.height }
+        element.process_styles(element_styles: element_styles, options: options)
         setup_element(element)
       end
     end

@@ -10,6 +10,10 @@ RSpec.describe PrawnHtml::Tags::Ol do
   end
 
   context 'without attributes' do
+    before do
+      ol.process_styles
+    end
+
     it 'returns the expected styles for ol tag' do
       expected_styles = {
         color: 'ffbb11',

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Lists' do
-  let(:pdf_doc) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
+  let(:pdf) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
 
   before do
-    allow(PrawnHtml::PdfWrapper).to receive(:new).and_return(pdf_doc)
+    allow(pdf).to receive(:bounds).and_return(OpenStruct.new(width: 0, height: 0))
+    allow(PrawnHtml::PdfWrapper).to receive(:new).and_return(pdf)
     pdf_document = Prawn::Document.new(page_size: 'A4', page_layout: :portrait)
     PrawnHtml.append_html(pdf_document, html)
   end
@@ -25,13 +26,13 @@ RSpec.describe 'Lists' do
     end
 
     it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do
-      expect(pdf_doc).to have_received(:puts).with(
+      expect(pdf).to have_received(:puts).with(
         [{ size: size, text: "• First item" }], { indent_paragraphs: margin_left }, { bounding_box: nil }
       )
-      expect(pdf_doc).to have_received(:puts).with(
+      expect(pdf).to have_received(:puts).with(
         [{ size: size, text: "• Second item" }], { indent_paragraphs: margin_left }, { bounding_box: nil }
       )
-      expect(pdf_doc).to have_received(:puts).with(
+      expect(pdf).to have_received(:puts).with(
         [{ size: size, text: "• Third item" }], { indent_paragraphs: margin_left }, { bounding_box: nil }
       )
     end

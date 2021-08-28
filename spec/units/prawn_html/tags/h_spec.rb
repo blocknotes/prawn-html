@@ -6,6 +6,10 @@ RSpec.describe PrawnHtml::Tags::H do
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
+    before do
+      h1.process_styles
+    end
+
     it 'returns the expected styles for h1 tag' do
       expected_styles = {
         color: 'ffbb11',

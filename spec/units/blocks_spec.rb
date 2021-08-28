@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Blocks' do
-  let(:pdf_doc) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
+  let(:pdf) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
 
   before do
-    allow(PrawnHtml::PdfWrapper).to receive(:new).and_return(pdf_doc)
+    allow(pdf).to receive(:bounds).and_return(OpenStruct.new(width: 0, height: 0))
+    allow(PrawnHtml::PdfWrapper).to receive(:new).and_return(pdf)
     pdf_document = Prawn::Document.new(page_size: 'A4', page_layout: :portrait)
     PrawnHtml.append_html(pdf_document, html)
   end
@@ -13,7 +14,7 @@ RSpec.describe 'Blocks' do
     let(:html) { '<div>Some sample content...</div>' }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:puts).with(
+      expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, text: "Some sample content..." }], {}, { bounding_box: nil }
       )
     end
@@ -23,7 +24,7 @@ RSpec.describe 'Blocks' do
     let(:html) { '<p>Some sample content...</p>' }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf_doc).to have_received(:puts).with(
+      expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, text: "Some sample content..." }], {}, { bounding_box: nil }
       )
     end
