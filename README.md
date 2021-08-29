@@ -57,6 +57,8 @@ HTML tags:
 - **small**: smaller text
 - **span**: inline element
 - **strong**: bold
+- **sub**: subscript element
+- **sup**: superscript element
 - **u**: underline
 - **ul**: unordered list
 

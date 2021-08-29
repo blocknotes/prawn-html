@@ -5,6 +5,8 @@ module PrawnHtml
     NORMALIZE_STYLES = {
       'bold' => :bold,
       'italic' => :italic,
+      'sub' => :subscript,
+      'super' => :superscript,
       'underline' => :underline
     }.freeze
 

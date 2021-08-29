@@ -26,6 +26,7 @@ module PrawnHtml
       'letter-spacing' => { key: :character_spacing, set: :convert_float },
       'list-style-type' => { key: :list_style_type, set: :unquote },
       'text-decoration' => { key: :styles, set: :append_styles },
+      'vertical-align' => { key: :styles, set: :append_styles },
       # tag opening styles
       'break-before' => { key: :break_before, set: :convert_symbol },
       'margin-top' => { key: :margin_top, set: :convert_size },
