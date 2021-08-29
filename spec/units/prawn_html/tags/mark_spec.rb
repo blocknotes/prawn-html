@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Mark do
-  subject(:mark) { described_class.new(:mark, 'style' => 'color: #ffbb11') }
+  subject(:mark) { described_class.new(:mark, attributes: { 'style' => 'color: #ffbb11' }) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
@@ -9,7 +9,7 @@ RSpec.describe PrawnHtml::Tags::Mark do
     subject(:styles) { mark.styles }
 
     it 'merges the callback property into styles' do
-      expect(styles).to match(color: 'ffbb11', callback: PrawnHtml::Callbacks::Highlight)
+      expect(styles).to match(color: 'ffbb11', callback: 'Highlight')
     end
   end
 end

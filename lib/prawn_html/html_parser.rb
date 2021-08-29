@@ -4,12 +4,18 @@ require 'oga'
 
 module PrawnHtml
   class HtmlParser
+    REGEXP_STYLES = /\s*([^{\s]+)\s*{\s*([^}]*?)\s*}/m.freeze
+
     # Init the HtmlParser
     #
     # @param renderer [DocumentRenderer] document renderer
-    def initialize(renderer)
+    # @param ignore_content_tags [Array] array of tags (symbols) to skip their contents while preparing the PDF document
+    def initialize(renderer, ignore_content_tags: %i[script style])
       @processing = false
+      @ignore = false
+      @ignore_content_tags = ignore_content_tags
       @renderer = renderer
+      @styles = {}
     end
 
     # Processes HTML and renders it
@@ -17,17 +23,19 @@ module PrawnHtml
     # @param html [String] The HTML content to process
     def process(html)
       @processing = !html.include?('<body')
-      doc = Oga.parse_html(html)
-      traverse_nodes(doc.children)
+      @document = Oga.parse_html(html)
+      traverse_nodes(document.children)
       renderer.flush
     end
 
     private
 
-    attr_reader :processing, :renderer
+    attr_reader :document, :ignore, :processing, :renderer, :styles
 
     def traverse_nodes(nodes)
       nodes.each do |node|
+        next if node.is_a?(Oga::XML::Comment)
+
         element = node_open(node)
         traverse_nodes(node.children) if node.children.any?
         node_close(element) if element
@@ -37,21 +45,27 @@ module PrawnHtml
     def node_open(node)
       tag = node.is_a?(Oga::XML::Element) && init_element(node)
       return unless processing
+      return IgnoredTag.new(tag) if ignore
       return renderer.on_text_node(node.text) unless tag
 
-      attributes = prepare_attributes(node)
-      renderer.on_tag_open(tag, attributes)
+      renderer.on_tag_open(tag, attributes: prepare_attributes(node), element_styles: styles[node])
     end
 
     def init_element(node)
       node.name.downcase.to_sym.tap do |tag_name|
         @processing = true if tag_name == :body
-        renderer.assign_document_styles(extract_styles(node.text)) if tag_name == :style
+        @ignore = true if @processing && @ignore_content_tags.include?(tag_name)
+        process_styles(node.text) if tag_name == :style
       end
     end
 
-    def extract_styles(text)
-      text.scan(/\s*([^{\s]+)\s*{\s*([^}]*?)\s*}/m).to_h
+    def process_styles(text_styles)
+      hash_styles = text_styles.scan(REGEXP_STYLES).to_h
+      hash_styles.each do |selector, rule|
+        document.css(selector).each do |node|
+          styles[node] = rule
+        end
+      end
     end
 
     def prepare_attributes(node)
@@ -61,8 +75,19 @@ module PrawnHtml
     end
 
     def node_close(element)
-      renderer.on_tag_close(element) if @processing
+      if processing
+        renderer.on_tag_close(element) unless ignore
+        @ignore = false if ignore && @ignore_content_tags.include?(element.tag)
+      end
       @processing = false if element.tag == :body
+    end
+  end
+
+  class IgnoredTag
+    attr_accessor :tag
+
+    def initialize(tag_name)
+      @tag = tag_name
     end
   end
 

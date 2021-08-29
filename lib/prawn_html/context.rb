@@ -32,9 +32,7 @@ module PrawnHtml
     #
     # @return [String] before content string
     def before_content
-      return '' if empty? || !last.respond_to?(:tag_styles)
-
-      last.tag_styles[:before_content].to_s
+      (last.respond_to?(:before_content) && last.before_content) || ''
     end
 
     # Merges the context block styles

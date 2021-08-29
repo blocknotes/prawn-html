@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::Img do
-  subject(:img) { described_class.new(:img, src: 'some_image_url') }
+  subject(:img) { described_class.new(:img, attributes: { 'src' => 'some_image_url' }) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 

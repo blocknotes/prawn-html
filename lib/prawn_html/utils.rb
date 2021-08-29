@@ -2,6 +2,12 @@
 
 module PrawnHtml
   module Utils
+    NORMALIZE_STYLES = {
+      'bold' => :bold,
+      'italic' => :italic,
+      'underline' => :underline
+    }.freeze
+
     # Converts a color string
     #
     # Supported formats:
@@ -74,6 +80,16 @@ module PrawnHtml
       value
     end
 
+    # Normalize a style value
+    #
+    # @param value [String] string value
+    #
+    # @return [Symbol] style value or nil
+    def normalize_style(value)
+      val = value&.strip&.downcase
+      NORMALIZE_STYLES[val]
+    end
+
     # Unquotes a string
     #
     # @param value [String] string
@@ -85,6 +101,7 @@ module PrawnHtml
       end
     end
 
-    module_function :convert_color, :convert_float, :convert_size, :convert_symbol, :copy_value, :unquote
+    module_function :convert_color, :convert_float, :convert_size, :convert_symbol, :copy_value, :normalize_style,
+                    :unquote
   end
 end

@@ -11,19 +11,7 @@ module PrawnHtml
     def initialize(pdf)
       @buffer = []
       @context = Context.new
-      @document_styles = {}
       @pdf = pdf
-    end
-
-    # Evaluate the document styles and store the internally
-    #
-    # @param styles [Hash] styles hash with CSS selectors as keys and rules as values
-    def assign_document_styles(styles)
-      @document_styles.merge!(
-        styles.transform_values do |style_rules|
-          Attributes.new(style: style_rules).styles
-        end
-      )
     end
 
     # On tag close callback
@@ -40,13 +28,14 @@ module PrawnHtml
     #
     # @param tag_name [String] the tag name of the opening element
     # @param attributes [Hash] an hash of the element attributes
+    # @param element_styles [String] document styles to apply to the element
     #
     # @return [Tag] the opening element wrapper
-    def on_tag_open(tag_name, attributes)
+    def on_tag_open(tag_name, attributes:, element_styles: '')
       tag_class = Tag.class_for(tag_name)
       return unless tag_class
 
-      tag_class.new(tag_name, attributes, document_styles).tap do |element|
+      tag_class.new(tag_name, attributes: attributes, element_styles: element_styles).tap do |element|
         setup_element(element)
       end
     end
@@ -79,7 +68,7 @@ module PrawnHtml
 
     private
 
-    attr_reader :buffer, :context, :document_styles, :pdf
+    attr_reader :buffer, :context, :pdf
 
     def setup_element(element)
       add_space_if_needed unless render_if_needed(element)
@@ -115,11 +104,18 @@ module PrawnHtml
     end
 
     def output_content(buffer, block_styles)
-      buffer.each { |item| item[:callback] = item[:callback].new(pdf, item) if item[:callback] }
+      apply_callbacks(buffer)
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
       options = block_styles.slice(:align, :leading, :mode, :padding_left)
       options[:indent_paragraphs] = left_indent if left_indent > 0
       pdf.puts(buffer, options, bounding_box: bounds(block_styles))
+    end
+
+    def apply_callbacks(buffer)
+      buffer.select { |item| item[:callback] }.each do |item|
+        callback = Tag::CALLBACKS[item[:callback]]
+        item[:callback] = callback.new(pdf, item)
+      end
     end
 
     def bounds(block_styles)

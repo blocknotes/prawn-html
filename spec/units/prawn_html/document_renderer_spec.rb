@@ -11,30 +11,6 @@ RSpec.describe PrawnHtml::DocumentRenderer do
     allow(PrawnHtml::Context).to receive(:new).and_return(context)
   end
 
-  describe '#assign_document_styles' do
-    let(:styles) do
-      {
-        'body' => 'font-family: Courier',
-        '.a_class' => 'color: #08f; font-size: 10px',
-        '#an_id' => 'font-weight: bold'
-      }
-    end
-
-    before do
-      allow(PrawnHtml::Attributes).to receive(:new).and_call_original
-    end
-
-    it 'assigns the document styles' do
-      expected_styles = {
-        'body' => { font: 'Courier' },
-        '.a_class' => { color: '0088ff', size: (10 * PrawnHtml::PX).round(4) },
-        '#an_id' => { styles: [:bold] }
-      }
-
-      expect(document_renderer.assign_document_styles(styles)).to eq(expected_styles)
-    end
-  end
-
   describe '#on_tag_close' do
     subject(:on_tag_close) { document_renderer.on_tag_close(element) }
 
@@ -51,9 +27,12 @@ RSpec.describe PrawnHtml::DocumentRenderer do
   end
 
   describe '#on_tag_open' do
-    subject(:on_tag_open) { document_renderer.on_tag_open(tag, attributes) }
+    subject(:on_tag_open) do
+      document_renderer.on_tag_open(tag, attributes: attributes, element_styles: element_styles)
+    end
 
     let(:attributes) { { 'class' => 'green' } }
+    let(:element_styles) { 'color: red' }
 
     context 'with a div tag' do
       let(:tag) { :div }
@@ -128,11 +107,11 @@ RSpec.describe PrawnHtml::DocumentRenderer do
 
     context 'with an element with position absolute' do
       before do
-        document_renderer.on_tag_open(:div, { 'style' => 'position: absolute; left: 50px; top: 10px' })
+        document_renderer.on_tag_open(:div, attributes: { 'style' => 'position: absolute; left: 50px; top: 10px' })
         document_renderer.on_text_node('Some content')
       end
 
-      it "renders the current buffer's content in a bounded box", :aggregate_failures do
+      it "renders the current buffer's content in a bounded box" do
         render
         expect(pdf).to have_received(:puts)
       end

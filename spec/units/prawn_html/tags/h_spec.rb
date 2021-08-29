@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Tags::H do
-  subject(:h1) { described_class.new(:h1, 'style' => 'color: ffbb11') }
+  subject(:h1) { described_class.new(:h1, attributes: { 'style' => 'color: #fb1' }) }
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
-    it 'returns the expected tag_styles for h1 tag' do
-      expect(h1.tag_styles).to eq(
-        'font-size' => PrawnHtml::Tags::H::SIZES[:h1].to_s,
-        'font-weight' => 'bold',
-        'margin-bottom' => PrawnHtml::Tags::H::MARGINS_BOTTOM[:h1].to_s,
-        'margin-top' => PrawnHtml::Tags::H::MARGINS_TOP[:h1].to_s
-      )
+    it 'returns the expected styles for h1 tag' do
+      expected_styles = {
+        color: 'ffbb11',
+        margin_bottom: PrawnHtml::Utils.convert_size(described_class::MARGINS_BOTTOM[:h1].to_s),
+        margin_top: PrawnHtml::Utils.convert_size(described_class::MARGINS_TOP[:h1].to_s),
+        size: PrawnHtml::Utils.convert_size(described_class::SIZES[:h1].to_s),
+        styles: [:bold]
+      }
+      expect(h1.styles).to match(expected_styles)
     end
   end
 

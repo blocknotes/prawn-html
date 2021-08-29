@@ -6,9 +6,7 @@ module PrawnHtml
       ELEMENTS = [:ins, :u].freeze
 
       def tag_styles
-        {
-          'text-decoration' => 'underline'
-        }
+        'text-decoration: underline'
       end
     end
   end

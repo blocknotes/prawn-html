@@ -9,7 +9,7 @@ module PrawnHtml
 
       attr_accessor :counter
 
-      def initialize(*_args)
+      def initialize(tag, attributes: {}, element_styles: '')
         super
         @counter = 0
       end
@@ -19,9 +19,7 @@ module PrawnHtml
       end
 
       def tag_styles
-        @tag_styles ||= {
-          'margin-left' => MARGIN_LEFT.to_s,
-        }
+        "margin-left: #{MARGIN_LEFT}px"
       end
     end
   end
