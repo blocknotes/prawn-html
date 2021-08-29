@@ -15,8 +15,10 @@ module PrawnHtml
     #
     # @param tag [Symbol] tag name
     # @param attributes [Hash] hash of element attributes
-    def initialize(tag, attributes: {})
+    # @param options [Hash] options (container width/height/etc.)
+    def initialize(tag, attributes: {}, options: {})
       @tag = tag
+      @options = options
       @attrs = Attributes.new(attributes)
     end
 
@@ -38,12 +40,11 @@ module PrawnHtml
 
     # Process tag styles
     #
-    # @return element_styles [String] extra styles to apply to the element
-    # @return options [Hash] options (container width/height/etc.)
-    def process_styles(element_styles: nil, options: {})
-      attrs.merge_text_styles!(tag_styles) if respond_to?(:tag_styles)
-      attrs.merge_text_styles!(element_styles) if element_styles
-      attrs.merge_text_styles!(attrs.style)
+    # @param element_styles [String] extra styles to apply to the element
+    def process_styles(element_styles: nil)
+      attrs.merge_text_styles!(tag_styles, options: options) if respond_to?(:tag_styles)
+      attrs.merge_text_styles!(element_styles, options: options) if element_styles
+      attrs.merge_text_styles!(attrs.style, options: options)
     end
 
     # Styles to apply on tag closing
@@ -82,5 +83,9 @@ module PrawnHtml
         @tag_classes[tag_name]
       end
     end
+
+    private
+
+    attr_reader :options
   end
 end

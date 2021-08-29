@@ -20,8 +20,9 @@ module PrawnHtml
 
       def adjust_styles(pdf, img_styles)
         {}.tap do |result|
-          result[:width] = Utils.convert_size(img_styles['width'], pdf.bounds.width) if img_styles.include?('width')
-          result[:height] = Utils.convert_size(img_styles['height'], pdf.bounds.height) if img_styles.include?('height')
+          w, h = img_styles['width'], img_styles['height']
+          result[:width] = Utils.convert_size(w, options: pdf.bounds.width) if w
+          result[:height] = Utils.convert_size(h, options: pdf.bounds.height) if h
           result[:position] = img_styles[:align] if %i[left center right].include?(img_styles[:align])
         end
       end
