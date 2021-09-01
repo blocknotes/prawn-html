@@ -4,7 +4,7 @@ RSpec.describe 'Blocks' do
   let(:pdf) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
 
   before do
-    allow(pdf).to receive(:bounds).and_return(OpenStruct.new(width: 0, height: 0))
+    allow(pdf).to receive_messages(page_width: 540, page_height: 720)
     allow(PrawnHtml::PdfWrapper).to receive(:new).and_return(pdf)
     pdf_document = Prawn::Document.new(page_size: 'A4', page_layout: :portrait)
     PrawnHtml.append_html(pdf_document, html)

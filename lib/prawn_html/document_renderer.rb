@@ -35,7 +35,7 @@ module PrawnHtml
       tag_class = Tag.class_for(tag_name)
       return unless tag_class
 
-      options = { width: pdf.bounds.width, height: pdf.bounds.height }
+      options = { width: pdf.page_width, height: pdf.page_height }
       tag_class.new(tag_name, attributes: attributes, options: options).tap do |element|
         element.process_styles(element_styles: element_styles)
         setup_element(element)
@@ -130,17 +130,17 @@ module PrawnHtml
 
       x = if block_styles.include?(:right)
             x1 = pdf.calc_buffer_width(buffer) + block_styles[:right]
-            x1 < pdf.bounds.width ? (pdf.bounds.width - x1) : 0
+            x1 < pdf.page_width ? (pdf.page_width - x1) : 0
           else
             block_styles[:left] || 0
           end
       y = if block_styles.include?(:bottom)
             pdf.calc_buffer_height(buffer, options) + block_styles[:bottom]
           else
-            pdf.bounds.height - (block_styles[:top] || 0)
+            pdf.page_height - (block_styles[:top] || 0)
           end
 
-      [[x, y], { width: pdf.bounds.width - x }]
+      [[x, y], { width: pdf.page_width - x }]
     end
   end
 end

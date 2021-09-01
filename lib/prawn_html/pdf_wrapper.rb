@@ -6,7 +6,7 @@ module PrawnHtml
   class PdfWrapper
     extend Forwardable
 
-    def_delegators :@pdf, :bounds, :start_new_page
+    def_delegators :@pdf, :start_new_page
 
     # Wrapper for Prawn PDF Document
     #
@@ -48,6 +48,20 @@ module PrawnHtml
         end
       end
       width
+    end
+
+    # Height of the page
+    #
+    # @return [Float] height
+    def page_height
+      pdf.bounds.height
+    end
+
+    # Width of the page
+    #
+    # @return [Float] width
+    def page_width
+      pdf.bounds.width
     end
 
     # Draw a rectangle

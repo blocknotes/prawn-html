@@ -6,7 +6,7 @@ RSpec.describe PrawnHtml::PdfWrapper do
   let(:pdf) { instance_double(Prawn::Document) }
 
   describe 'delegated methods' do
-    %i[bounds start_new_page].each do |method_name|
+    %i[start_new_page].each do |method_name|
       context "with #{method_name} method" do
         before do
           allow(pdf).to receive(method_name)
