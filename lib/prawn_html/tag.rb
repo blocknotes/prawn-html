@@ -15,11 +15,11 @@ module PrawnHtml
     #
     # @param tag [Symbol] tag name
     # @param attributes [Hash] hash of element attributes
-    # @param element_styles [String] document styles tp apply to the element
-    def initialize(tag, attributes: {}, element_styles: '')
+    # @param options [Hash] options (container width/height/etc.)
+    def initialize(tag, attributes: {}, options: {})
       @tag = tag
+      @options = options
       @attrs = Attributes.new(attributes)
-      process_styles(element_styles, attributes['style'])
     end
 
     # Is a block tag?
@@ -36,6 +36,15 @@ module PrawnHtml
       block_styles = styles.slice(*Attributes::STYLES_APPLY[:block])
       block_styles[:mode] = attrs.data['mode'].to_sym if attrs.data.include?('mode')
       block_styles
+    end
+
+    # Process tag styles
+    #
+    # @param element_styles [String] extra styles to apply to the element
+    def process_styles(element_styles: nil)
+      attrs.merge_text_styles!(tag_styles, options: options) if respond_to?(:tag_styles)
+      attrs.merge_text_styles!(element_styles, options: options) if element_styles
+      attrs.merge_text_styles!(attrs.style, options: options)
     end
 
     # Styles to apply on tag closing
@@ -77,10 +86,6 @@ module PrawnHtml
 
     private
 
-    def process_styles(element_styles, inline_styles)
-      attrs.merge_text_styles!(tag_styles) if respond_to?(:tag_styles)
-      attrs.merge_text_styles!(element_styles)
-      attrs.merge_text_styles!(inline_styles)
-    end
+    attr_reader :options
   end
 end

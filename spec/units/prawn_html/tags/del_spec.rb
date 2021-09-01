@@ -8,6 +8,10 @@ RSpec.describe PrawnHtml::Tags::Del do
   describe '#styles' do
     subject(:styles) { del.styles }
 
+    before do
+      del.process_styles
+    end
+
     it 'merges the callback property into styles' do
       expect(styles).to match(color: 'ffbb11', callback: 'StrikeThrough')
     end

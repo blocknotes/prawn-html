@@ -15,6 +15,10 @@ AllCops:
     - vendor/**/*
   NewCops: enable
 
+Lint/UnusedMethodArgument:
+  Exclude:
+    - lib/prawn_html/utils.rb
+
 Naming/FileName:
   Exclude:
     - lib/prawn-html.rb

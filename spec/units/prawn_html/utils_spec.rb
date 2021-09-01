@@ -91,7 +91,7 @@ RSpec.describe PrawnHtml::Utils do
     end
 
     context 'with a percentage value and a container size (ex. "50%" and 100.242424)' do
-      subject(:convert_size) { described_class.convert_size(value, 100.242424) }
+      subject(:convert_size) { described_class.convert_size(value, options: 100.242424) }
 
       let(:value) { '50%' }
 

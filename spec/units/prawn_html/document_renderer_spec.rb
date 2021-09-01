@@ -105,9 +105,21 @@ RSpec.describe PrawnHtml::DocumentRenderer do
       end
     end
 
-    context 'with an element with position absolute' do
+    context 'with position absolute, top and left properties' do
       before do
-        document_renderer.on_tag_open(:div, attributes: { 'style' => 'position: absolute; left: 50px; top: 10px' })
+        document_renderer.on_tag_open(:div, attributes: { 'style' => 'position: absolute; top: 10px; left: 50px' })
+        document_renderer.on_text_node('Some content')
+      end
+
+      it "renders the current buffer's content in a bounded box" do
+        render
+        expect(pdf).to have_received(:puts)
+      end
+    end
+
+    context 'with position absolute, bottom and right properties' do
+      before do
+        document_renderer.on_tag_open(:div, attributes: { 'style' => 'position: absolute; bottom: 10px; right: 80px' })
         document_renderer.on_text_node('Some content')
       end
 

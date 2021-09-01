@@ -8,6 +8,10 @@ RSpec.describe PrawnHtml::Tags::Hr do
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
+    before do
+      hr.process_styles
+    end
+
     it 'returns the expected styles for hr tag' do
       expected_styles = {
         color: 'ffbb11',
@@ -26,6 +30,10 @@ RSpec.describe PrawnHtml::Tags::Hr do
 
   describe '#custom_render' do
     subject(:custom_render) { hr.custom_render(pdf, context) }
+
+    before do
+      hr.process_styles
+    end
 
     let(:context) { nil }
 

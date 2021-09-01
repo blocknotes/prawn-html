@@ -21,7 +21,7 @@ module PrawnHtml
     # @param value [String] HTML string color
     #
     # @return [String] adjusted string color or nil if value is invalid
-    def convert_color(value)
+    def convert_color(value, options: nil)
       val = value.to_s.strip.downcase
       return Regexp.last_match[1] if val.match /\A#([a-f0-9]{6})\Z/ # rubocop:disable Performance/RedundantMatch
 
@@ -42,7 +42,7 @@ module PrawnHtml
     # @param value [String] string decimal
     #
     # @return [Float] converted and rounded float number
-    def convert_float(value)
+    def convert_float(value, options: nil)
       val = value&.gsub(/[^0-9.]/, '') || ''
       val.to_f.round(4)
     end
@@ -50,14 +50,14 @@ module PrawnHtml
     # Converts a size string
     #
     # @param value [String] size string
-    # @param container_size [Numeric] container size
+    # @param options [Numeric] container size
     #
     # @return [Float] converted and rounded size
-    def convert_size(value, container_size = nil)
+    def convert_size(value, options: nil)
       val = value&.gsub(/[^0-9.]/, '') || ''
       val =
-        if container_size && value.include?('%')
-          val.to_f * container_size * 0.01
+        if options && value&.include?('%')
+          val.to_f * options * 0.01
         else
           val.to_f * PrawnHtml::PX
         end
@@ -69,7 +69,7 @@ module PrawnHtml
     # @param value [String] string
     #
     # @return [Symbol] symbol
-    def convert_symbol(value)
+    def convert_symbol(value, options: nil)
       value.to_sym if value && !value.match?(/\A\s*\Z/)
     end
 
@@ -78,7 +78,7 @@ module PrawnHtml
     # @param value
     #
     # @return value
-    def copy_value(value)
+    def copy_value(value, options: nil)
       value
     end
 
@@ -97,7 +97,7 @@ module PrawnHtml
     # @param value [String] string
     #
     # @return [String] string without quotes at the beginning/ending
-    def unquote(value)
+    def unquote(value, options: nil)
       (value&.strip || +'').tap do |val|
         val.gsub!(/\A['"]|["']\Z/, '')
       end

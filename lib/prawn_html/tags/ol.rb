@@ -9,7 +9,7 @@ module PrawnHtml
 
       attr_accessor :counter
 
-      def initialize(tag, attributes: {}, element_styles: '')
+      def initialize(tag, attributes: {}, options: {})
         super
         @counter = 0
       end

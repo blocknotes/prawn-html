@@ -6,6 +6,10 @@ RSpec.describe PrawnHtml::Tags::U do
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
+    before do
+      u.process_styles
+    end
+
     it 'returns the expected styles for u tag' do
       expect(u.styles).to match(color: 'ffbb11', styles: [:underline])
     end
