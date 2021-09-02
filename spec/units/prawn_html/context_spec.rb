@@ -6,10 +6,6 @@ RSpec.describe PrawnHtml::Context do
   it { expect(described_class).to be < Array }
 
   describe '#initialize' do
-    it 'last_margin is set to 0' do
-      expect(context.last_margin).to be_zero
-    end
-
     it 'last_text_node is set to false' do
       expect(context.last_text_node).to be_falsey
     end
@@ -96,8 +92,20 @@ RSpec.describe PrawnHtml::Context do
     end
   end
 
-  describe '#text_node_styles' do
-    subject(:text_node_styles) { context.text_node_styles }
+  describe '#remove_last' do
+    subject(:remove_last) { context.remove_last }
+
+    before do
+      context.add(instance_double(PrawnHtml::Tag, :parent= => true))
+    end
+
+    it 'removes the last element from the context' do
+      expect { remove_last }.to change(context, :size).from(1).to(0)
+    end
+  end
+
+  describe '#merged_styles' do
+    subject(:merged_styles) { context.merged_styles }
 
     context 'with no elements' do
       it { is_expected.to eq(size: PrawnHtml::Context::DEF_FONT_SIZE) }
@@ -112,7 +120,7 @@ RSpec.describe PrawnHtml::Context do
       end
 
       it 'merges the styles of the elements' do
-        expect(text_node_styles).to match(color: 'abc', size: 12.34)
+        expect(merged_styles).to match(color: 'abc', size: 12.34)
       end
     end
 
@@ -133,7 +141,7 @@ RSpec.describe PrawnHtml::Context do
       end
 
       it 'sends the context styles to the update_styles method', :aggregate_failures do
-        expect(text_node_styles).to match(color: 'fb1', size: 12.34, some_style: :some_value)
+        expect(merged_styles).to match(color: 'fb1', size: 12.34, some_style: :some_value)
         expect(tag2).to have_received(:update_styles)
       end
     end

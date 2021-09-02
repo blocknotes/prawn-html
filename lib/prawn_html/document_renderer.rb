@@ -11,6 +11,7 @@ module PrawnHtml
     def initialize(pdf)
       @buffer = []
       @context = Context.new
+      @last_margin = 0
       @pdf = pdf
     end
 
@@ -20,8 +21,7 @@ module PrawnHtml
     def on_tag_close(element)
       render_if_needed(element)
       apply_tag_close_styles(element)
-      context.last_text_node = false
-      context.pop
+      context.remove_last
     end
 
     # On tag open callback
@@ -37,8 +37,7 @@ module PrawnHtml
 
       options = { width: pdf.page_width, height: pdf.page_height }
       tag_class.new(tag_name, attributes: attributes, options: options).tap do |element|
-        element.process_styles(element_styles: element_styles)
-        setup_element(element)
+        setup_element(element, element_styles: element_styles)
       end
     end
 
@@ -50,7 +49,7 @@ module PrawnHtml
     def on_text_node(content)
       return if content.match?(/\A\s*\Z/)
 
-      buffer << context.text_node_styles.merge(text: prepare_text(content))
+      buffer << context.merged_styles.merge(text: prepare_text(content))
       context.last_text_node = true
       nil
     end
@@ -61,19 +60,20 @@ module PrawnHtml
 
       output_content(buffer.dup, context.block_styles)
       buffer.clear
-      context.last_margin = 0
+      @last_margin = 0
     end
 
     alias_method :flush, :render
 
     private
 
-    attr_reader :buffer, :context, :pdf
+    attr_reader :buffer, :context, :last_margin, :pdf
 
-    def setup_element(element)
+    def setup_element(element, element_styles:)
       add_space_if_needed unless render_if_needed(element)
-      apply_tag_open_styles(element)
       context.add(element)
+      element.process_styles(element_styles: element_styles)
+      apply_tag_open_styles(element)
       element.custom_render(pdf, context) if element.respond_to?(:custom_render)
     end
 
@@ -91,14 +91,14 @@ module PrawnHtml
 
     def apply_tag_close_styles(element)
       tag_styles = element.tag_close_styles
-      context.last_margin = tag_styles[:margin_bottom].to_f
-      pdf.advance_cursor(context.last_margin + tag_styles[:padding_bottom].to_f)
+      @last_margin = tag_styles[:margin_bottom].to_f
+      pdf.advance_cursor(last_margin + tag_styles[:padding_bottom].to_f)
       pdf.start_new_page if tag_styles[:break_after]
     end
 
     def apply_tag_open_styles(element)
       tag_styles = element.tag_open_styles
-      move_down = (tag_styles[:margin_top].to_f - context.last_margin) + tag_styles[:padding_top].to_f
+      move_down = (tag_styles[:margin_top].to_f - last_margin) + tag_styles[:padding_top].to_f
       pdf.advance_cursor(move_down) if move_down > 0
       pdf.start_new_page if tag_styles[:break_before]
     end
