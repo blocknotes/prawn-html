@@ -10,6 +10,7 @@ module PrawnHtml
     def initialize(*_args)
       super
       @last_text_node = false
+      @merged_styles = nil
     end
 
     # Add an element to the context
@@ -24,6 +25,7 @@ module PrawnHtml
       element.parent = last
       push(element)
       element.on_context_add(self) if element.respond_to?(:on_context_add)
+      @merged_styles = nil
       self
     end
 
@@ -48,15 +50,17 @@ module PrawnHtml
     # Merge the context styles for text nodes
     #
     # @return [Hash] the hash of merged styles
-    def text_node_styles
-      each_with_object(base_styles) do |element, res|
-        evaluate_element_styles(element, res)
-        element.update_styles(res) if element.respond_to?(:update_styles)
-      end
+    def merged_styles
+      @merged_styles ||=
+        each_with_object(base_styles) do |element, res|
+          evaluate_element_styles(element, res)
+          element.update_styles(res) if element.respond_to?(:update_styles)
+        end
     end
 
     # Remove the last element from the context
     def remove_last
+      @merged_styles = nil
       @last_text_node = false
       pop
     end

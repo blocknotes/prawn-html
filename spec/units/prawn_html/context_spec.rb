@@ -120,7 +120,7 @@ RSpec.describe PrawnHtml::Context do
       end
 
       it 'merges the styles of the elements' do
-        expect(text_node_styles).to match(color: 'abc', size: 12.34)
+        expect(merged_styles).to match(color: 'abc', size: 12.34)
       end
     end
 
@@ -141,7 +141,7 @@ RSpec.describe PrawnHtml::Context do
       end
 
       it 'sends the context styles to the update_styles method', :aggregate_failures do
-        expect(text_node_styles).to match(color: 'fb1', size: 12.34, some_style: :some_value)
+        expect(merged_styles).to match(color: 'fb1', size: 12.34, some_style: :some_value)
         expect(tag2).to have_received(:update_styles)
       end
     end

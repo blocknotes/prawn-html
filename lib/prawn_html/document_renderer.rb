@@ -37,8 +37,7 @@ module PrawnHtml
 
       options = { width: pdf.page_width, height: pdf.page_height }
       tag_class.new(tag_name, attributes: attributes, options: options).tap do |element|
-        element.process_styles(element_styles: element_styles)
-        setup_element(element)
+        setup_element(element, element_styles: element_styles)
       end
     end
 
@@ -50,7 +49,7 @@ module PrawnHtml
     def on_text_node(content)
       return if content.match?(/\A\s*\Z/)
 
-      buffer << context.text_node_styles.merge(text: prepare_text(content))
+      buffer << context.merged_styles.merge(text: prepare_text(content))
       context.last_text_node = true
       nil
     end
@@ -70,10 +69,11 @@ module PrawnHtml
 
     attr_reader :buffer, :context, :last_margin, :pdf
 
-    def setup_element(element)
+    def setup_element(element, element_styles:)
       add_space_if_needed unless render_if_needed(element)
-      apply_tag_open_styles(element)
       context.add(element)
+      element.process_styles(element_styles: element_styles)
+      apply_tag_open_styles(element)
       element.custom_render(pdf, context) if element.respond_to?(:custom_render)
     end
 
