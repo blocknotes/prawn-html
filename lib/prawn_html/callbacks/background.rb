@@ -2,7 +2,7 @@
 
 module PrawnHtml
   module Callbacks
-    class Highlight
+    class Background
       DEF_HIGHLIGHT = 'ffff00'
 
       def initialize(pdf, color = nil)

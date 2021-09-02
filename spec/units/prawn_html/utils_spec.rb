@@ -7,13 +7,13 @@ RSpec.describe PrawnHtml::Utils do
     context 'with a nil value' do
       let(:value) { nil }
 
-      it { is_expected.to eq ['Highlight', nil] }
+      it { is_expected.to eq ['Background', nil] }
     end
 
     context 'with a color value' do
       let(:value) { 'red' }
 
-      it { is_expected.to eq ['Highlight', 'ff0000'] }
+      it { is_expected.to eq ['Background', 'ff0000'] }
     end
   end
 

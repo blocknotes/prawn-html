@@ -16,7 +16,7 @@ module PrawnHtml
     #
     # @return [Array] callback name and argument value
     def callback_background(value, options: nil)
-      ['Highlight', convert_color(value, options: options)]
+      ['Background', convert_color(value, options: options)]
     end
 
     # Setup a strike through callback
