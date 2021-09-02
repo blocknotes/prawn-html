@@ -21,8 +21,7 @@ module PrawnHtml
     def on_tag_close(element)
       render_if_needed(element)
       apply_tag_close_styles(element)
-      context.last_text_node = false
-      context.pop
+      context.remove_last
     end
 
     # On tag open callback

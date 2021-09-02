@@ -55,6 +55,12 @@ module PrawnHtml
       end
     end
 
+    # Remove the last element from the context
+    def remove_last
+      @last_text_node = false
+      pop
+    end
+
     private
 
     def base_styles

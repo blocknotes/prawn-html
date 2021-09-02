@@ -92,8 +92,20 @@ RSpec.describe PrawnHtml::Context do
     end
   end
 
-  describe '#text_node_styles' do
-    subject(:text_node_styles) { context.text_node_styles }
+  describe '#remove_last' do
+    subject(:remove_last) { context.remove_last }
+
+    before do
+      context.add(instance_double(PrawnHtml::Tag, :parent= => true))
+    end
+
+    it 'removes the last element from the context' do
+      expect { remove_last }.to change(context, :size).from(1).to(0)
+    end
+  end
+
+  describe '#merged_styles' do
+    subject(:merged_styles) { context.merged_styles }
 
     context 'with no elements' do
       it { is_expected.to eq(size: PrawnHtml::Context::DEF_FONT_SIZE) }
