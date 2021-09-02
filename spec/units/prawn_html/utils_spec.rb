@@ -1,6 +1,28 @@
 # frozen_string_literal: true
 
 RSpec.describe PrawnHtml::Utils do
+  describe '.callback_background' do
+    subject(:callback_background) { described_class.callback_background(value) }
+
+    context 'with a nil value' do
+      let(:value) { nil }
+
+      it { is_expected.to eq ['Highlight', nil] }
+    end
+
+    context 'with a color value' do
+      let(:value) { 'red' }
+
+      it { is_expected.to eq ['Highlight', 'ff0000'] }
+    end
+  end
+
+  describe '.callback_strike_through' do
+    subject(:callback_strike_through) { described_class.callback_strike_through(nil) }
+
+    it { is_expected.to eq ['StrikeThrough', nil] }
+  end
+
   describe '.convert_color' do
     subject(:convert_color) { described_class.convert_color(value) }
 

@@ -120,8 +120,9 @@ module PrawnHtml
 
     def apply_callbacks(buffer)
       buffer.select { |item| item[:callback] }.each do |item|
-        callback = Tag::CALLBACKS[item[:callback]]
-        item[:callback] = callback.new(pdf, item)
+        callback, arg = item[:callback]
+        callback_class = Tag::CALLBACKS[callback]
+        item[:callback] = callback_class.new(pdf, arg)
       end
     end
 

@@ -10,13 +10,13 @@ module PrawnHtml
       block: %i[align bottom leading left margin_left padding_left position right top],
       tag_close: %i[margin_bottom padding_bottom break_after],
       tag_open: %i[margin_top padding_top break_before],
-      text_node: %i[background callback character_spacing color font link list_style_type size styles white_space]
+      text_node: %i[callback character_spacing color font link list_style_type size styles white_space]
     }.freeze
 
     STYLES_LIST = {
       # text node styles
-      'background' => { key: :background, set: :convert_color },
-      'callback' => { key: :callback, set: :copy_value },
+      'background' => { key: :callback, set: :callback_background },
+      'callback-strike-through' => { key: :callback, set: :callback_strike_through },
       'color' => { key: :color, set: :convert_color },
       'font-family' => { key: :font, set: :unquote },
       'font-size' => { key: :size, set: :convert_size },

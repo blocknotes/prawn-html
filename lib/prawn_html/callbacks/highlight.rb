@@ -5,9 +5,9 @@ module PrawnHtml
     class Highlight
       DEF_HIGHLIGHT = 'ffff00'
 
-      def initialize(pdf, item)
+      def initialize(pdf, color = nil)
         @pdf = pdf
-        @color = item.delete(:background) || DEF_HIGHLIGHT
+        @color = color || DEF_HIGHLIGHT
       end
 
       def render_behind(fragment)

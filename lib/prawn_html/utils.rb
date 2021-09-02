@@ -10,6 +10,24 @@ module PrawnHtml
       'underline' => :underline
     }.freeze
 
+    # Setup a background callback
+    #
+    # @param value [String] HTML string color
+    #
+    # @return [Array] callback name and argument value
+    def callback_background(value, options: nil)
+      ['Highlight', convert_color(value, options: options)]
+    end
+
+    # Setup a strike through callback
+    #
+    # @param value [String] unused
+    #
+    # @return [Array] callback name and argument value
+    def callback_strike_through(value, options: nil)
+      ['StrikeThrough', nil]
+    end
+
     # Converts a color string
     #
     # Supported formats:
@@ -103,7 +121,7 @@ module PrawnHtml
       end
     end
 
-    module_function :convert_color, :convert_float, :convert_size, :convert_symbol, :copy_value, :normalize_style,
-                    :unquote
+    module_function :callback_background, :callback_strike_through, :convert_color, :convert_float, :convert_size,
+                    :convert_symbol, :copy_value, :normalize_style, :unquote
   end
 end
