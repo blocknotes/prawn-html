@@ -4,12 +4,11 @@ module PrawnHtml
   class Context < Array
     DEF_FONT_SIZE = 10.3
 
-    attr_accessor :last_margin, :last_text_node
+    attr_accessor :last_text_node
 
     # Init the Context
     def initialize(*_args)
       super
-      @last_margin = 0
       @last_text_node = false
     end
 

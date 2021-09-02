@@ -6,10 +6,6 @@ RSpec.describe PrawnHtml::Context do
   it { expect(described_class).to be < Array }
 
   describe '#initialize' do
-    it 'last_margin is set to 0' do
-      expect(context.last_margin).to be_zero
-    end
-
     it 'last_text_node is set to false' do
       expect(context.last_text_node).to be_falsey
     end

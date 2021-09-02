@@ -11,6 +11,7 @@ module PrawnHtml
     def initialize(pdf)
       @buffer = []
       @context = Context.new
+      @last_margin = 0
       @pdf = pdf
     end
 
@@ -61,14 +62,14 @@ module PrawnHtml
 
       output_content(buffer.dup, context.block_styles)
       buffer.clear
-      context.last_margin = 0
+      @last_margin = 0
     end
 
     alias_method :flush, :render
 
     private
 
-    attr_reader :buffer, :context, :pdf
+    attr_reader :buffer, :context, :last_margin, :pdf
 
     def setup_element(element)
       add_space_if_needed unless render_if_needed(element)
@@ -91,14 +92,14 @@ module PrawnHtml
 
     def apply_tag_close_styles(element)
       tag_styles = element.tag_close_styles
-      context.last_margin = tag_styles[:margin_bottom].to_f
-      pdf.advance_cursor(context.last_margin + tag_styles[:padding_bottom].to_f)
+      @last_margin = tag_styles[:margin_bottom].to_f
+      pdf.advance_cursor(last_margin + tag_styles[:padding_bottom].to_f)
       pdf.start_new_page if tag_styles[:break_after]
     end
 
     def apply_tag_open_styles(element)
       tag_styles = element.tag_open_styles
-      move_down = (tag_styles[:margin_top].to_f - context.last_margin) + tag_styles[:padding_top].to_f
+      move_down = (tag_styles[:margin_top].to_f - last_margin) + tag_styles[:padding_top].to_f
       pdf.advance_cursor(move_down) if move_down > 0
       pdf.start_new_page if tag_styles[:break_before]
     end
