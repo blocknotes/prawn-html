@@ -30,16 +30,6 @@ RSpec.describe 'Misc' do
     end
   end
 
-  context 'with an a element' do
-    let(:html) { '<a href="https://www.google.it">A link</a>' }
-    let(:expected_buffer) { [{ size: TestUtils.default_font_size, text: 'A link', link: 'https://www.google.it' }] }
-    let(:expected_options) { { leading: TestUtils.adjust_leading } }
-
-    it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
-    end
-  end
-
   context 'with some content in an element b' do
     let(:html) { '<b>Some content...</b>' }
     let(:expected_buffer) { [{ size: TestUtils.default_font_size, styles: [:bold], text: 'Some content...' }] }

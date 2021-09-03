@@ -6,7 +6,13 @@ module PrawnHtml
       ELEMENTS = [:a].freeze
 
       def tag_styles
-        "href: #{attrs.href}" if attrs.href
+        return unless attrs.href
+
+        <<~STYLES
+          color: #00E;
+          href: #{attrs.href};
+          text-decoration: underline;
+        STYLES
       end
     end
   end
