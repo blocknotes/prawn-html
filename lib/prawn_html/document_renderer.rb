@@ -48,9 +48,7 @@ module PrawnHtml
     def on_text_node(content)
       return if content.match?(/\A\s*\Z/)
 
-      text = ::Oga::HTML::Entities.decode(context.before_content)
-      text += content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
-      buffer << context.text_node_styles.merge(text: text)
+      buffer << context.text_node_styles.merge(text: prepare_text(content))
       context.last_text_node = true
       nil
     end
@@ -101,6 +99,13 @@ module PrawnHtml
       move_down = (tag_styles[:margin_top].to_f - context.last_margin) + tag_styles[:padding_top].to_f
       pdf.advance_cursor(move_down) if move_down > 0
       pdf.start_new_page if tag_styles[:break_before]
+    end
+
+    def prepare_text(content)
+      white_space_pre = context.last && context.last.styles[:white_space] == :pre
+      text = ::Oga::HTML::Entities.decode(context.before_content)
+      text += white_space_pre ? content : content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
+      text
     end
 
     def output_content(buffer, block_styles)

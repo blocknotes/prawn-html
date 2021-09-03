@@ -41,6 +41,7 @@ HTML tags:
 - **b**: bold
 - **blockquote**: block quotation element
 - **br**: new line
+- **code**: inline code element
 - **del**: strike-through
 - **div**: block element
 - **em**: italic
@@ -53,10 +54,13 @@ HTML tags:
 - **mark**: highlight
 - **ol**: ordered list
 - **p**: block element
+- **pre**: preformatted text element
 - **s**: strike-through
 - **small**: smaller text
 - **span**: inline element
 - **strong**: bold
+- **sub**: subscript element
+- **sup**: superscript element
 - **u**: underline
 - **ul**: unordered list
 
