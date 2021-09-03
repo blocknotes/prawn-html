@@ -96,11 +96,15 @@ RSpec.describe PrawnHtml::Context do
     subject(:remove_last) { context.remove_last }
 
     before do
-      context.add(instance_double(PrawnHtml::Tag, :parent= => true))
+      context.add(instance_double(PrawnHtml::Tag, :parent= => true, tag: :some_tag))
     end
 
     it 'removes the last element from the context' do
-      expect { remove_last }.to change(context, :size).from(1).to(0)
+      expect { remove_last }.to(
+        change(context, :size).from(1).to(0).and(
+          change(context, :previous_tag).from(nil).to(:some_tag)
+        )
+      )
     end
   end
 

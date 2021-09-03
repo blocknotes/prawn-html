@@ -4,6 +4,7 @@ module PrawnHtml
   class Context < Array
     DEF_FONT_SIZE = 10.3
 
+    attr_reader :previous_tag
     attr_accessor :last_text_node
 
     # Init the Context
@@ -11,6 +12,7 @@ module PrawnHtml
       super
       @last_text_node = false
       @merged_styles = nil
+      @previous_tag = nil
     end
 
     # Add an element to the context
@@ -62,6 +64,7 @@ module PrawnHtml
     def remove_last
       @merged_styles = nil
       @last_text_node = false
+      @previous_tag = last.tag
       pop
     end
 
