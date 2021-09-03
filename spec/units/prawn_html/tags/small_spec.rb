@@ -11,7 +11,7 @@ RSpec.describe PrawnHtml::Tags::Small do
     let(:styles) { { some_attr: 'some_value' } }
 
     it 'updates the argument styles reducing the default font size' do
-      expect(update_styles).to eq(some_attr: 'some_value', size: 8.755)
+      expect(update_styles).to eq(some_attr: 'some_value', size: 8.211)
     end
 
     context 'with a parent font size' do

@@ -49,9 +49,9 @@ RSpec.describe 'Lists' do
       y = pdf.y - font.ascender
 
       expected_array = [
-        [x, y.round(4)],
-        [x, (y - font.height).round(4)],
-        [x, (y - font.height * 2).round(4)]
+        [x, y.round(5)],
+        [x, (y - font.height).round(5)],
+        [x, (y - font.height * 2).round(5)]
       ]
 
       expect(text_analysis.positions).to match_array(expected_array)
