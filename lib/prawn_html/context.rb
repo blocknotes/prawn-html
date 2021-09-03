@@ -2,7 +2,7 @@
 
 module PrawnHtml
   class Context < Array
-    DEF_FONT_SIZE = 9.66
+    DEF_FONT_SIZE = 16 * PX
 
     attr_reader :previous_tag
     attr_accessor :last_text_node

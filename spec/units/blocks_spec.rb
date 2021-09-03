@@ -15,7 +15,9 @@ RSpec.describe 'Blocks' do
 
     it 'sends the expected buffer elements to Prawn pdf' do
       expect(pdf).to have_received(:puts).with(
-        [{ size: TestUtils.default_font_size, text: "Some sample content..." }], {}, { bounding_box: nil }
+        [{ size: TestUtils.default_font_size, text: "Some sample content..." }],
+        { leading: TestUtils.adjust_leading },
+        { bounding_box: nil }
       )
     end
   end
@@ -25,7 +27,9 @@ RSpec.describe 'Blocks' do
 
     it 'sends the expected buffer elements to Prawn pdf' do
       expect(pdf).to have_received(:puts).with(
-        [{ size: TestUtils.default_font_size, text: "Some sample content..." }], {}, { bounding_box: nil }
+        [{ size: TestUtils.default_font_size, text: "Some sample content..." }],
+        { leading: TestUtils.adjust_leading },
+        { bounding_box: nil }
       )
     end
   end

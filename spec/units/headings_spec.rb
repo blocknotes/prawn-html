@@ -2,7 +2,7 @@
 
 RSpec.describe 'Headings' do
   let(:expected_buffer) { [{ size: size, styles: [:bold], text: 'Some sample content...' }] }
-  let(:expected_options) { {} }
+  let(:expected_options) { { leading: TestUtils.adjust_leading(size) } }
   let(:pdf) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
 
   before do

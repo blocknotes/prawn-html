@@ -109,7 +109,7 @@ RSpec.describe PrawnHtml::Utils do
     context 'with a pixel value (ex. "10.125")' do
       let(:value) { '10.125' }
 
-      it { is_expected.to eq 6.6825 }
+      it { is_expected.to eq 6.075 }
     end
 
     context 'with a percentage value and a container size (ex. "50%" and 100.242424)' do

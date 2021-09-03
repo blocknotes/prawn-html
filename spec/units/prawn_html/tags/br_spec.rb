@@ -49,19 +49,21 @@ RSpec.describe PrawnHtml::Tags::Br do
     before { append_html_to_pdf(html) }
 
     it 'sends the expected buffer elements to the pdf', :aggregate_failures do
+      expected_options = { leading: TestUtils.adjust_leading }
+
       expected_text = { text: "First line", size: TestUtils.default_font_size }
-      expect(pdf).to have_received(:puts).with([expected_text], {}, bounding_box: nil).ordered
+      expect(pdf).to have_received(:puts).with([expected_text], expected_options, bounding_box: nil).ordered
 
       expected_text = { text: "Second line", size: TestUtils.default_font_size }
-      expect(pdf).to have_received(:puts).with([expected_text], {}, bounding_box: nil).ordered
+      expect(pdf).to have_received(:puts).with([expected_text], expected_options, bounding_box: nil).ordered
 
       expected_text = { text: "Third line", size: TestUtils.default_font_size }
-      expect(pdf).to have_received(:puts).with([expected_text], {}, bounding_box: nil).ordered
+      expect(pdf).to have_received(:puts).with([expected_text], expected_options, bounding_box: nil).ordered
 
       expect(pdf).to have_received(:advance_cursor).with(described_class::BR_SPACING).ordered
 
       expected_text = { text: "Last line", size: TestUtils.default_font_size }
-      expect(pdf).to have_received(:puts).with([expected_text], {}, bounding_box: nil).ordered
+      expect(pdf).to have_received(:puts).with([expected_text], expected_options, bounding_box: nil).ordered
     end
   end
 end
