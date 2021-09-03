@@ -36,22 +36,6 @@ RSpec.describe 'Misc' do
     end
   end
 
-  context 'with br elements' do
-    let(:html) { 'First line<br>Second line<br/>Third line' }
-
-    it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do
-      expect(pdf).to have_received(:puts).with(
-        [{ size: TestUtils.default_font_size, text: "First line" }], {}, bounding_box: nil
-      )
-      expect(pdf).to have_received(:puts).with(
-        [{ size: TestUtils.default_font_size, text: "Second line" }], {}, bounding_box: nil
-      )
-      expect(pdf).to have_received(:puts).with(
-        [{ size: TestUtils.default_font_size, text: "Third line" }], {}, bounding_box: nil
-      )
-    end
-  end
-
   context 'with some content in an element b' do
     let(:html) { '<b>Some content...</b>' }
     let(:expected_buffer) { [{ size: TestUtils.default_font_size, styles: [:bold], text: 'Some content...' }] }

@@ -56,14 +56,4 @@ RSpec.describe 'Misc' do
       let(:expected_font_family) { 'Helvetica-Bold' }
     end
   end
-
-  context 'with some br elements' do
-    let(:html) { 'First line<br>Second line<br/>Third line' }
-
-    it 'renders some breaking line elements' do
-      text_analysis = PDF::Inspector::Text.analyze(pdf.render)
-
-      expect(text_analysis.strings).to match_array(['First line', 'Second line', 'Third line'])
-    end
-  end
 end
