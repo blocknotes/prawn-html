@@ -3,7 +3,7 @@
 module PrawnHtml
   class Tag
     CALLBACKS = {
-      'Highlight' => Callbacks::Highlight,
+      'Background' => Callbacks::Background,
       'StrikeThrough' => Callbacks::StrikeThrough
     }.freeze
     TAG_CLASSES = %w[A B Blockquote Body Br Code Del Div H Hr I Img Li Mark Ol P Pre Small Span Sub Sup U Ul].freeze

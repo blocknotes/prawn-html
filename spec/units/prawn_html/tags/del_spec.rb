@@ -13,7 +13,7 @@ RSpec.describe PrawnHtml::Tags::Del do
     end
 
     it 'merges the callback property into styles' do
-      expect(styles).to match(color: 'ffbb11', callback: 'StrikeThrough')
+      expect(styles).to match(color: 'ffbb11', callback: ['StrikeThrough', nil])
     end
   end
 end
