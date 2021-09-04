@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Headings' do
+  let(:pdf) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
+
   let(:expected_buffer) { [{ size: size, styles: [:bold], text: 'Some sample content...' }] }
   let(:expected_options) { { leading: TestUtils.adjust_leading(size) } }
-  let(:pdf) { instance_double(PrawnHtml::PdfWrapper, advance_cursor: true, puts: true) }
+  let(:expected_extra) { { bounding_box: nil, left_indent: 0 } }
 
   before do
     allow(pdf).to receive_messages(page_width: 540, page_height: 720)
@@ -17,7 +19,7 @@ RSpec.describe 'Headings' do
     let(:size) { PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::SIZES[:h1].to_s) }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
@@ -26,7 +28,7 @@ RSpec.describe 'Headings' do
     let(:size) { PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::SIZES[:h2].to_s) }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
@@ -35,7 +37,7 @@ RSpec.describe 'Headings' do
     let(:size) { PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::SIZES[:h3].to_s) }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
@@ -44,7 +46,7 @@ RSpec.describe 'Headings' do
     let(:size) { PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::SIZES[:h4].to_s) }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
@@ -53,7 +55,7 @@ RSpec.describe 'Headings' do
     let(:size) { PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::SIZES[:h5].to_s) }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
@@ -62,7 +64,7 @@ RSpec.describe 'Headings' do
     let(:size) { PrawnHtml::Utils.convert_size(PrawnHtml::Tags::H::SIZES[:h6].to_s) }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 end

@@ -25,21 +25,21 @@ RSpec.describe 'Lists' do
       PrawnHtml::Utils.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
     end
 
-    it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+    it 'sends the expected buffer elements to Prawn pdf', :aggregate_failures do
       expect(pdf).to have_received(:puts).with(
         [{ size: size, text: "• First item" }],
-        { indent_paragraphs: margin_left, leading: TestUtils.adjust_leading },
-        { bounding_box: nil }
+        { leading: TestUtils.adjust_leading },
+        { bounding_box: nil, left_indent: margin_left }
       )
       expect(pdf).to have_received(:puts).with(
         [{ size: size, text: "• Second item" }],
-        { indent_paragraphs: margin_left, leading: TestUtils.adjust_leading },
-        { bounding_box: nil }
+        { leading: TestUtils.adjust_leading },
+        { bounding_box: nil, left_indent: margin_left }
       )
       expect(pdf).to have_received(:puts).with(
         [{ size: size, text: "• Third item" }],
-        { indent_paragraphs: margin_left, leading: TestUtils.adjust_leading },
-        { bounding_box: nil }
+        { leading: TestUtils.adjust_leading },
+        { bounding_box: nil, left_indent: margin_left }
       )
     end
   end

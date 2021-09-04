@@ -20,23 +20,25 @@ RSpec.describe 'Misc' do
       expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, text: "Some content" }],
         { leading: TestUtils.adjust_leading },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
       expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, text: "More content" }],
         { leading: TestUtils.adjust_leading },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
 
   context 'with some content in an element b' do
     let(:html) { '<b>Some content...</b>' }
+
     let(:expected_buffer) { [{ size: TestUtils.default_font_size, styles: [:bold], text: 'Some content...' }] }
     let(:expected_options) { { leading: TestUtils.adjust_leading } }
+    let(:expected_extra) { { bounding_box: nil, left_indent: 0 } }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
@@ -47,28 +49,32 @@ RSpec.describe 'Misc' do
       expect(pdf).to have_received(:puts).with(
         [hash_including(callback: anything, size: TestUtils.default_font_size, text: 'Some content...')],
         { leading: TestUtils.adjust_leading },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
 
   context 'with some content in an element em' do
     let(:html) { '<em>Some content...</em>' }
+
     let(:expected_buffer) { [{ size: TestUtils.default_font_size, styles: [:italic], text: 'Some content...' }] }
     let(:expected_options) { { leading: TestUtils.adjust_leading } }
+    let(:expected_extra) { { bounding_box: nil, left_indent: 0 } }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
   context 'with some content in an element i' do
     let(:html) { '<i>Some content...</i>' }
+
     let(:expected_buffer) { [{ size: TestUtils.default_font_size, styles: [:italic], text: 'Some content...' }] }
     let(:expected_options) { { leading: TestUtils.adjust_leading } }
+    let(:expected_extra) { { bounding_box: nil, left_indent: 0 } }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
@@ -79,7 +85,7 @@ RSpec.describe 'Misc' do
       expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, styles: [:underline], text: 'Some content...' }],
         { leading: TestUtils.adjust_leading },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
@@ -91,7 +97,7 @@ RSpec.describe 'Misc' do
       expect(pdf).to have_received(:puts).with(
         [hash_including(callback: anything, size: TestUtils.default_font_size, text: 'Some content...')],
         { leading: TestUtils.adjust_leading },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
@@ -103,7 +109,7 @@ RSpec.describe 'Misc' do
       expect(pdf).to have_received(:puts).with(
         [hash_including(callback: anything, size: TestUtils.default_font_size, text: 'Some content...')],
         { leading: TestUtils.adjust_leading },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
@@ -116,7 +122,7 @@ RSpec.describe 'Misc' do
       expect(pdf).to have_received(:puts).with(
         [{ size: size, text: 'Some content...' }],
         { leading: TestUtils.adjust_leading(size) },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
@@ -128,7 +134,7 @@ RSpec.describe 'Misc' do
       expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, text: 'Some content...' }],
         { leading: TestUtils.adjust_leading },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
@@ -137,9 +143,10 @@ RSpec.describe 'Misc' do
     let(:html) { '<strong>Some content...</strong>' }
     let(:expected_buffer) { [{ size: TestUtils.default_font_size, styles: [:bold], text: 'Some content...' }] }
     let(:expected_options) { { leading: TestUtils.adjust_leading } }
+    let(:expected_extra) { { bounding_box: nil, left_indent: 0 } }
 
     it 'sends the expected buffer elements to Prawn pdf' do
-      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, bounding_box: nil)
+      expect(pdf).to have_received(:puts).with(expected_buffer, expected_options, expected_extra)
     end
   end
 
@@ -150,7 +157,7 @@ RSpec.describe 'Misc' do
       expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, styles: [:underline], text: 'Some content...' }],
         { leading: TestUtils.adjust_leading },
-        bounding_box: nil
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end

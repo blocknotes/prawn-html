@@ -29,7 +29,7 @@ Naming/MethodParameterName:
 
 RSpec/ExampleLength:
   # default: 5
-  Max: 10
+  Max: 15
 
 RSpec/MultipleMemoizedHelpers:
   # default: 5

@@ -115,8 +115,7 @@ module PrawnHtml
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
       options = block_styles.slice(:align, :leading, :mode, :padding_left)
       options[:leading] = adjust_leading(buffer, options[:leading])
-      options[:indent_paragraphs] = left_indent if left_indent > 0
-      pdf.puts(buffer, options, bounding_box: bounds(buffer, options, block_styles))
+      pdf.puts(buffer, options, bounding_box: bounds(buffer, options, block_styles), left_indent: left_indent)
     end
 
     def apply_callbacks(buffer)

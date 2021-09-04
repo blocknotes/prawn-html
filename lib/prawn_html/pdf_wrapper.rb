@@ -106,12 +106,12 @@ module PrawnHtml
     # @param buffer [Array] array of text items
     # @param options [Hash] hash of options
     # @param bounding_box [Array] bounding box arguments, if bounded
-    def puts(buffer, options, bounding_box: nil)
-      return pdf.formatted_text(buffer, options) unless bounding_box
+    def puts(buffer, options, bounding_box: nil, left_indent: 0)
+      return output_buffer(buffer, options, left_indent: left_indent) unless bounding_box
 
       current_y = pdf.cursor
       pdf.bounding_box(*bounding_box) do
-        pdf.formatted_text(buffer, options)
+        output_buffer(buffer, options, left_indent: left_indent)
       end
       pdf.move_cursor_to(current_y)
     end
@@ -130,5 +130,12 @@ module PrawnHtml
     private
 
     attr_reader :pdf
+
+    def output_buffer(buffer, options, left_indent:)
+      formatted_text = proc { pdf.formatted_text(buffer, options) }
+      return formatted_text.call if left_indent == 0
+
+      pdf.indent(left_indent, 0, &formatted_text)
+    end
   end
 end

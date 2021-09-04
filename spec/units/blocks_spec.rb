@@ -17,7 +17,7 @@ RSpec.describe 'Blocks' do
       expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, text: "Some sample content..." }],
         { leading: TestUtils.adjust_leading },
-        { bounding_box: nil }
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
@@ -29,7 +29,7 @@ RSpec.describe 'Blocks' do
       expect(pdf).to have_received(:puts).with(
         [{ size: TestUtils.default_font_size, text: "Some sample content..." }],
         { leading: TestUtils.adjust_leading },
-        { bounding_box: nil }
+        { bounding_box: nil, left_indent: 0 }
       )
     end
   end
