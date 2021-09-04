@@ -5,9 +5,9 @@ module PrawnHtml
     class Blockquote < Tag
       ELEMENTS = [:blockquote].freeze
 
-      MARGIN_BOTTOM = 10
-      MARGIN_LEFT = 25
-      MARGIN_TOP = 10
+      MARGIN_BOTTOM = 12.7
+      MARGIN_LEFT = 40.4
+      MARGIN_TOP = 12.7
 
       def block?
         true
