@@ -22,4 +22,21 @@ RSpec.describe PrawnHtml::Tags::Small do
       end
     end
   end
+
+  describe 'tag rendering' do
+    include_context 'with pdf wrapper'
+
+    let(:html) { '<small>Some sample content</small>' }
+    let(:size) { PrawnHtml::Context::DEF_FONT_SIZE * 0.85 }
+
+    before { append_html_to_pdf(html) }
+
+    it 'sends the expected buffer elements to the pdf' do
+      expect(pdf).to have_received(:puts).with(
+        [{ size: size, text: "Some sample content" }],
+        { leading: TestUtils.adjust_leading(size) },
+        { bounding_box: nil, left_indent: 0 }
+      )
+    end
+  end
 end
