@@ -62,6 +62,7 @@ module PrawnHtml
 
     # Remove the last element from the context
     def remove_last
+      last.on_context_remove(self) if last.respond_to?(:on_context_remove)
       @merged_styles = nil
       @last_text_node = false
       @previous_tag = last.tag

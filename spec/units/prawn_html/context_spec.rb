@@ -59,10 +59,9 @@ RSpec.describe PrawnHtml::Context do
           end
         end
       end
-      let(:tag) { some_tag_class.new(:some_tag) }
 
       before do
-        context << tag
+        context << some_tag_class.new(:some_tag)
       end
 
       it { is_expected.to eq 'Some before content' }
@@ -95,16 +94,26 @@ RSpec.describe PrawnHtml::Context do
   describe '#remove_last' do
     subject(:remove_last) { context.remove_last }
 
+    let(:some_tag_class) do
+      Class.new(PrawnHtml::Tag) do
+        def on_context_remove(context)
+          # callback after removal
+        end
+      end
+    end
+    let(:tag) { instance_double(some_tag_class, on_context_remove: true, :parent= => true, tag: :some_tag) }
+
     before do
-      context.add(instance_double(PrawnHtml::Tag, :parent= => true, tag: :some_tag))
+      context.add(tag)
     end
 
-    it 'removes the last element from the context' do
+    it 'removes the last element from the context', :aggregate_failures do
       expect { remove_last }.to(
         change(context, :size).from(1).to(0).and(
           change(context, :previous_tag).from(nil).to(:some_tag)
         )
       )
+      expect(tag).to have_received(:on_context_remove)
     end
   end
 
