@@ -113,9 +113,9 @@ module PrawnHtml
     def output_content(buffer, block_styles)
       apply_callbacks(buffer)
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
-      options = block_styles.slice(:align, :leading, :mode, :padding_left)
-      options[:indent_paragraphs] = left_indent if left_indent > 0
-      pdf.puts(buffer, options, bounding_box: bounds(buffer, options, block_styles))
+      options = block_styles.slice(:align, :indent_paragraphs, :leading, :mode, :padding_left)
+      options[:leading] = adjust_leading(buffer, options[:leading])
+      pdf.puts(buffer, options, bounding_box: bounds(buffer, options, block_styles), left_indent: left_indent)
     end
 
     def apply_callbacks(buffer)
@@ -124,6 +124,12 @@ module PrawnHtml
         callback_class = Tag::CALLBACKS[callback]
         item[:callback] = callback_class.new(pdf, arg)
       end
+    end
+
+    def adjust_leading(buffer, leading)
+      return leading if leading
+
+      (buffer.map { |item| item[:size] || Context::DEF_FONT_SIZE }.max * 0.055).round(4)
     end
 
     def bounds(buffer, options, block_styles)

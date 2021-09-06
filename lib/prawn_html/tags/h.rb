@@ -6,30 +6,30 @@ module PrawnHtml
       ELEMENTS = [:h1, :h2, :h3, :h4, :h5, :h6].freeze
 
       MARGINS_TOP = {
-        h1: 25.5,
+        h1: 25,
         h2: 20.5,
-        h3: 19,
-        h4: 20,
+        h3: 18,
+        h4: 21.2,
         h5: 21.2,
-        h6: 23.5
+        h6: 22.8
       }.freeze
 
       MARGINS_BOTTOM = {
-        h1: 18.2,
-        h2: 17.5,
-        h3: 17.5,
-        h4: 22,
-        h5: 22,
-        h6: 26.5
+        h1: 15.8,
+        h2: 15.8,
+        h3: 15.8,
+        h4: 20,
+        h5: 21.4,
+        h6: 24.8
       }.freeze
 
       SIZES = {
-        h1: 31,
-        h2: 23.5,
-        h3: 18.2,
-        h4: 16,
+        h1: 31.5,
+        h2: 24,
+        h3: 18.7,
+        h4: 15.7,
         h5: 13,
-        h6: 10.5
+        h6: 10.8
       }.freeze
 
       def block?
