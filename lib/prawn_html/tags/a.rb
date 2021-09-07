@@ -5,12 +5,13 @@ module PrawnHtml
     class A < Tag
       ELEMENTS = [:a].freeze
 
-      def tag_styles
-        return unless attrs.href
+      def extra_styles
+        attrs.href ? "href: #{attrs.href}" : nil
+      end
 
+      def tag_styles
         <<~STYLES
           color: #00E;
-          href: #{attrs.href};
           text-decoration: underline;
         STYLES
       end
