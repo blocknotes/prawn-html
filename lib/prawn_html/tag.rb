@@ -45,6 +45,7 @@ module PrawnHtml
       attrs.merge_text_styles!(tag_styles, options: options) if respond_to?(:tag_styles)
       attrs.merge_text_styles!(element_styles, options: options) if element_styles
       attrs.merge_text_styles!(attrs.style, options: options)
+      attrs.merge_text_styles!(extra_styles, options: options) if respond_to?(:extra_styles)
     end
 
     # Styles to apply on tag closing

@@ -41,6 +41,49 @@ RSpec.describe PrawnHtml::Tag do
     end
   end
 
+  describe '#process_styles' do
+    subject(:process_styles) { tag.process_styles(element_styles: element_styles) }
+
+    let(:element_styles) { nil }
+
+    before do
+      allow(tag.attrs).to receive(:merge_text_styles!)
+    end
+
+    it 'merges the inline styles' do
+      process_styles
+      expect(tag.attrs).to have_received(:merge_text_styles!).with('color: #0088ff', options: {})
+    end
+
+    context 'with some additional styles' do
+      let(:some_tag_class) do
+        Class.new(described_class) do
+          def extra_styles
+            'color: green; text-decoration: underline'
+          end
+
+          def tag_styles
+            'color: yellow; font-style: italic'
+          end
+        end
+      end
+
+      let(:element_styles) { 'color: red; font-weight: bold' }
+      let(:tag) { some_tag_class.new(:some_tag, attributes: attributes) }
+
+      it 'merges the tag styles', :aggregate_failures do
+        process_styles
+
+        expected_styles = 'color: yellow; font-style: italic'
+        expect(tag.attrs).to have_received(:merge_text_styles!).with(expected_styles, options: {}).ordered
+        expect(tag.attrs).to have_received(:merge_text_styles!).with(element_styles, options: {}).ordered
+        expect(tag.attrs).to have_received(:merge_text_styles!).with('color: #0088ff', options: {}).ordered
+        expected_styles = 'color: green; text-decoration: underline'
+        expect(tag.attrs).to have_received(:merge_text_styles!).with(expected_styles, options: {}).ordered
+      end
+    end
+  end
+
   describe '#styles' do
     subject(:styles) { tag.styles }
 
