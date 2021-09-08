@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module PrawnHtml
+  ADJUST_LEADING = { nil => 0.18, 'Courier' => -0.07, 'Helvetica' => -0.17, 'Times-Roman' => 0.03 }.freeze
   PX = 0.6 # conversion constant for pixel sixes
 
   COLORS = {

@@ -133,7 +133,10 @@ module PrawnHtml
     def adjust_leading(buffer, leading)
       return leading if leading
 
-      (buffer.map { |item| item[:size] || Context::DEFAULT_STYLES[:size] }.max * 0.055).round(4)
+      leadings = buffer.map do |item|
+        (item[:size] || Context::DEFAULT_STYLES[:size]) * (ADJUST_LEADING[item[:font]] || ADJUST_LEADING[nil])
+      end
+      leadings.max.round(4)
     end
 
     def bounds(buffer, options, block_styles)

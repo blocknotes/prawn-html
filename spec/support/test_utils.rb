@@ -3,8 +3,8 @@
 module TestUtils
   extend self
 
-  def adjust_leading(size = PrawnHtml::Context::DEFAULT_STYLES[:size])
-    (size * 0.055).round(4)
+  def adjust_leading(size = PrawnHtml::Context::DEFAULT_STYLES[:size], font = nil)
+    (size * PrawnHtml::ADJUST_LEADING[font]).round(4)
   end
 
   def default_font
