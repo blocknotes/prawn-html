@@ -74,8 +74,10 @@ RSpec.describe PrawnHtml::DocumentRenderer do
       expect(Oga::HTML::Entities).to have_received(:decode)
     end
 
-    context 'with blank content' do
-      let(:content) { " \n " }
+    context 'without before content' do
+      before do
+        allow(context).to receive(:before_content).and_return(nil)
+      end
 
       it "doesn't call the decode method" do
         on_text_node
