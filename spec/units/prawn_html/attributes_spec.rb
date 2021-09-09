@@ -24,7 +24,9 @@ RSpec.describe PrawnHtml::Attributes do
   end
 
   describe '#merge_text_styles!' do
-    subject(:merge_text_styles!) { attributes.merge_text_styles!(text_styles) }
+    subject(:merge_text_styles!) { attributes.merge_text_styles!(text_styles, options: options) }
+
+    let(:options) { {} }
 
     before do
       allow(PrawnHtml::Utils).to receive(:send).and_call_original
@@ -51,9 +53,20 @@ RSpec.describe PrawnHtml::Attributes do
       it 'receives the expected convert messages', :aggregate_failures do
         merge_text_styles!
 
-        expect(PrawnHtml::Utils).to have_received(:send).with(:unquote, "'Times-Roman'")
-        expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '16px')
-        expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '22px')
+        expect(PrawnHtml::Utils).to have_received(:send).with(:unquote, "'Times-Roman'", options: nil)
+        expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '16px', options: nil)
+        expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '22px', options: nil)
+      end
+    end
+
+    context 'with some options' do
+      let(:options) { { width: 540, height: 720 } }
+      let(:text_styles) { 'top: 50%' }
+
+      it 'receives the expected convert messages', :aggregate_failures do
+        merge_text_styles!
+
+        expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '50%', options: 720)
       end
     end
   end

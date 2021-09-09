@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PrawnHtml
-  PX = 0.66 # conversion constant for pixel sixes
+  PX = 0.6 # conversion constant for pixel sixes
 
   COLORS = {
     'aliceblue' => 'f0f8ff',

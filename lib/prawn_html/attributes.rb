@@ -7,16 +7,15 @@ module PrawnHtml
     attr_reader :styles
 
     STYLES_APPLY = {
-      block: %i[align leading left margin_left padding_left position top],
+      block: %i[align bottom leading left margin_left padding_left position right top],
       tag_close: %i[margin_bottom padding_bottom break_after],
       tag_open: %i[margin_top padding_top break_before],
-      text_node: %i[background callback character_spacing color font link list_style_type size styles white_space]
+      text_node: %i[callback character_spacing color font link list_style_type size styles white_space]
     }.freeze
 
     STYLES_LIST = {
       # text node styles
-      'background' => { key: :background, set: :convert_color },
-      'callback' => { key: :callback, set: :copy_value },
+      'background' => { key: :callback, set: :callback_background },
       'color' => { key: :color, set: :convert_color },
       'font-family' => { key: :font, set: :unquote },
       'font-size' => { key: :size, set: :convert_size },
@@ -25,7 +24,7 @@ module PrawnHtml
       'href' => { key: :link, set: :copy_value },
       'letter-spacing' => { key: :character_spacing, set: :convert_float },
       'list-style-type' => { key: :list_style_type, set: :unquote },
-      'text-decoration' => { key: :styles, set: :append_styles },
+      'text-decoration' => { key: :styles, set: :append_text_decoration },
       'vertical-align' => { key: :styles, set: :append_styles },
       'white-space' => { key: :white_space, set: :convert_symbol },
       # tag opening styles
@@ -37,13 +36,15 @@ module PrawnHtml
       'margin-bottom' => { key: :margin_bottom, set: :convert_size },
       'padding-bottom' => { key: :padding_bottom, set: :convert_size },
       # block styles
-      'left' => { key: :left, set: :convert_size },
+      'bottom' => { key: :bottom, set: :convert_size, options: :height },
+      'left' => { key: :left, set: :convert_size, options: :width },
       'line-height' => { key: :leading, set: :convert_size },
       'margin-left' => { key: :margin_left, set: :convert_size },
       'padding-left' => { key: :padding_left, set: :convert_size },
       'position' => { key: :position, set: :convert_symbol },
+      'right' => { key: :right, set: :convert_size, options: :width },
       'text-align' => { key: :align, set: :convert_symbol },
-      'top' => { key: :top, set: :convert_size }
+      'top' => { key: :top, set: :convert_size, options: :height }
     }.freeze
 
     STYLES_MERGE = %i[margin_left padding_left].freeze
@@ -67,9 +68,10 @@ module PrawnHtml
     # Merge text styles
     #
     # @param text_styles [String] styles to parse and process
-    def merge_text_styles!(text_styles)
+    # @param options [Hash] options (container width/height/etc.)
+    def merge_text_styles!(text_styles, options: {})
       hash_styles = Attributes.parse_styles(text_styles)
-      process_styles(hash_styles) unless hash_styles.empty?
+      process_styles(hash_styles, options: options) unless hash_styles.empty?
     end
 
     class << self
@@ -100,21 +102,33 @@ module PrawnHtml
 
     private
 
-    def apply_rule!(result, rule, value)
+    def process_styles(hash_styles, options:)
+      hash_styles.each do |key, value|
+        rule = evaluate_rule(key, value)
+        apply_rule!(merged_styles: @styles, rule: rule, value: value, options: options)
+      end
+      @styles
+    end
+
+    def evaluate_rule(rule_key, attr_value)
+      rule = STYLES_LIST[rule_key]
+      if rule && rule[:set] == :append_text_decoration
+        return { key: :callback, set: :callback_strike_through } if attr_value == 'line-through'
+
+        return { key: :styles, set: :append_styles }
+      end
+      rule
+    end
+
+    def apply_rule!(merged_styles:, rule:, value:, options:)
       return unless rule
 
       if rule[:set] == :append_styles
-        (result[rule[:key]] ||= []) << Utils.normalize_style(value)
+        (merged_styles[rule[:key]] ||= []) << Utils.normalize_style(value)
       else
-        result[rule[:key]] = Utils.send(rule[:set], value)
+        opts = rule[:options] ? options[rule[:options]] : nil
+        merged_styles[rule[:key]] = Utils.send(rule[:set], value, options: opts)
       end
-    end
-
-    def process_styles(hash_styles)
-      hash_styles.each do |key, value|
-        apply_rule!(@styles, STYLES_LIST[key], value)
-      end
-      @styles
     end
   end
 end

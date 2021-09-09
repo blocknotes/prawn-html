@@ -5,7 +5,17 @@ RSpec.describe PrawnHtml::Tags::Ul do
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
+  describe '#block?' do
+    subject(:block?) { ul.block? }
+
+    it { is_expected.to be_truthy }
+  end
+
   context 'without attributes' do
+    before do
+      ul.process_styles
+    end
+
     it 'returns the expected styles for ul tag' do
       expected_styles = {
         color: 'ffbb11',
@@ -15,9 +25,41 @@ RSpec.describe PrawnHtml::Tags::Ul do
     end
   end
 
-  describe '#block?' do
-    subject(:block?) { ul.block? }
+  describe 'tag rendering' do
+    include_context 'with pdf wrapper'
 
-    it { is_expected.to be_truthy }
+    let(:html) do
+      <<~HTML
+        <ul>
+          <li>First item</li>
+          <li>Second item</li>
+          <li>Third item</li>
+        </ul>
+      HTML
+    end
+    let(:size) { TestUtils.default_font_size }
+    let(:margin_left) do
+      PrawnHtml::Utils.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
+    end
+
+    before { append_html_to_pdf(html) }
+
+    it 'sends the expected buffer elements to the pdf', :aggregate_failures do
+      expect(pdf).to have_received(:puts).with(
+        [{ size: size, text: "• First item" }],
+        { indent_paragraphs: PrawnHtml::Tags::Li::INDENT_UL, leading: TestUtils.adjust_leading },
+        { bounding_box: nil, left_indent: margin_left }
+      )
+      expect(pdf).to have_received(:puts).with(
+        [{ size: size, text: "• Second item" }],
+        { indent_paragraphs: PrawnHtml::Tags::Li::INDENT_UL, leading: TestUtils.adjust_leading },
+        { bounding_box: nil, left_indent: margin_left }
+      )
+      expect(pdf).to have_received(:puts).with(
+        [{ size: size, text: "• Third item" }],
+        { indent_paragraphs: PrawnHtml::Tags::Li::INDENT_UL, leading: TestUtils.adjust_leading },
+        { bounding_box: nil, left_indent: margin_left }
+      )
+    end
   end
 end

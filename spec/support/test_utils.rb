@@ -3,6 +3,10 @@
 module TestUtils
   extend self
 
+  def adjust_leading(size = PrawnHtml::Context::DEF_FONT_SIZE)
+    (size * 0.055).round(4)
+  end
+
   def default_font
     prawn_document.font('Helvetica', size: default_font_size)
   end

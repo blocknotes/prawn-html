@@ -5,8 +5,8 @@ module PrawnHtml
     class P < Tag
       ELEMENTS = [:p].freeze
 
-      MARGIN_BOTTOM = 6
-      MARGIN_TOP = 6
+      MARGIN_BOTTOM = 12.5
+      MARGIN_TOP = 12.5
 
       def block?
         true

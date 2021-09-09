@@ -6,6 +6,10 @@ RSpec.describe PrawnHtml::Tags::Sup do
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
+    before do
+      sup.process_styles
+    end
+
     it 'returns the expected styles for sup tag' do
       expect(sup.styles).to match(color: 'ffbb11', styles: [:superscript])
     end

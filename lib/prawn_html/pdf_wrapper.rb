@@ -6,7 +6,7 @@ module PrawnHtml
   class PdfWrapper
     extend Forwardable
 
-    def_delegators :@pdf, :bounds, :start_new_page
+    def_delegators :@pdf, :start_new_page
 
     # Wrapper for Prawn PDF Document
     #
@@ -22,6 +22,46 @@ module PrawnHtml
       return if !move_down || move_down == 0
 
       pdf.move_down(move_down)
+    end
+
+    # Calculate the height of a buffer of items
+    #
+    # @param buffer [Array] Buffer of items
+    # @param options [Hash] Output options
+    #
+    # @return [Float] calculated height
+    def calc_buffer_height(buffer, options)
+      pdf.height_of_formatted(buffer, options)
+    end
+
+    # Calculate the width of a buffer of items
+    #
+    # @param buffer [Array] Buffer of items
+    #
+    # @return [Float] calculated width
+    def calc_buffer_width(buffer)
+      width = 0
+      buffer.each do |item|
+        font_family = item[:font] || pdf.font.name
+        pdf.font(font_family, size: item[:size] || pdf.font_size) do
+          width += pdf.width_of(item[:text], inline_format: true)
+        end
+      end
+      width
+    end
+
+    # Height of the page
+    #
+    # @return [Float] height
+    def page_height
+      pdf.bounds.height
+    end
+
+    # Width of the page
+    #
+    # @return [Float] width
+    def page_width
+      pdf.bounds.width
     end
 
     # Draw a rectangle
@@ -66,12 +106,12 @@ module PrawnHtml
     # @param buffer [Array] array of text items
     # @param options [Hash] hash of options
     # @param bounding_box [Array] bounding box arguments, if bounded
-    def puts(buffer, options, bounding_box: nil)
-      return pdf.formatted_text(buffer, options) unless bounding_box
+    def puts(buffer, options, bounding_box: nil, left_indent: 0)
+      return output_buffer(buffer, options, left_indent: left_indent) unless bounding_box
 
       current_y = pdf.cursor
       pdf.bounding_box(*bounding_box) do
-        pdf.formatted_text(buffer, options)
+        output_buffer(buffer, options, left_indent: left_indent)
       end
       pdf.move_cursor_to(current_y)
     end
@@ -90,5 +130,12 @@ module PrawnHtml
     private
 
     attr_reader :pdf
+
+    def output_buffer(buffer, options, left_indent:)
+      formatted_text = proc { pdf.formatted_text(buffer, options) }
+      return formatted_text.call if left_indent == 0
+
+      pdf.indent(left_indent, 0, &formatted_text)
+    end
   end
 end

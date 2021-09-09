@@ -35,7 +35,7 @@ RSpec.describe 'Lists' do
       HTML
     end
 
-    it 'renders the list of elements', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+    it 'renders the list of elements', :aggregate_failures do
       text_analysis = PDF::Inspector::Text.analyze(pdf.render)
 
       expected_array = [{ name: TestUtils.default_font_family, size: TestUtils.default_font_size }] * 3
@@ -45,13 +45,13 @@ RSpec.describe 'Lists' do
 
       font = TestUtils.default_font
       margin_left = PrawnHtml::Utils.convert_size(PrawnHtml::Tags::Ul::MARGIN_LEFT.to_s)
-      x = pdf.page.margins[:left] + margin_left
-      y = pdf.y - font.ascender
+      x = pdf.page.margins[:left] + margin_left + PrawnHtml::Tags::Li::INDENT_UL
+      y = pdf.y - font.ascender - PrawnHtml::Utils.convert_size(PrawnHtml::Tags::Ul::MARGIN_TOP.to_s)
 
       expected_array = [
-        [x, y.round(4)],
-        [x, (y - font.height).round(4)],
-        [x, (y - font.height * 2).round(4)]
+        [x, y.round(5)],
+        [x, (y - font.height - TestUtils.adjust_leading).round(5)],
+        [x, (y - font.height * 2 - TestUtils.adjust_leading * 2).round(5)]
       ]
 
       expect(text_analysis.positions).to match_array(expected_array)
