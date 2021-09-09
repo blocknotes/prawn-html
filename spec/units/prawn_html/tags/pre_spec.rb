@@ -6,6 +6,10 @@ RSpec.describe PrawnHtml::Tags::Pre do
   it { expect(described_class).to be < PrawnHtml::Tag }
 
   context 'without attributes' do
+    before do
+      pre.process_styles
+    end
+
     it 'returns the expected styles for pre tag' do
       expected_styles = {
         color: 'ffbb11',
@@ -14,7 +18,6 @@ RSpec.describe PrawnHtml::Tags::Pre do
         font: 'Courier',
         white_space: :pre
       }
-
       expect(pre.styles).to match(expected_styles)
     end
   end

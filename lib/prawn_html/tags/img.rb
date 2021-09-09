@@ -12,16 +12,17 @@ module PrawnHtml
       def custom_render(pdf, context)
         parsed_styles = Attributes.parse_styles(attrs.style)
         block_styles = context.block_styles
-        evaluated_styles = evaluate_styles(pdf, block_styles.merge(parsed_styles))
+        evaluated_styles = adjust_styles(pdf, block_styles.merge(parsed_styles))
         pdf.image(@attrs.src, evaluated_styles)
       end
 
       private
 
-      def evaluate_styles(pdf, img_styles)
+      def adjust_styles(pdf, img_styles)
         {}.tap do |result|
-          result[:width] = Utils.convert_size(img_styles['width'], pdf.bounds.width) if img_styles.include?('width')
-          result[:height] = Utils.convert_size(img_styles['height'], pdf.bounds.height) if img_styles.include?('height')
+          w, h = img_styles['width'], img_styles['height']
+          result[:width] = Utils.convert_size(w, options: pdf.page_width) if w
+          result[:height] = Utils.convert_size(h, options: pdf.page_height) if h
           result[:position] = img_styles[:align] if %i[left center right].include?(img_styles[:align])
         end
       end

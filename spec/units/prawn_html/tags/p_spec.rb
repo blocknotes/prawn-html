@@ -5,7 +5,17 @@ RSpec.describe PrawnHtml::Tags::P do
 
   it { expect(described_class).to be < PrawnHtml::Tag }
 
+  describe '#block?' do
+    subject(:block?) { p.block? }
+
+    it { is_expected.to be_truthy }
+  end
+
   context 'without attributes' do
+    before do
+      p.process_styles
+    end
+
     it 'returns the expected styles for p tag' do
       expected_styles = {
         color: 'ffbb11',
@@ -16,9 +26,19 @@ RSpec.describe PrawnHtml::Tags::P do
     end
   end
 
-  describe '#block?' do
-    subject(:block?) { p.block? }
+  describe 'tag rendering' do
+    include_context 'with pdf wrapper'
 
-    it { is_expected.to be_truthy }
+    let(:html) { '<p>Some sample content</p>' }
+
+    before { append_html_to_pdf(html) }
+
+    it 'sends the expected buffer elements to the pdf' do
+      expect(pdf).to have_received(:puts).with(
+        [{ size: TestUtils.default_font_size, text: "Some sample content" }],
+        { leading: TestUtils.adjust_leading },
+        { bounding_box: nil, left_indent: 0 }
+      )
+    end
   end
 end

@@ -17,12 +17,14 @@ RSpec.describe PrawnHtml::DocumentRenderer do
     let(:element) { PrawnHtml::Tags::Div.new(:div) }
 
     before do
+      allow(context).to receive(:remove_last)
       allow(element).to receive(:tag_close_styles).and_call_original
     end
 
-    it 'handles tag closing' do
+    it 'handles tag closing', :aggregate_failures do
       on_tag_close
       expect(element).to have_received(:tag_close_styles)
+      expect(context).to have_received(:remove_last)
     end
   end
 
@@ -105,9 +107,21 @@ RSpec.describe PrawnHtml::DocumentRenderer do
       end
     end
 
-    context 'with an element with position absolute' do
+    context 'with position absolute, top and left properties' do
       before do
-        document_renderer.on_tag_open(:div, attributes: { 'style' => 'position: absolute; left: 50px; top: 10px' })
+        document_renderer.on_tag_open(:div, attributes: { 'style' => 'position: absolute; top: 10px; left: 50px' })
+        document_renderer.on_text_node('Some content')
+      end
+
+      it "renders the current buffer's content in a bounded box" do
+        render
+        expect(pdf).to have_received(:puts)
+      end
+    end
+
+    context 'with position absolute, bottom and right properties' do
+      before do
+        document_renderer.on_tag_open(:div, attributes: { 'style' => 'position: absolute; bottom: 10px; right: 80px' })
         document_renderer.on_text_node('Some content')
       end
 

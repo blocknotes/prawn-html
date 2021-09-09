@@ -11,6 +11,7 @@ module PrawnHtml
     def initialize(pdf)
       @buffer = []
       @context = Context.new
+      @last_margin = 0
       @pdf = pdf
     end
 
@@ -20,8 +21,7 @@ module PrawnHtml
     def on_tag_close(element)
       render_if_needed(element)
       apply_tag_close_styles(element)
-      context.last_text_node = false
-      context.pop
+      context.remove_last
     end
 
     # On tag open callback
@@ -35,8 +35,9 @@ module PrawnHtml
       tag_class = Tag.class_for(tag_name)
       return unless tag_class
 
-      tag_class.new(tag_name, attributes: attributes, element_styles: element_styles).tap do |element|
-        setup_element(element)
+      options = { width: pdf.page_width, height: pdf.page_height }
+      tag_class.new(tag_name, attributes: attributes, options: options).tap do |element|
+        setup_element(element, element_styles: element_styles)
       end
     end
 
@@ -48,7 +49,7 @@ module PrawnHtml
     def on_text_node(content)
       return if content.match?(/\A\s*\Z/)
 
-      buffer << context.text_node_styles.merge(text: prepare_text(content))
+      buffer << context.merged_styles.merge(text: prepare_text(content))
       context.last_text_node = true
       nil
     end
@@ -59,19 +60,20 @@ module PrawnHtml
 
       output_content(buffer.dup, context.block_styles)
       buffer.clear
-      context.last_margin = 0
+      @last_margin = 0
     end
 
     alias_method :flush, :render
 
     private
 
-    attr_reader :buffer, :context, :pdf
+    attr_reader :buffer, :context, :last_margin, :pdf
 
-    def setup_element(element)
+    def setup_element(element, element_styles:)
       add_space_if_needed unless render_if_needed(element)
-      apply_tag_open_styles(element)
       context.add(element)
+      element.process_styles(element_styles: element_styles)
+      apply_tag_open_styles(element)
       element.custom_render(pdf, context) if element.respond_to?(:custom_render)
     end
 
@@ -89,14 +91,14 @@ module PrawnHtml
 
     def apply_tag_close_styles(element)
       tag_styles = element.tag_close_styles
-      context.last_margin = tag_styles[:margin_bottom].to_f
-      pdf.advance_cursor(context.last_margin + tag_styles[:padding_bottom].to_f)
+      @last_margin = tag_styles[:margin_bottom].to_f
+      pdf.advance_cursor(last_margin + tag_styles[:padding_bottom].to_f)
       pdf.start_new_page if tag_styles[:break_after]
     end
 
     def apply_tag_open_styles(element)
       tag_styles = element.tag_open_styles
-      move_down = (tag_styles[:margin_top].to_f - context.last_margin) + tag_styles[:padding_top].to_f
+      move_down = (tag_styles[:margin_top].to_f - last_margin) + tag_styles[:padding_top].to_f
       pdf.advance_cursor(move_down) if move_down > 0
       pdf.start_new_page if tag_styles[:break_before]
     end
@@ -111,24 +113,41 @@ module PrawnHtml
     def output_content(buffer, block_styles)
       apply_callbacks(buffer)
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
-      options = block_styles.slice(:align, :leading, :mode, :padding_left)
-      options[:indent_paragraphs] = left_indent if left_indent > 0
-      pdf.puts(buffer, options, bounding_box: bounds(block_styles))
+      options = block_styles.slice(:align, :indent_paragraphs, :leading, :mode, :padding_left)
+      options[:leading] = adjust_leading(buffer, options[:leading])
+      pdf.puts(buffer, options, bounding_box: bounds(buffer, options, block_styles), left_indent: left_indent)
     end
 
     def apply_callbacks(buffer)
       buffer.select { |item| item[:callback] }.each do |item|
-        callback = Tag::CALLBACKS[item[:callback]]
-        item[:callback] = callback.new(pdf, item)
+        callback, arg = item[:callback]
+        callback_class = Tag::CALLBACKS[callback]
+        item[:callback] = callback_class.new(pdf, arg)
       end
     end
 
-    def bounds(block_styles)
+    def adjust_leading(buffer, leading)
+      return leading if leading
+
+      (buffer.map { |item| item[:size] || Context::DEF_FONT_SIZE }.max * 0.055).round(4)
+    end
+
+    def bounds(buffer, options, block_styles)
       return unless block_styles[:position] == :absolute
 
-      y = pdf.bounds.height - (block_styles[:top] || 0)
-      w = pdf.bounds.width - (block_styles[:left] || 0)
-      [[block_styles[:left] || 0, y], { width: w }]
+      x = if block_styles.include?(:right)
+            x1 = pdf.calc_buffer_width(buffer) + block_styles[:right]
+            x1 < pdf.page_width ? (pdf.page_width - x1) : 0
+          else
+            block_styles[:left] || 0
+          end
+      y = if block_styles.include?(:bottom)
+            pdf.calc_buffer_height(buffer, options) + block_styles[:bottom]
+          else
+            pdf.page_height - (block_styles[:top] || 0)
+          end
+
+      [[x, y], { width: pdf.page_width - x }]
     end
   end
 end

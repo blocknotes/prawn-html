@@ -2,15 +2,17 @@
 
 module PrawnHtml
   class Context < Array
-    DEF_FONT_SIZE = 10.3
+    DEF_FONT_SIZE = 16 * PX
 
-    attr_accessor :last_margin, :last_text_node
+    attr_reader :previous_tag
+    attr_accessor :last_text_node
 
     # Init the Context
     def initialize(*_args)
       super
-      @last_margin = 0
       @last_text_node = false
+      @merged_styles = nil
+      @previous_tag = nil
     end
 
     # Add an element to the context
@@ -25,6 +27,7 @@ module PrawnHtml
       element.parent = last
       push(element)
       element.on_context_add(self) if element.respond_to?(:on_context_add)
+      @merged_styles = nil
       self
     end
 
@@ -49,11 +52,21 @@ module PrawnHtml
     # Merge the context styles for text nodes
     #
     # @return [Hash] the hash of merged styles
-    def text_node_styles
-      each_with_object(base_styles) do |element, res|
-        evaluate_element_styles(element, res)
-        element.update_styles(res) if element.respond_to?(:update_styles)
-      end
+    def merged_styles
+      @merged_styles ||=
+        each_with_object(base_styles) do |element, res|
+          evaluate_element_styles(element, res)
+          element.update_styles(res) if element.respond_to?(:update_styles)
+        end
+    end
+
+    # Remove the last element from the context
+    def remove_last
+      last.on_context_remove(self) if last.respond_to?(:on_context_remove)
+      @merged_styles = nil
+      @last_text_node = false
+      @previous_tag = last.tag
+      pop
     end
 
     private

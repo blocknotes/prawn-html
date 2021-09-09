@@ -44,6 +44,10 @@ RSpec.describe PrawnHtml::Tag do
   describe '#styles' do
     subject(:styles) { tag.styles }
 
+    before do
+      tag.process_styles
+    end
+
     it { is_expected.to eq(color: '0088ff') }
   end
 

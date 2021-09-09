@@ -6,7 +6,7 @@ module PrawnHtml
       ELEMENTS = [:mark].freeze
 
       def tag_styles
-        'callback: Highlight'
+        'background: #ff0'
       end
     end
   end
