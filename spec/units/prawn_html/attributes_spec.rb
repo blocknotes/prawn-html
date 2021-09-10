@@ -93,6 +93,22 @@ RSpec.describe PrawnHtml::Attributes do
     end
   end
 
+  describe '#update_styles' do
+    subject(:update_styles) { attributes.update_styles(context_styles) }
+
+    let(:context_styles) { { size: 9.6 } }
+    let(:rule) { { key: :styles, set: :append_styles, values: %i[bold] } }
+
+    before do
+      allow(attributes).to receive_messages(initial: Set.new([rule]), remove_value: nil)
+    end
+
+    it 'asks to the attributes to remove the value from the context styles that match the specified rule' do
+      update_styles
+      expect(attributes).to have_received(:remove_value).with(context_styles, rule)
+    end
+  end
+
   describe '.merge_attr!' do
     context 'with an empty key' do
       let(:key) { nil }

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'ostruct'
+require 'set'
 
 module PrawnHtml
   class Attributes < OpenStruct
-    attr_reader :styles
+    attr_reader :initial, :styles
 
     STYLES_APPLY = {
       block: %i[align bottom leading left margin_left padding_left position right top],
@@ -19,13 +20,13 @@ module PrawnHtml
       'color' => { key: :color, set: :convert_color },
       'font-family' => { key: :font, set: :unquote },
       'font-size' => { key: :size, set: :convert_size },
-      'font-style' => { key: :styles, set: :append_styles },
-      'font-weight' => { key: :styles, set: :append_styles },
+      'font-style' => { key: :styles, set: :append_styles, values: %i[italic] },
+      'font-weight' => { key: :styles, set: :append_styles, values: %i[bold] },
       'href' => { key: :link, set: :copy_value },
       'letter-spacing' => { key: :character_spacing, set: :convert_float },
       'list-style-type' => { key: :list_style_type, set: :unquote },
-      'text-decoration' => { key: :styles, set: :append_styles },
-      'vertical-align' => { key: :styles, set: :append_styles },
+      'text-decoration' => { key: :styles, set: :append_styles, values: %i[underline] },
+      'vertical-align' => { key: :styles, set: :append_styles, values: %i[subscript superscript] },
       'white-space' => { key: :white_space, set: :convert_symbol },
       # tag opening styles
       'break-before' => { key: :break_before, set: :convert_symbol },
@@ -55,6 +56,7 @@ module PrawnHtml
     def initialize(attributes = {})
       super
       @styles = {} # result styles
+      @initial = Set.new
     end
 
     # Processes the data attributes
@@ -94,6 +96,11 @@ module PrawnHtml
     #
     # @return [Hash] the update context styles
     def update_styles(context_styles)
+      initial.each do |rule|
+        next unless rule
+
+        remove_value(context_styles, rule)
+      end
       context_styles
     end
 
@@ -143,6 +150,8 @@ module PrawnHtml
     end
 
     def apply_rule!(merged_styles:, rule:, value:, options:)
+      return (@initial << rule) if value == 'initial'
+
       if rule[:set] == :append_styles
         val = Utils.normalize_style(value)
         (merged_styles[rule[:key]] ||= []) << val if val
