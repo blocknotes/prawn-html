@@ -121,7 +121,7 @@ RSpec.describe PrawnHtml::Context do
     subject(:merged_styles) { context.merged_styles }
 
     context 'with no elements' do
-      it { is_expected.to eq(size: PrawnHtml::Context::DEF_FONT_SIZE) }
+      it { is_expected.to eq(size: PrawnHtml::Context::DEFAULT_STYLES[:size]) }
     end
 
     context 'with some elements' do
