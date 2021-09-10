@@ -107,6 +107,8 @@ module PrawnHtml
     def process_styles(hash_styles, options:)
       hash_styles.each do |key, value|
         rule = evaluate_rule(key, value)
+        next unless rule
+
         apply_rule!(merged_styles: @styles, rule: rule, value: value, options: options)
       end
       @styles
@@ -120,13 +122,13 @@ module PrawnHtml
     end
 
     def apply_rule!(merged_styles:, rule:, value:, options:)
-      return unless rule
-
       if rule[:set] == :append_styles
-        (merged_styles[rule[:key]] ||= []) << Utils.normalize_style(value)
+        val = Utils.normalize_style(value)
+        (merged_styles[rule[:key]] ||= []) << val if val
       else
         opts = rule[:options] ? options[rule[:options]] : nil
-        merged_styles[rule[:key]] = Utils.send(rule[:set], value, options: opts)
+        val = Utils.send(rule[:set], value, options: opts)
+        merged_styles[rule[:key]] = val if val
       end
     end
   end
