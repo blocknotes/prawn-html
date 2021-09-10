@@ -2,11 +2,16 @@
 
 module PrawnHtml
   class Tag
+    extend Forwardable
+
     CALLBACKS = {
       'Background' => Callbacks::Background,
       'StrikeThrough' => Callbacks::StrikeThrough
     }.freeze
+
     TAG_CLASSES = %w[A B Blockquote Body Br Code Del Div H Hr I Img Li Mark Ol P Pre Small Span Sub Sup U Ul].freeze
+
+    def_delegators :@attrs, :styles, :update_styles
 
     attr_accessor :parent
     attr_reader :attrs, :tag
@@ -53,13 +58,6 @@ module PrawnHtml
     # @return [Hash] hash of styles to apply
     def tag_close_styles
       styles.slice(*Attributes::STYLES_APPLY[:tag_close])
-    end
-
-    # Styles hash
-    #
-    # @return [Hash] hash of styles
-    def styles
-      attrs.styles
     end
 
     # Styles to apply on tag opening

@@ -5,10 +5,10 @@ module PrawnHtml
     class Small < Tag
       ELEMENTS = [:small].freeze
 
-      def update_styles(styles)
-        size = (styles[:size] || Context::DEF_FONT_SIZE) * 0.85
-        styles[:size] = size
-        styles
+      def update_styles(context_styles)
+        size = (context_styles[:size] || Context::DEFAULT_STYLES[:size]) * 0.85
+        context_styles[:size] = size
+        super(context_styles)
       end
     end
   end

@@ -121,12 +121,12 @@ RSpec.describe PrawnHtml::Context do
     subject(:merged_styles) { context.merged_styles }
 
     context 'with no elements' do
-      it { is_expected.to eq(size: PrawnHtml::Context::DEF_FONT_SIZE) }
+      it { is_expected.to eq(size: PrawnHtml::Context::DEFAULT_STYLES[:size]) }
     end
 
     context 'with some elements' do
-      let(:tag1) { instance_double(PrawnHtml::Tag, styles: { color: 'fb1', size: 12.34 }) }
-      let(:tag2) { instance_double(PrawnHtml::Tag, styles: { color: 'abc' }) }
+      let(:tag1) { instance_double(PrawnHtml::Tag, styles: { color: 'fb1', size: 12.34 }, update_styles: nil) }
+      let(:tag2) { instance_double(PrawnHtml::Tag, styles: { color: 'abc' }, update_styles: nil) }
 
       before do
         context << tag1 << tag2
@@ -145,7 +145,7 @@ RSpec.describe PrawnHtml::Context do
           end
         end
       end
-      let(:tag1) { instance_double(PrawnHtml::Tag, styles: { color: 'fb1', size: 12.34 }) }
+      let(:tag1) { instance_double(PrawnHtml::Tag, styles: { color: 'fb1', size: 12.34 }, update_styles: nil) }
       let(:tag2) { some_tag_class.new(:some_tag) }
 
       before do

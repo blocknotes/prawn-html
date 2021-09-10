@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'ostruct'
+require 'set'
 
 module PrawnHtml
   class Attributes < OpenStruct
-    attr_reader :styles
+    attr_reader :initial, :styles
 
     STYLES_APPLY = {
       block: %i[align bottom leading left margin_left padding_left position right top],
@@ -19,13 +20,13 @@ module PrawnHtml
       'color' => { key: :color, set: :convert_color },
       'font-family' => { key: :font, set: :unquote },
       'font-size' => { key: :size, set: :convert_size },
-      'font-style' => { key: :styles, set: :append_styles },
-      'font-weight' => { key: :styles, set: :append_styles },
+      'font-style' => { key: :styles, set: :append_styles, values: %i[italic] },
+      'font-weight' => { key: :styles, set: :append_styles, values: %i[bold] },
       'href' => { key: :link, set: :copy_value },
       'letter-spacing' => { key: :character_spacing, set: :convert_float },
       'list-style-type' => { key: :list_style_type, set: :unquote },
-      'text-decoration' => { key: :styles, set: :append_text_decoration },
-      'vertical-align' => { key: :styles, set: :append_styles },
+      'text-decoration' => { key: :styles, set: :append_styles, values: %i[underline] },
+      'vertical-align' => { key: :styles, set: :append_styles, values: %i[subscript superscript] },
       'white-space' => { key: :white_space, set: :convert_symbol },
       # tag opening styles
       'break-before' => { key: :break_before, set: :convert_symbol },
@@ -44,7 +45,9 @@ module PrawnHtml
       'position' => { key: :position, set: :convert_symbol },
       'right' => { key: :right, set: :convert_size, options: :width },
       'text-align' => { key: :align, set: :convert_symbol },
-      'top' => { key: :top, set: :convert_size, options: :height }
+      'top' => { key: :top, set: :convert_size, options: :height },
+      # special styles
+      'text-decoration-line-through' => { key: :callback, set: :callback_strike_through }
     }.freeze
 
     STYLES_MERGE = %i[margin_left padding_left].freeze
@@ -53,6 +56,7 @@ module PrawnHtml
     def initialize(attributes = {})
       super
       @styles = {} # result styles
+      @initial = Set.new
     end
 
     # Processes the data attributes
@@ -72,6 +76,33 @@ module PrawnHtml
     def merge_text_styles!(text_styles, options: {})
       hash_styles = Attributes.parse_styles(text_styles)
       process_styles(hash_styles, options: options) unless hash_styles.empty?
+    end
+
+    # Remove an attribute value from the context styles
+    #
+    # @param context_styles [Hash] hash of the context styles that will be updated
+    # @param rule [Hash] rule from the STYLES_LIST to lookup in the context style for value removal
+    def remove_value(context_styles, rule)
+      if rule[:set] == :append_styles
+        context_styles[rule[:key]] -= rule[:values] if context_styles[:styles]
+      else
+        default = Context::DEFAULT_STYLES[rule[:key]]
+        default ? (context_styles[rule[:key]] = default) : context_styles.delete(rule[:key])
+      end
+    end
+
+    # Update context styles applying the initial rules (if set)
+    #
+    # @param context_styles [Hash] hash of the context styles that will be updated
+    #
+    # @return [Hash] the update context styles
+    def update_styles(context_styles)
+      initial.each do |rule|
+        next unless rule
+
+        remove_value(context_styles, rule)
+      end
+      context_styles
     end
 
     class << self
@@ -105,29 +136,30 @@ module PrawnHtml
     def process_styles(hash_styles, options:)
       hash_styles.each do |key, value|
         rule = evaluate_rule(key, value)
+        next unless rule
+
         apply_rule!(merged_styles: @styles, rule: rule, value: value, options: options)
       end
       @styles
     end
 
     def evaluate_rule(rule_key, attr_value)
-      rule = STYLES_LIST[rule_key]
-      if rule && rule[:set] == :append_text_decoration
-        return { key: :callback, set: :callback_strike_through } if attr_value == 'line-through'
-
-        return { key: :styles, set: :append_styles }
-      end
-      rule
+      key = nil
+      key = 'text-decoration-line-through' if rule_key == 'text-decoration' && attr_value == 'line-through'
+      key ||= rule_key
+      STYLES_LIST[key]
     end
 
     def apply_rule!(merged_styles:, rule:, value:, options:)
-      return unless rule
+      return (@initial << rule) if value == 'initial'
 
       if rule[:set] == :append_styles
-        (merged_styles[rule[:key]] ||= []) << Utils.normalize_style(value)
+        val = Utils.normalize_style(value)
+        (merged_styles[rule[:key]] ||= []) << val if val
       else
         opts = rule[:options] ? options[rule[:options]] : nil
-        merged_styles[rule[:key]] = Utils.send(rule[:set], value, options: opts)
+        val = Utils.send(rule[:set], value, options: opts)
+        merged_styles[rule[:key]] = val if val
       end
     end
   end

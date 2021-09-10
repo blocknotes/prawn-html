@@ -27,7 +27,7 @@ RSpec.describe PrawnHtml::Tags::Small do
     include_context 'with pdf wrapper'
 
     let(:html) { '<small>Some sample content</small>' }
-    let(:size) { PrawnHtml::Context::DEF_FONT_SIZE * 0.85 }
+    let(:size) { PrawnHtml::Context::DEFAULT_STYLES[:size] * 0.85 }
 
     before { append_html_to_pdf(html) }
 
