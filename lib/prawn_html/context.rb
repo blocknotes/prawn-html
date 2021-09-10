@@ -56,7 +56,7 @@ module PrawnHtml
       @merged_styles ||=
         each_with_object(base_styles) do |element, res|
           evaluate_element_styles(element, res)
-          element.update_styles(res) if element.respond_to?(:update_styles)
+          element.update_styles(res)
         end
     end
 

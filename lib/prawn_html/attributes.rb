@@ -76,6 +76,15 @@ module PrawnHtml
       process_styles(hash_styles, options: options) unless hash_styles.empty?
     end
 
+    # Update context styles applying the initial rules (if set)
+    #
+    # @param context_styles [Hash] hash of the context styles that will be updated
+    #
+    # @return [Hash] the update context styles
+    def update_styles(context_styles)
+      context_styles
+    end
+
     class << self
       # Merges attributes
       #

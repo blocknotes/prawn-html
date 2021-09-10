@@ -106,6 +106,21 @@ RSpec.describe PrawnHtml::Tag do
     it { is_expected.to eq({}) }
   end
 
+  describe '#update_styles' do
+    subject(:update_styles) { tag.update_styles(context_styles) }
+
+    let(:context_styles) { { size: 9.6 } }
+
+    before do
+      allow(tag.attrs).to receive(:update_styles)
+    end
+
+    it 'asks to the attributes to update the context styles' do
+      update_styles
+      expect(tag.attrs).to have_received(:update_styles).with(context_styles)
+    end
+  end
+
   describe '.class_for' do
     subject(:class_for) { described_class.class_for(tag_name) }
 
