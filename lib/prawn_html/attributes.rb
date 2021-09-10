@@ -76,6 +76,18 @@ module PrawnHtml
       process_styles(hash_styles, options: options) unless hash_styles.empty?
     end
 
+    # Remove an attribute value from the context styles
+    #
+    # @param context_styles [Hash] hash of the context styles that will be updated
+    # @param rule [Hash] rule from the STYLES_LIST to lookup in the context style for value removal
+    def remove_value(context_styles, rule)
+      if rule[:set] == :append_styles
+        context_styles[rule[:key]] -= rule[:values] if context_styles[:styles]
+      else
+        context_styles.delete(rule[:key])
+      end
+    end
+
     # Update context styles applying the initial rules (if set)
     #
     # @param context_styles [Hash] hash of the context styles that will be updated
