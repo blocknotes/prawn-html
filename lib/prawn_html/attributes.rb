@@ -86,7 +86,8 @@ module PrawnHtml
       if rule[:set] == :append_styles
         context_styles[rule[:key]] -= rule[:values] if context_styles[:styles]
       else
-        context_styles.delete(rule[:key])
+        default = Context::DEFAULT_STYLES[rule[:key]]
+        default ? (context_styles[rule[:key]] = default) : context_styles.delete(rule[:key])
       end
     end
 
