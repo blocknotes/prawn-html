@@ -23,7 +23,8 @@ RSpec.describe PrawnHtml::Tags::Br do
     end
 
     context 'when the last node in the context is another br' do
-      let(:context) { instance_double(PrawnHtml::Context, last_text_node: false, previous_tag: :br) }
+      let(:context) { instance_double(PrawnHtml::Context, last_text_node: false, previous_tag: prev_tag) }
+      let(:prev_tag) { PrawnHtml::Tags::Br.new(:br) } # rubocop:disable RSpec/DescribedClass
 
       it 'calls advance_cursor on the pdf wrapper' do
         custom_render

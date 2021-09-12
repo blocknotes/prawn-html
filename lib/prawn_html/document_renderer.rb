@@ -12,6 +12,8 @@ module PrawnHtml
       @buffer = []
       @context = Context.new
       @last_margin = 0
+      @last_text = ''
+      @last_tag_open = false
       @pdf = pdf
     end
 
@@ -22,6 +24,8 @@ module PrawnHtml
       render_if_needed(element)
       apply_tag_close_styles(element)
       context.remove_last
+      @last_tag_open = false
+      @last_text = ''
     end
 
     # On tag open callback
@@ -38,6 +42,7 @@ module PrawnHtml
       options = { width: pdf.page_width, height: pdf.page_height }
       tag_class.new(tag_name, attributes: attributes, options: options).tap do |element|
         setup_element(element, element_styles: element_styles)
+        @last_tag_open = true
       end
     end
 
@@ -47,9 +52,10 @@ module PrawnHtml
     #
     # @return [NilClass] nil value (=> no element)
     def on_text_node(content)
-      return if content.match?(/\A\s*\Z/)
+      return if context.previous_tag&.block? && content.match?(/\A\s*\Z/)
 
-      buffer << context.merged_styles.merge(text: prepare_text(content))
+      text = prepare_text(content)
+      buffer << context.merged_styles.merge(text: text) unless text.empty?
       context.last_text_node = true
       nil
     end
@@ -70,15 +76,11 @@ module PrawnHtml
     attr_reader :buffer, :context, :last_margin, :pdf
 
     def setup_element(element, element_styles:)
-      add_space_if_needed unless render_if_needed(element)
+      render_if_needed(element)
       context.add(element)
       element.process_styles(element_styles: element_styles)
       apply_tag_open_styles(element)
       element.custom_render(pdf, context) if element.respond_to?(:custom_render)
-    end
-
-    def add_space_if_needed
-      buffer << SPACE if buffer.any? && !context.last_text_node && ![NEW_LINE, SPACE].include?(buffer.last)
     end
 
     def render_if_needed(element)
@@ -104,10 +106,12 @@ module PrawnHtml
     end
 
     def prepare_text(content)
-      white_space_pre = context.last && context.last.styles[:white_space] == :pre
-      text = ::Oga::HTML::Entities.decode(context.before_content)
-      text += white_space_pre ? content : content.gsub(/\A\s*\n\s*|\s*\n\s*\Z/, '').delete("\n").squeeze(' ')
-      text
+      text = context.before_content ? ::Oga::HTML::Entities.decode(context.before_content) : ''
+      return (@last_text = text + content) if context.white_space_pre?
+
+      content = content.lstrip if @last_text[-1] == ' ' || @last_tag_open
+      text += content.tr("\n", ' ').squeeze(' ')
+      @last_text = text
     end
 
     def output_content(buffer, block_styles)
@@ -129,7 +133,10 @@ module PrawnHtml
     def adjust_leading(buffer, leading)
       return leading if leading
 
-      (buffer.map { |item| item[:size] || Context::DEFAULT_STYLES[:size] }.max * 0.055).round(4)
+      leadings = buffer.map do |item|
+        (item[:size] || Context::DEFAULT_STYLES[:size]) * (ADJUST_LEADING[item[:font]] || ADJUST_LEADING[nil])
+      end
+      leadings.max.round(4)
     end
 
     def bounds(buffer, options, block_styles)
