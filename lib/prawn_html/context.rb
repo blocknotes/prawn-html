@@ -2,7 +2,9 @@
 
 module PrawnHtml
   class Context < Array
-    DEF_FONT_SIZE = 16 * PX
+    DEFAULT_STYLES = {
+      size: 16 * PX
+    }.freeze
 
     attr_reader :previous_tag
     attr_accessor :last_text_node
@@ -54,9 +56,9 @@ module PrawnHtml
     # @return [Hash] the hash of merged styles
     def merged_styles
       @merged_styles ||=
-        each_with_object(base_styles) do |element, res|
+        each_with_object(DEFAULT_STYLES.dup) do |element, res|
           evaluate_element_styles(element, res)
-          element.update_styles(res) if element.respond_to?(:update_styles)
+          element.update_styles(res)
         end
     end
 
@@ -70,12 +72,6 @@ module PrawnHtml
     end
 
     private
-
-    def base_styles
-      {
-        size: DEF_FONT_SIZE
-      }
-    end
 
     def evaluate_element_styles(element, res)
       styles = element.styles.slice(*Attributes::STYLES_APPLY[:text_node])

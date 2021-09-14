@@ -11,7 +11,7 @@ RSpec.describe PrawnHtml::Tags::A do
     end
 
     it "styles doesn't include the link property" do
-      expect(a.styles).to eq(color: 'ffbb11')
+      expect(a.styles).to eq(color: 'ffbb11', styles: [:underline])
     end
   end
 

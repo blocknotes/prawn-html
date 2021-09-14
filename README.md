@@ -90,6 +90,8 @@ CSS attributes (dimensional units are ignored and considered in pixel):
 - **top**: see *position (absolute)*
 - **width**: for *img* tag, support also percentage, ex. `<img src="image.jpg" style="width: 50%; height: 200px"/>`
 
+The above attributes supports the `initial` value to reset them to their original value.
+
 For colors, the supported formats are:
 - 3 hex digits, ex. `color: #FB1`;
 - 6 hex digits, ex. `color: #abcdef`;
