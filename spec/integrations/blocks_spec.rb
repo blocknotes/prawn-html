@@ -2,7 +2,7 @@
 
 RSpec.describe 'Blocks' do
   let(:pdf) { Prawn::Document.new(page_size: 'A4', page_layout: :portrait) }
-  let(:size) { PrawnHtml::Context::DEF_FONT_SIZE }
+  let(:size) { PrawnHtml::Context::DEFAULT_STYLES[:size] }
 
   before do
     PrawnHtml.append_html(pdf, html)
