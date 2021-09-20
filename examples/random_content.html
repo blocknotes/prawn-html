@@ -4,11 +4,21 @@
   <title>Random content</title>
 </head>
 <body style="font-family: 'Times-Roman';">
-  <h1>A test document <small>(with the supported elements)</small></h1>
-  This is <i style="color: #df2818">italic</i>, <u>underline</u> and <b>bold, <i>bold italic</i></b>
+  <h1>Random content <small>(with various elements and styles)</small></h1>
+
+  Test inline elements:
+  this is <i style="color: #df2818">italic</i>, <u>underline</u> and <b>bold, <i>bold italic</i></b>
+
   <br />
   <br />
   <br />
+
+  <div>div element</div>
+  <div>div (2) element</div>
+  <span>span element</span>
+  <span>span (2) element</span>
+
+  <blockquote>The Block Quotation element</blockquote>
 
   <hr style="color: #080" />
 
@@ -26,7 +36,7 @@
   <hr/>
 
   Begin of list
-  <ul style="margin-bottom: 20px">
+  <ul>
     <li>Level 1a</li>
     <li>Level 1b
       <ul>
@@ -35,10 +45,13 @@
           <ul>
             <li>Level 3a</li>
             <li>Level 3b</li>
+            <li>Level 3c</li>
           </ul>
         </li>
+        <li>Level 2c</li>
       </ul>
     </li>
+    <li>Level 1c</li>
   </ul>
   End of list
 
@@ -86,10 +99,21 @@
   <hr />
   <br />
 
+  This is an inline <code>code</code> element.
+  <pre>  this is  pre element  </pre>
+  last line.
+
   <div style="text-align: center">
     An image:<br/>
     <img src="./examples/image.jpg" style="width: 50%" />
   </div>
+  <p>Some other paragraph</p>
+
+  <div style="color: red; position: absolute; top: 100px; left: 300px">
+    <em>Position: absolute</em>
+  </div>
+
+  <h2 style="break-before: auto">New page</h2>
 
   <b>End of document</b>
 </body>
