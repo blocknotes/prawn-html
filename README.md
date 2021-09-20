@@ -35,34 +35,34 @@ To check some examples with the PDF output see [examples](examples/) folder.
 
 ## Supported tags & attributes
 
-HTML tags:
+HTML tags (using MDN definitions):
 
-- **a**: link
-- **b**: bold
-- **blockquote**: block quotation element
-- **br**: new line
-- **code**: inline code element
-- **del**: strike-through
-- **div**: block element
-- **em**: italic
-- **h1** - **h6**: headings
-- **hr**: horizontal line
-- **i**: italic
-- **ins**: underline
-- **img**: image
-- **li**: list item
-- **mark**: highlight
-- **ol**: ordered list
-- **p**: block element
-- **pre**: preformatted text element
-- **s**: strike-through
-- **small**: smaller text
-- **span**: inline element
-- **strong**: bold
-- **sub**: subscript element
-- **sup**: superscript element
-- **u**: underline
-- **ul**: unordered list
+- **a**: the Anchor element
+- **b**: the Bring Attention To element
+- **blockquote**: the Block Quotation element
+- **br**: the Line Break element
+- **code**: the Inline Code element
+- **del**: the Deleted Text element
+- **div**: the Content Division element
+- **em**: the Emphasis element
+- **h1** - **h6**: the HTML Section Heading elements
+- **hr**: the Thematic Break (Horizontal Rule) element
+- **i**: the Idiomatic Text element
+- **ins**: the added text element
+- **img**: the Image Embed element
+- **li**: the list item element
+- **mark**: the Mark Text element
+- **ol**: the Ordered List element
+- **p**: the Paragraph element
+- **pre**: the Preformatted Text element
+- **s**: the strike-through text element
+- **small**: the side comment element
+- **span**: the generic inline element
+- **strong**: the Strong Importance element
+- **sub**: the Subscript element
+- **sup**: the Superscript element
+- **u**: the Unarticulated Annotation (Underline) element
+- **ul**: the Unordered List element
 
 CSS attributes (dimensional units are ignored and considered in pixel):
 
