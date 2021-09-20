@@ -12,7 +12,7 @@ module PrawnHtml
       end
 
       def custom_render(pdf, context)
-        return if context.last_text_node || context.previous_tag != :br
+        return if context.last_text_node || !context.previous_tag.is_a?(Br)
 
         pdf.advance_cursor(BR_SPACING)
       end

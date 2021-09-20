@@ -110,7 +110,7 @@ RSpec.describe PrawnHtml::Context do
     it 'removes the last element from the context', :aggregate_failures do
       expect { remove_last }.to(
         change(context, :size).from(1).to(0).and(
-          change(context, :previous_tag).from(nil).to(:some_tag)
+          change(context, :previous_tag).from(nil).to(tag)
         )
       )
       expect(tag).to have_received(:on_context_remove)
@@ -157,6 +157,24 @@ RSpec.describe PrawnHtml::Context do
         expect(merged_styles).to match(color: 'fb1', size: 12.34, some_style: :some_value)
         expect(tag2).to have_received(:update_styles)
       end
+    end
+  end
+
+  describe '#white_space_pre?' do
+    subject(:white_space_pre?) { context.white_space_pre? }
+
+    before do
+      context << instance_double(PrawnHtml::Tag, styles: {})
+    end
+
+    it { is_expected.to be_falsey }
+
+    context 'when the last element has white-space property set to pre' do
+      before do
+        context << instance_double(PrawnHtml::Tag, styles: { white_space: :pre })
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 end

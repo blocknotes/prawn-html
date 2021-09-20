@@ -154,7 +154,7 @@ module PrawnHtml
       return (@initial << rule) if value == 'initial'
 
       if rule[:set] == :append_styles
-        val = Utils.normalize_style(value)
+        val = Utils.normalize_style(value, rule[:values])
         (merged_styles[rule[:key]] ||= []) << val if val
       else
         opts = rule[:options] ? options[rule[:options]] : nil

@@ -154,7 +154,9 @@ RSpec.describe PrawnHtml::Utils do
   end
 
   describe '.normalize_style' do
-    subject(:normalize_style) { described_class.normalize_style(value) }
+    subject(:normalize_style) { described_class.normalize_style(value, accepted_values) }
+
+    let(:accepted_values) { [:bold, :italic] }
 
     context 'with an invalid value (ex. "some_string")' do
       let(:value) { 'some_string' }
