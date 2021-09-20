@@ -67,8 +67,15 @@ module PrawnHtml
       last.on_context_remove(self) if last.respond_to?(:on_context_remove)
       @merged_styles = nil
       @last_text_node = false
-      @previous_tag = last.tag
+      @previous_tag = last
       pop
+    end
+
+    # White space is equal to 'pre'?
+    #
+    # @return [boolean] white space property of the last element is equal to 'pre'
+    def white_space_pre?
+      last && last.styles[:white_space] == :pre
     end
 
     private

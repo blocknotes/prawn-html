@@ -26,7 +26,7 @@ RSpec.describe 'Styles' do
     let(:html) { '<div style="font-family: Courier">Some content...</div>' }
 
     let(:expected_buffer) { [{ font: 'Courier', size: TestUtils.default_font_size, text: "Some content..." }] }
-    let(:expected_options) { { leading: TestUtils.adjust_leading } }
+    let(:expected_options) { { leading: TestUtils.adjust_leading(TestUtils.default_font_size, 'Courier') } }
     let(:expected_extra) { { bounding_box: nil, left_indent: 0 } }
 
     it 'sends the expected buffer elements to Prawn pdf' do

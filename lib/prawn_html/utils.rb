@@ -103,11 +103,13 @@ module PrawnHtml
     # Normalize a style value
     #
     # @param value [String] string value
+    # @param accepted_values [Array] allowlist of valid values (symbols)
     #
     # @return [Symbol] style value or nil
-    def normalize_style(value)
+    def normalize_style(value, accepted_values)
       val = value&.strip&.downcase
-      NORMALIZE_STYLES[val]
+      ret = NORMALIZE_STYLES[val]
+      accepted_values.include?(ret) ? ret : nil
     end
 
     # Unquotes a string
