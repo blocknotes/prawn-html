@@ -45,7 +45,7 @@ module PrawnHtml
 
       if val.match /\A#([a-f0-9]{3})\Z/ # rubocop:disable Performance/RedundantMatch
         r, g, b = Regexp.last_match[1].chars
-        return r * 2 + g * 2 + b * 2
+        return (r * 2) + (g * 2) + (b * 2)
       end
       if val.match /\Argb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\Z/ # rubocop:disable Performance/RedundantMatch
         r, g, b = Regexp.last_match[1..3].map { |v| v.to_i.to_s(16) }

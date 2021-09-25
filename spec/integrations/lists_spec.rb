@@ -51,7 +51,7 @@ RSpec.describe 'Lists' do
       expected_array = [
         [x, y.round(5)],
         [x, (y - font.height - TestUtils.adjust_leading).round(5)],
-        [x, (y - font.height * 2 - TestUtils.adjust_leading * 2).round(5)]
+        [x, (y - (font.height * 2) - (TestUtils.adjust_leading * 2)).round(5)]
       ]
 
       expect(text_analysis.positions).to match_array(expected_array)
