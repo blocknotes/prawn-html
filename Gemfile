@@ -5,9 +5,11 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
+  # Testing
   gem 'pdf-inspector', require: 'pdf/inspector'
   gem 'rspec'
   gem 'simplecov', require: false
+  gem 'simplecov-lcov', require: false
 
   # Linters
   gem 'fasterer'
