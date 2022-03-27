@@ -3,12 +3,12 @@ name: Specs
 
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
   pull_request:
-    branches: [develop, main]
+    branches: [main]
 
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,7 +16,7 @@ jobs:
         ruby: ['2.6', '2.7', '3.0']
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set up Ruby
@@ -26,4 +26,12 @@ jobs:
           bundler-cache: true
 
       - name: Run tests
-        run: bin/rspec --profile
+        run: bundle exec rspec --profile
+
+      - name: Code Climate test coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageLocations: |
+            ${{github.workspace}}/coverage/lcov/prawn-html.lcov:lcov

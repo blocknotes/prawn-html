@@ -1,5 +1,7 @@
 # Prawn HTML
 [![gem version](https://badge.fury.io/rb/prawn-html.svg)](https://rubygems.org/gems/prawn-html)
+[![gem downloads](https://badgen.net/rubygems/dt/prawn-html)](https://rubygems.org/gems/prawn-html)
+[![maintainability](https://api.codeclimate.com/v1/badges/db674db00817d56ca1e9/maintainability)](https://codeclimate.com/github/blocknotes/prawn-html/maintainability)
 [![linters](https://github.com/blocknotes/prawn-html/actions/workflows/linters.yml/badge.svg)](https://github.com/blocknotes/prawn-html/actions/workflows/linters.yml)
 [![specs](https://github.com/blocknotes/prawn-html/actions/workflows/specs.yml/badge.svg)](https://github.com/blocknotes/prawn-html/actions/workflows/specs.yml)
 
