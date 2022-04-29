@@ -13,7 +13,9 @@ module PrawnHtml
       end
 
       def before_content
-        @counter ? "#{@counter}. " : "#{@symbol} "
+        return if @before_content_once
+
+        @before_content_once = @counter ? "#{@counter}. " : "#{@symbol} "
       end
 
       def block_styles

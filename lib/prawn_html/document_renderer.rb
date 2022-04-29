@@ -106,7 +106,8 @@ module PrawnHtml
     end
 
     def prepare_text(content)
-      text = context.before_content ? ::Oga::HTML::Entities.decode(context.before_content) : ''
+      before_content = context.before_content
+      text = before_content ? ::Oga::HTML::Entities.decode(before_content) : ''
       return (@last_text = text + content) if context.white_space_pre?
 
       content = content.lstrip if @last_text[-1] == ' ' || @last_tag_open
