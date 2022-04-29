@@ -127,13 +127,13 @@ RSpec.describe PrawnHtml::Utils do
     context 'with a nil value' do
       let(:value) { nil }
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with a blank string value' do
       let(:value) { '' }
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with a string value (ex. "some_string")' do
@@ -161,7 +161,7 @@ RSpec.describe PrawnHtml::Utils do
     context 'with an invalid value (ex. "some_string")' do
       let(:value) { 'some_string' }
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with a valid value (ex. " bOlD ")' do

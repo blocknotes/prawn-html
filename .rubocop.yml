@@ -34,3 +34,12 @@ RSpec/ExampleLength:
 RSpec/MultipleMemoizedHelpers:
   # default: 5
   Max: 6
+
+RSpec/SubjectStub:
+  Exclude:
+    - spec/units/prawn_html/attributes_spec.rb
+
+Style/OpenStructUse:
+  Exclude:
+    - lib/prawn_html/attributes.rb
+    - spec/units/prawn_html/attributes_spec.rb
