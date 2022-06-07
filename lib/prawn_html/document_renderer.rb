@@ -9,6 +9,7 @@ module PrawnHtml
     #
     # @param pdf [PdfWrapper] target PDF wrapper
     def initialize(pdf)
+      @before_content = []
       @buffer = []
       @context = Context.new
       @last_margin = 0
@@ -42,6 +43,7 @@ module PrawnHtml
       options = { width: pdf.page_width, height: pdf.page_height }
       tag_class.new(tag_name, attributes: attributes, options: options).tap do |element|
         setup_element(element, element_styles: element_styles)
+        @before_content.push(element.before_content) if element.respond_to?(:before_content)
         @last_tag_open = true
       end
     end
@@ -106,8 +108,9 @@ module PrawnHtml
     end
 
     def prepare_text(content)
-      before_content = context.before_content
-      text = before_content ? ::Oga::HTML::Entities.decode(before_content) : ''
+      text = @before_content.any? ? ::Oga::HTML::Entities.decode(@before_content.join) : ''
+      @before_content.clear
+
       return (@last_text = text + content) if context.white_space_pre?
 
       content = content.lstrip if @last_text[-1] == ' ' || @last_tag_open

@@ -62,6 +62,12 @@ module PrawnHtml
         end
     end
 
+    # :nocov:
+    def inspect
+      map(&:class).map(&:to_s).join(', ')
+    end
+    # :nocov:
+
     # Remove the last element from the context
     def remove_last
       last.on_context_remove(self) if last.respond_to?(:on_context_remove)

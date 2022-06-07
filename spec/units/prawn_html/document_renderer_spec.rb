@@ -63,27 +63,7 @@ RSpec.describe PrawnHtml::DocumentRenderer do
 
     let(:content) { 'some content' }
 
-    before do
-      allow(Oga::HTML::Entities).to receive(:decode).and_call_original
-    end
-
     it { is_expected.to be_nil }
-
-    it 'calls the decode method for before content' do
-      on_text_node
-      expect(Oga::HTML::Entities).to have_received(:decode)
-    end
-
-    context 'without before content' do
-      before do
-        allow(context).to receive(:before_content).and_return(nil)
-      end
-
-      it "doesn't call the decode method" do
-        on_text_node
-        expect(Oga::HTML::Entities).not_to have_received(:decode)
-      end
-    end
   end
 
   describe '#render' do
