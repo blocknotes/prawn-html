@@ -156,10 +156,7 @@ module PrawnHtml
   }.freeze
 
   def append_html(pdf, html)
-    pdf_wrapper = PdfWrapper.new(pdf)
-    renderer = DocumentRenderer.new(pdf_wrapper)
-    html_parser = PrawnHtml::HtmlParser.new(renderer)
-    html_parser.process(html)
+    PrawnHtml::Instance.new(pdf).append(html: html)
   end
 
   module_function :append_html
@@ -179,3 +176,4 @@ require 'prawn_html/context'
 require 'prawn_html/pdf_wrapper'
 require 'prawn_html/document_renderer'
 require 'prawn_html/html_parser'
+require 'prawn_html/instance'
