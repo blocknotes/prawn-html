@@ -15,15 +15,17 @@ module PrawnHtml
       @ignore = false
       @ignore_content_tags = ignore_content_tags
       @renderer = renderer
-      @styles = {}
+      @raw_styles = {}
     end
 
     # Processes HTML and renders it
     #
     # @param html [String] The HTML content to process
     def process(html)
+      @styles = {}
       @processing = !html.include?('<body')
       @document = Oga.parse_html(html)
+      process_styles # apply previously loaded styles
       traverse_nodes(document.children)
       renderer.flush
     end
@@ -59,9 +61,9 @@ module PrawnHtml
       end
     end
 
-    def process_styles(text_styles)
-      hash_styles = text_styles.scan(REGEXP_STYLES).to_h
-      hash_styles.each do |selector, rule|
+    def process_styles(text_styles = nil)
+      @raw_styles = text_styles.scan(REGEXP_STYLES).to_h if text_styles
+      @raw_styles.each do |selector, rule|
         document.css(selector).each do |node|
           styles[node] = rule
         end
