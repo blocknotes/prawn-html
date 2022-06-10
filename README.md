@@ -35,6 +35,23 @@ pdf.render_file('test.pdf')
 
 To check some examples with the PDF output see [examples](examples/) folder.
 
+Alternative form using _PrawnHtml::Instance_ to preserve the context:
+
+```rb
+require 'prawn-html'
+pdf = Prawn::Document.new(page_size: 'A4')
+phtml = PrawnHtml::Instance.new(pdf)
+css = <<~CSS
+  h1 { color: green }
+  i { color: red }
+CSS
+phtml.append(css: css)
+phtml.append(html: '<h1>Some <i>HTML</i> before</h1>')
+pdf.text 'Some Prawn text'
+phtml.append(html: '<h1>Some <i>HTML</i> after</h1>')
+pdf.render_file('test.pdf')
+```
+
 ## Supported tags & attributes
 
 HTML tags (using MDN definitions):
