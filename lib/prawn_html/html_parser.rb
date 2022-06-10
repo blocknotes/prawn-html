@@ -30,6 +30,13 @@ module PrawnHtml
       renderer.flush
     end
 
+    # Parses CSS styles
+    #
+    # @param text_styles [String] The CSS styles to evaluate
+    def parse_styles(text_styles)
+      @raw_styles = text_styles.scan(REGEXP_STYLES).to_h
+    end
+
     private
 
     attr_reader :document, :ignore, :processing, :renderer, :styles
@@ -62,7 +69,7 @@ module PrawnHtml
     end
 
     def process_styles(text_styles = nil)
-      @raw_styles = text_styles.scan(REGEXP_STYLES).to_h if text_styles
+      parse_styles(text_styles) if text_styles
       @raw_styles.each do |selector, rule|
         document.css(selector).each do |node|
           styles[node] = rule

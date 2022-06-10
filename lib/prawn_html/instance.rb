@@ -10,8 +10,9 @@ module PrawnHtml
       @html_parser = PrawnHtml::HtmlParser.new(@renderer)
     end
 
-    def append(html:)
-      html_parser.process(html)
+    def append(css: nil, html: nil)
+      html_parser.parse_styles(css) if css
+      html_parser.process(html) if html
     end
   end
 end

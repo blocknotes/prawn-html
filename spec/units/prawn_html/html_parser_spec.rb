@@ -38,6 +38,14 @@ RSpec.describe PrawnHtml::HtmlParser do
     end
   end
 
+  describe '#parse_styles' do
+    subject(:parse_styles) { html_parser.parse_styles(css) }
+
+    let(:css) { 'h1 { color: red }' }
+
+    it { is_expected.to eq('h1' => 'color: red') }
+  end
+
   describe '#process' do
     subject(:process) { html_parser.process(html) }
 
