@@ -94,14 +94,14 @@ module PrawnHtml
     end
 
     def apply_tag_close_styles(element)
-      tag_styles = element.tag_close_styles
+      tag_styles = element.tag_closing
       @last_margin = tag_styles[:margin_bottom].to_f
       pdf.advance_cursor(last_margin + tag_styles[:padding_bottom].to_f)
       pdf.start_new_page if tag_styles[:break_after]
     end
 
     def apply_tag_open_styles(element)
-      tag_styles = element.tag_open_styles
+      tag_styles = element.tag_opening
       move_down = (tag_styles[:margin_top].to_f - last_margin) + tag_styles[:padding_top].to_f
       pdf.advance_cursor(move_down) if move_down > 0
       pdf.start_new_page if tag_styles[:break_before]

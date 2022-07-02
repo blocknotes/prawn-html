@@ -18,12 +18,12 @@ RSpec.describe PrawnHtml::DocumentRenderer do
 
     before do
       allow(context).to receive(:remove_last)
-      allow(element).to receive(:tag_close_styles).and_call_original
+      allow(element).to receive(:tag_closing).and_call_original
     end
 
     it 'handles tag closing', :aggregate_failures do
       on_tag_close
-      expect(element).to have_received(:tag_close_styles)
+      expect(element).to have_received(:tag_closing)
       expect(context).to have_received(:remove_last)
     end
   end

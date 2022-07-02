@@ -53,17 +53,17 @@ module PrawnHtml
       attrs.merge_text_styles!(extra_styles, options: options) if respond_to?(:extra_styles)
     end
 
-    # Styles to apply on tag closing
+    # Tag closing callback that applies tag's specific styles
     #
     # @return [Hash] hash of styles to apply
-    def tag_close_styles
+    def tag_closing
       styles.slice(*Attributes::STYLES_APPLY[:tag_close])
     end
 
-    # Styles to apply on tag opening
+    # Tag opening callback that applies tag's specific styles
     #
     # @return [Hash] hash of styles to apply
-    def tag_open_styles
+    def tag_opening
       styles.slice(*Attributes::STYLES_APPLY[:tag_open])
     end
 
