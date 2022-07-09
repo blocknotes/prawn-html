@@ -7,11 +7,12 @@ module PrawnHtml
     }.freeze
 
     attr_reader :previous_tag
-    attr_accessor :last_text_node
+    attr_accessor :last_text_node, :current_table
 
     # Init the Context
     def initialize(*_args)
       super
+      @current_table = nil
       @last_text_node = false
       @merged_styles = nil
       @previous_tag = nil
