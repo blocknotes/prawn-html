@@ -9,7 +9,7 @@ module PrawnHtml
       'StrikeThrough' => Callbacks::StrikeThrough
     }.freeze
 
-    TAG_CLASSES = %w[A B Blockquote Body Br Code Del Div H Hr I Img Li Mark Ol P Pre Small Span Sub Sup U Ul].freeze
+    TAG_CLASSES = %w[A B Blockquote Body Br Code Del Div H Hr I Img Li Mark Ol P Pre Small Span Sub Sup Table Td Tr U Ul].freeze
 
     def_delegators :@attrs, :styles, :update_styles
 
