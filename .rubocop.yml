@@ -16,8 +16,7 @@ AllCops:
   NewCops: enable
 
 Lint/UnusedMethodArgument:
-  Exclude:
-    - lib/prawn_html/utils.rb
+  Enabled: false
 
 Naming/FileName:
   Exclude:

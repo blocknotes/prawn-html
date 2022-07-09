@@ -56,14 +56,14 @@ module PrawnHtml
     # Tag closing callback that applies tag's specific styles
     #
     # @return [Hash] hash of styles to apply
-    def tag_closing
+    def tag_closing(context: nil)
       styles.slice(*Attributes::STYLES_APPLY[:tag_close])
     end
 
     # Tag opening callback that applies tag's specific styles
     #
     # @return [Hash] hash of styles to apply
-    def tag_opening
+    def tag_opening(context: nil)
       styles.slice(*Attributes::STYLES_APPLY[:tag_open])
     end
 
