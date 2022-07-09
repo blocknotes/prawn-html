@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 require 'forwardable'
+require 'prawn/table'
 
 module PrawnHtml
   class PdfWrapper
     extend Forwardable
 
-    def_delegators :@pdf, :start_new_page
+    def_delegators :@pdf, :start_new_page, :table
 
     # Wrapper for Prawn PDF Document
     #
