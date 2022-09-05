@@ -50,10 +50,10 @@ RSpec.describe PrawnHtml::Attributes do
         STYLES
       end
 
-      it 'receives the expected convert messages', :aggregate_failures do
+      it 'receives the expected messages', :aggregate_failures do
         merge_text_styles!
 
-        expect(PrawnHtml::Utils).to have_received(:send).with(:unquote, "'Times-Roman'", options: nil)
+        expect(PrawnHtml::Utils).to have_received(:send).with(:filter_font_family, "'Times-Roman'", options: nil)
         expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '16px', options: nil)
         expect(PrawnHtml::Utils).to have_received(:send).with(:convert_size, '22px', options: nil)
       end
