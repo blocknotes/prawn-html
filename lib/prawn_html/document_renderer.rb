@@ -66,7 +66,13 @@ module PrawnHtml
     def render
       return if buffer.empty?
 
-      output_content(buffer.dup, context.block_styles)
+      content = prepare_content(buffer.dup, context.block_styles)
+      if context.current_table
+        td_content = content.dig(:buffer, 0, :text)
+        context.current_table.update_content(td_content)
+      else
+        pdf.puts(content[:buffer], content[:options], left_indent: content[:left_indent], bounding_box: content[:bounds])
+      end
       buffer.clear
       @last_margin = 0
     end
@@ -94,14 +100,15 @@ module PrawnHtml
     end
 
     def apply_tag_close_styles(element)
-      tag_styles = element.tag_close_styles
+      tag_styles = element.tag_closing(context: context)
+      pdf.table(element.table_data) if element.is_a?(Tags::Table)
       @last_margin = tag_styles[:margin_bottom].to_f
       pdf.advance_cursor(last_margin + tag_styles[:padding_bottom].to_f)
       pdf.start_new_page if tag_styles[:break_after]
     end
 
     def apply_tag_open_styles(element)
-      tag_styles = element.tag_open_styles
+      tag_styles = element.tag_opening(context: context)
       move_down = (tag_styles[:margin_top].to_f - last_margin) + tag_styles[:padding_top].to_f
       pdf.advance_cursor(move_down) if move_down > 0
       pdf.start_new_page if tag_styles[:break_before]
@@ -118,12 +125,12 @@ module PrawnHtml
       @last_text = text
     end
 
-    def output_content(buffer, block_styles)
+    def prepare_content(buffer, block_styles)
       apply_callbacks(buffer)
       left_indent = block_styles[:margin_left].to_f + block_styles[:padding_left].to_f
       options = block_styles.slice(:align, :indent_paragraphs, :leading, :mode, :padding_left)
       options[:leading] = adjust_leading(buffer, options[:leading])
-      pdf.puts(buffer, options, bounding_box: bounds(buffer, options, block_styles), left_indent: left_indent)
+      { buffer: buffer, options: options, left_indent: left_indent, bounds: bounds(buffer, options, block_styles) }
     end
 
     def apply_callbacks(buffer)

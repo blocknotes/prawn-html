@@ -94,14 +94,14 @@ RSpec.describe PrawnHtml::Tag do
     it { is_expected.to eq(color: '0088ff') }
   end
 
-  describe '#tag_close_styles' do
-    subject(:tag_close_styles) { tag.tag_close_styles }
+  describe '#tag_closing' do
+    subject(:tag_closing) { tag.tag_closing }
 
     it { is_expected.to eq({}) }
   end
 
-  describe '#tag_open_styles' do
-    subject(:tag_open_styles) { tag.tag_open_styles }
+  describe '#tag_opening' do
+    subject(:tag_opening) { tag.tag_opening }
 
     it { is_expected.to eq({}) }
   end

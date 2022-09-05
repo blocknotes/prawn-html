@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'oga', '~> 3.3'
   spec.add_runtime_dependency 'prawn', '~> 2.4'
+  spec.add_runtime_dependency 'prawn-table', '~> 0.2.2'
 end

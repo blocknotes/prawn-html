@@ -9,7 +9,7 @@ module PrawnHtml
       'StrikeThrough' => Callbacks::StrikeThrough
     }.freeze
 
-    TAG_CLASSES = %w[A B Blockquote Body Br Code Del Div H Hr I Img Li Mark Ol P Pre Small Span Sub Sup U Ul].freeze
+    TAG_CLASSES = %w[A B Blockquote Body Br Code Del Div H Hr I Img Li Mark Ol P Pre Small Span Sub Sup Table Td Tr U Ul].freeze
 
     def_delegators :@attrs, :styles, :update_styles
 
@@ -53,17 +53,17 @@ module PrawnHtml
       attrs.merge_text_styles!(extra_styles, options: options) if respond_to?(:extra_styles)
     end
 
-    # Styles to apply on tag closing
+    # Tag closing callback that applies tag's specific styles
     #
     # @return [Hash] hash of styles to apply
-    def tag_close_styles
+    def tag_closing(context: nil)
       styles.slice(*Attributes::STYLES_APPLY[:tag_close])
     end
 
-    # Styles to apply on tag opening
+    # Tag opening callback that applies tag's specific styles
     #
     # @return [Hash] hash of styles to apply
-    def tag_open_styles
+    def tag_opening(context: nil)
       styles.slice(*Attributes::STYLES_APPLY[:tag_open])
     end
 
