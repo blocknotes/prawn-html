@@ -33,6 +33,12 @@ module PrawnHtml
           @table_data = []
         end
       end
+
+      def tag_closing(context: nil)
+        super.tap do
+          context.current_table = nil
+        end
+      end
     end
   end
 end
