@@ -18,7 +18,7 @@ module PrawnHtml
       # text node styles
       'background' => { key: :callback, set: :callback_background },
       'color' => { key: :color, set: :convert_color },
-      'font-family' => { key: :font, set: :unquote },
+      'font-family' => { key: :font, set: :filter_font_family },
       'font-size' => { key: :size, set: :convert_size },
       'font-style' => { key: :styles, set: :append_styles, values: %i[italic] },
       'font-weight' => { key: :styles, set: :append_styles, values: %i[bold] },

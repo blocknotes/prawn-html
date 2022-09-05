@@ -100,6 +100,16 @@ module PrawnHtml
       value
     end
 
+    # Filter font family
+    #
+    # @param value [String] string value
+    #
+    # @return [Symbol] unquoted font family or nil if the input value is 'inherit'
+    def filter_font_family(value, options: nil)
+      result = unquote(value, options: options)
+      result == 'inherit' ? nil : result
+    end
+
     # Normalize a style value
     #
     # @param value [String] string value
@@ -124,6 +134,6 @@ module PrawnHtml
     end
 
     module_function :callback_background, :callback_strike_through, :convert_color, :convert_float, :convert_size,
-                    :convert_symbol, :copy_value, :normalize_style, :unquote
+                    :convert_symbol, :copy_value, :filter_font_family, :normalize_style, :unquote
   end
 end

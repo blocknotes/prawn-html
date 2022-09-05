@@ -153,6 +153,28 @@ RSpec.describe PrawnHtml::Utils do
     end
   end
 
+  describe '.filter_font_family' do
+    subject(:filter_font_family) { described_class.filter_font_family(value) }
+
+    context 'with any string (ex. "some_string")' do
+      let(:value) { 'some_string' }
+
+      it { is_expected.to eq 'some_string' }
+    end
+
+    context 'with a string with some spaces (ex. " some_string ")' do
+      let(:value) { ' some_string ' }
+
+      it { is_expected.to eq 'some_string' }
+    end
+
+    context 'with "inherit" value' do
+      let(:value) { 'inherit' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '.normalize_style' do
     subject(:normalize_style) { described_class.normalize_style(value, accepted_values) }
 
