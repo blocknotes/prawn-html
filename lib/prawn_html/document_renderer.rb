@@ -9,7 +9,6 @@ module PrawnHtml
     #
     # @param pdf [PdfWrapper] target PDF wrapper
     def initialize(pdf)
-      puts 'prawnhtmlinitialize'
       @before_content = []
       @buffer = []
       @context = Context.new
