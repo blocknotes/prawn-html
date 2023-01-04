@@ -15,7 +15,9 @@ module PrawnHtml
       def before_content
         return if @before_content_once
 
-        @before_content_once = @counter ? "#{@counter}. " : "#{@symbol} "
+        @before_content_once = @counter ? "bb. " : "#{@symbol} "
+#        @before_content_once = @counter ? "#{@counter}. " : "#{@symbol} "
+#        @before_content_once = @counter ? "#{counter_display(parent.attrs('type'), @counter)}. " : "#{@symbol} "
       end
 
       def block_styles
@@ -33,6 +35,10 @@ module PrawnHtml
           @indent = INDENT_UL
           @symbol = parent.styles[:list_style_type] || '&bullet;'
         end
+      end
+
+      def counter_display(ol_type, counter)
+        'aa'
       end
     end
   end
