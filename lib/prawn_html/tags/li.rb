@@ -14,8 +14,6 @@ module PrawnHtml
 
       def before_content
         return if @before_content_once
-        puts "counteraaa #{@counter} parenttype #{parent.attrs.type}"
-#        @before_content_once = @counter ? "#{@counter}. " : "#{@symbol} "
         @before_content_once = @counter ? "#{counter_display(@counter, parent.attrs.type)}. " : "#{@symbol} "
       end
 
@@ -37,7 +35,6 @@ module PrawnHtml
       end
 
       def counter_display(counter, ol_type = '1')
-        puts "counter #{counter} olPtype #{ol_type}"
         case ol_type
         when '1'
           counter.to_s
@@ -55,7 +52,6 @@ module PrawnHtml
       end
     
       def to_roman(num)
-        puts "to_roman #{num}"
         roman_arr = {
           1000 => "M",
           900 => "CM",
@@ -73,13 +69,11 @@ module PrawnHtml
         }     
         roman_arr.reduce(+"") do |roman_res, (arab, roman)|
           whole_part, num = num.divmod(arab)
-          puts "res #{roman_res} roman #{roman} whole_part #{whole_part}"
           roman_res << roman * whole_part
         end
       end
     
       def to_char(num)
-        puts "to_char #{num}"
         chars = ("A".."Z").to_a
         return "" if num < 1
         s = +""
